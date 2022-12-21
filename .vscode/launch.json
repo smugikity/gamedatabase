@@ -10,7 +10,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
             "console": "integratedTerminal",
-            "args": ["runserver"],
+            "args": ["runserver","8000"],
+            "django": true,
             "justMyCode": true,
             "serverReadyAction": {
                 "pattern": "Starting development server at http://127.0.0.1:8000/",

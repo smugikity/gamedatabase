@@ -3,7 +3,6 @@ certifi==2021.5.30
 chardet==4.0.0
 dj-database-url==0.5.0
 Django==3.2
-django-heroku==0.3.1
 django-jet-reboot==1.1.1
 django-paypal==1.1.1
 djangorestframework==3.12.4
