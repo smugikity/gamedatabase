@@ -5,12 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "LiveServer",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "console": "integratedTerminal",
+            "args": ["livereload"],
+            "justMyCode": true
+        },
+        {
             "name": "Server",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
             "console": "integratedTerminal",
-            "args": ["runserver","8000"],
+            "args": ["runserver"],
             "django": true,
             "justMyCode": true,
             "serverReadyAction": {
@@ -18,6 +27,13 @@
                 "uriFormat": "http://localhost:8000",
                 "action": "debugWithChrome"
               }
+          }
+    ],
+    "compounds": [
+        {
+          "name": "Server/Client",
+          "configurations": ["LiveServer", "Server"],
+          "stopAll": true
         }
-    ]
+      ]
 }
