@@ -26,12 +26,13 @@
                 "pattern": "Starting development server at http://127.0.0.1:8000/",
                 "uriFormat": "http://localhost:8000",
                 "action": "debugWithChrome"
-              }
+            }
+            
           }
     ],
     "compounds": [
         {
-          "name": "Server/Client",
+          "name": "LiveServer",
           "configurations": ["LiveServer", "Server"],
           "stopAll": true
         }
