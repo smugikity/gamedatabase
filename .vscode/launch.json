@@ -5,12 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Server",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/manage.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "args": ["runserver"],
+            "justMyCode": true,
+            "serverReadyAction": {
+                "pattern": "Starting development server at http://127.0.0.1:8000/",
+                "uriFormat": "http://localhost:8000",
+                "action": "debugWithChrome"
+              }
         }
     ]
 }
