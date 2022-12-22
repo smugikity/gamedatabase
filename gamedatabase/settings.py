@@ -152,4 +152,3 @@ JET_SIDE_MENU_COMPACT = True
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-
