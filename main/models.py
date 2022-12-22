@@ -169,4 +169,133 @@ class UserAddressBook(models.Model):
     class Meta:
         verbose_name_plural='AddressBook'
 
-    
+#Edited
+
+# Genre
+class Genre(models.Model):
+    title=models.CharField(max_length=100)
+    description=models.TextField()
+    parentGenre=models.ForeignKey('self',null=True)
+    image=models.ImageField(upload_to="genre_imgs/")
+
+    class Meta:
+        verbose_name_plural='Genres'
+
+    def image_tag(self):
+        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+
+    def __str__(self):
+        return self.title
+
+# Publisher
+class Publisher(models.Model):
+    title=models.CharField(max_length=100)
+    description=models.TextField()
+    foundingYear=models.DateField()
+    website=models.URLField(null=True)
+    image=models.ImageField(upload_to="brand_imgs/")
+
+    class Meta:
+        verbose_name_plural='Publishers'
+
+    def __str__(self):
+        return self.title
+
+    def image_tag(self):
+        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+
+# Developer
+class Developer(models.Model):
+    title=models.CharField(max_length=100)
+    description=models.TextField()
+    foundingYear=models.DateField()
+    website=models.URLField(null=True)
+    image=models.ImageField(upload_to="brand_imgs/")
+    publisher=models.ForeignKey(Publisher, null=True)
+
+    class Meta:
+        verbose_name_plural='Developers'
+
+    def __str__(self):
+        return self.title
+
+    def image_tag(self):
+        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+
+# Platform
+class Platform(models.Model):
+    title=models.CharField(max_length=100)
+    description=models.TextField()
+    image=models.ImageField(upload_to="product_imgs/",null=True)
+
+    class Meta:
+        verbose_name_plural='Platforms'
+
+    def __str__(self):
+        return self.product.title
+
+    def image_tag(self):
+        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+
+# Game
+class Game(models.Model):
+    title=models.CharField(max_length=200)
+    description=models.TextField()
+    releaseDate=models.DateField()
+    genre=models.ManyToManyField(Genre)
+    developer=models.ManyToManyField(Publisher)
+    platform=models.ManyToManyField(Platform)
+    image=models.ImageField(upload_to="games_imgs/",null=True)
+    class Meta:
+        verbose_name_plural='Games'
+
+    def __str__(self):
+        return self.title
+
+    def image_tag(self):
+        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+
+# Personal List
+class PersonalList(models.Model):
+    title=models.CharField(max_length=200)
+    description=models.TextField()
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ManyToManyField(Game)
+
+    class Meta:
+        verbose_name_plural='Personal Lists'
+
+    def __str__(self):
+        return self.title
+
+# Rating Review
+RATING=(
+    (1,'1'),
+    (2,'2'),
+    (3,'3'),
+    (4,'4'),
+    (5,'5'),
+)
+
+# Rating
+class Rating(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    game=models.ForeignKey(Product,on_delete=models.CASCADE)
+    review_text=models.TextField()
+    review_rating=models.CharField(choices=RATING,max_length=150)
+
+    class Meta:
+        verbose_name_plural='Rating'
+
+    def get_review_rating(self):
+        return int(self.review_rating)
+
+# Comment
+class Comment(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    game=models.ForeignKey(Product,on_delete=models.CASCADE)
+    content=models.TextField()
+
+    class Meta:
+        verbose_name_plural='Comment'
+
