@@ -195,7 +195,7 @@ STATUS=(
 class Genre(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    parentGenre=models.ForeignKey('self',null=True,on_delete=models.SET_NULL)
+    parent_genre=models.ForeignKey('self',null=True,on_delete=models.SET_NULL)
     image=models.ImageField(upload_to="genre_imgs/")
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
@@ -215,7 +215,7 @@ class Genre(models.Model):
 class Publisher(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    foundingYear=models.DateField()
+    founding_year=models.DateField()
     website=models.URLField(null=True)
     image=models.ImageField(upload_to="brand_imgs/")
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
@@ -233,7 +233,7 @@ class Publisher(models.Model):
 class Developer(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    foundingYear=models.DateField()
+    founding_year=models.DateField()
     website=models.URLField(null=True)
     image=models.ImageField(upload_to="brand_imgs/")
     publisher=models.ForeignKey(Publisher, null=True,on_delete=models.SET_NULL)
@@ -268,7 +268,7 @@ class Platform(models.Model):
 class Game(models.Model):
     title=models.CharField(max_length=200)
     description=models.TextField()
-    releaseDate=models.DateField()
+    release_date=models.DateField()
     genre=models.ManyToManyField(Genre)
     developer=models.ManyToManyField(Publisher)
     platform=models.ManyToManyField(Platform)
@@ -310,8 +310,8 @@ RATING=(
 class Rating(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     game=models.ForeignKey(Product,on_delete=models.CASCADE)
-    review_text=models.TextField()
     review_rating=models.SmallIntegerField(choices=RATING,max_length=150)
+    review_text=models.TextField()
 
     class Meta:
         verbose_name_plural='Ratings'

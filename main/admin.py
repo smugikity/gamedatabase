@@ -96,7 +96,7 @@ class GameAdmin(admin.ModelAdmin):
 admin.site.register(Game,GameAdmin)
 
 class PersonalListAdmin(admin.ModelAdmin):
-	list_display=('id','title','description','user','status')
+	list_display=('id','title','description','user')
 admin.site.register(PersonalList,PersonalListAdmin)
 
 class RatingAdmin(admin.ModelAdmin):
