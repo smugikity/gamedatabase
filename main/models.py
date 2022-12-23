@@ -195,8 +195,8 @@ STATUS=(
 class Genre(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    parent_genre=models.ForeignKey('self',null=True,on_delete=models.SET_NULL)
-    image=models.ImageField(upload_to="genre_imgs/")
+    parent_genre=models.ForeignKey('self',blank=True,null=True,on_delete=models.SET_NULL)
+    image=models.ImageField(upload_to="genre_imgs/",blank=True,null=True)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
@@ -215,9 +215,9 @@ class Genre(models.Model):
 class Publisher(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    founding_year=models.DateField()
-    website=models.URLField(null=True)
-    image=models.ImageField(upload_to="brand_imgs/")
+    founding_year=models.DateField(blank=True,null=True)
+    website=models.URLField(null=True,blank=True,null=True)
+    image=models.ImageField(upload_to="brand_imgs/",blank=True,null=True)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
@@ -233,10 +233,10 @@ class Publisher(models.Model):
 class Developer(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    founding_year=models.DateField()
-    website=models.URLField(null=True)
-    image=models.ImageField(upload_to="brand_imgs/")
-    publisher=models.ForeignKey(Publisher, null=True,on_delete=models.SET_NULL)
+    founding_year=models.DateField(blank=True,null=True)
+    website=models.URLField(blank=True,null=True)
+    image=models.ImageField(upload_to="brand_imgs/",blank=True,null=True)
+    publisher=models.ForeignKey(Publisher,blank=True,null=True,on_delete=models.SET_NULL)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
@@ -252,7 +252,7 @@ class Developer(models.Model):
 class Platform(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    image=models.ImageField(upload_to="product_imgs/",null=True)
+    image=models.ImageField(upload_to="product_imgs/",blank=True,null=True)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
@@ -268,7 +268,7 @@ class Platform(models.Model):
 class Game(models.Model):
     title=models.CharField(max_length=200)
     description=models.TextField()
-    release_date=models.DateField()
+    release_date=models.DateField(blank=True,null=True)
     genre=models.ManyToManyField(Genre)
     developer=models.ManyToManyField(Publisher)
     platform=models.ManyToManyField(Platform)
@@ -311,7 +311,7 @@ class Rating(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     game=models.ForeignKey(Product,on_delete=models.CASCADE)
     review_rating=models.SmallIntegerField(choices=RATING,max_length=150)
-    review_text=models.TextField()
+    review_text=models.TextField(blank=True)
 
     class Meta:
         verbose_name_plural='Ratings'
