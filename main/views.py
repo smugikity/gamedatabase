@@ -8,6 +8,7 @@ from .forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import user_logged_in
+from django.forms import ValidationError
 #paypal
 from django.urls import reverse
 from django.conf import settings
@@ -220,8 +221,9 @@ def signup(request):
 			user=authenticate(username=username,password=pwd)
 			login(request, user)
 			return redirect('home')
-	form=SignupForm
-	return render(request, 'registration/signup.html',{'form':form})
+	else:
+		form=SignupForm
+	return render(request, 'registration/signup.html', {'form':form})
 
 
 # Checkout
