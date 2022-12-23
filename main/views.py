@@ -82,8 +82,7 @@ def product_detail(request,slug,id):
 	# End
 
 	# Fetch avg rating for reviews
-	avg_reviews= 5
-	# ProductReview.objects.filter(product=product).aggregate(avg_rating=Avg('review_rating'))
+	avg_reviews= ProductReview.objects.filter(product=product).aggregate(avg_rating=Avg('review_rating'))
 	# End
 
 	return render(request, 'product_detail.html',{'data':product,'related':related_products,'colors':colors,'sizes':sizes,'reviewForm':reviewForm,'canAdd':canAdd,'reviews':reviews,'avg_reviews':avg_reviews})

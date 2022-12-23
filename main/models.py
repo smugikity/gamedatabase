@@ -145,7 +145,7 @@ class ProductReview(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
     review_text=models.TextField()
-    review_rating=models.CharField(choices=RATING,max_length=150)
+    review_rating=models.SmallIntegerField(choices=RATING,max_length=150)
 
     class Meta:
         verbose_name_plural='Reviews'
@@ -178,7 +178,18 @@ class UserSession(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     session = models.OneToOneField(Session, on_delete=models.CASCADE, primary_key=True, related_name="usersessions", related_query_name="usersession")
     class Meta:
-        verbose_name_plural='User sessions'
+        verbose_name_plural='User Sessions'
+
+# Status:
+INACTIVE = 0
+ACTIVE = 1
+PRIVATE = 2
+
+STATUS=(
+    (INACTIVE, 'Inactive'),
+    (ACTIVE, 'Active'),
+    (PRIVATE, 'Private'),
+)
 
 # Genre
 class Genre(models.Model):
@@ -186,9 +197,13 @@ class Genre(models.Model):
     description=models.TextField()
     parentGenre=models.ForeignKey('self',null=True,on_delete=models.SET_NULL)
     image=models.ImageField(upload_to="genre_imgs/")
+    status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
         verbose_name_plural='Genres'
+
+    def get_parent_genre(self):
+        return self.parentGenre.title
 
     def image_tag(self):
         return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
@@ -203,6 +218,7 @@ class Publisher(models.Model):
     foundingYear=models.DateField()
     website=models.URLField(null=True)
     image=models.ImageField(upload_to="brand_imgs/")
+    status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
         verbose_name_plural='Publishers'
@@ -221,6 +237,7 @@ class Developer(models.Model):
     website=models.URLField(null=True)
     image=models.ImageField(upload_to="brand_imgs/")
     publisher=models.ForeignKey(Publisher, null=True,on_delete=models.SET_NULL)
+    status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
         verbose_name_plural='Developers'
@@ -236,6 +253,7 @@ class Platform(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
     image=models.ImageField(upload_to="product_imgs/",null=True)
+    status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
         verbose_name_plural='Platforms'
@@ -255,6 +273,9 @@ class Game(models.Model):
     developer=models.ManyToManyField(Publisher)
     platform=models.ManyToManyField(Platform)
     image=models.ImageField(upload_to="games_imgs/",null=True)
+    avg_rating=models.FloatField(default=0)
+    status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
+
     class Meta:
         verbose_name_plural='Games'
 
@@ -273,7 +294,6 @@ class PersonalList(models.Model):
 
     class Meta:
         verbose_name_plural='Personal Lists'
-
     def __str__(self):
         return self.title
 
@@ -294,7 +314,7 @@ class Rating(models.Model):
     review_rating=models.SmallIntegerField(choices=RATING,max_length=150)
 
     class Meta:
-        verbose_name_plural='Rating'
+        verbose_name_plural='Ratings'
 
     def get_review_rating(self):
         return self.review_rating
@@ -306,5 +326,5 @@ class Comment(models.Model):
     content=models.TextField()
 
     class Meta:
-        verbose_name_plural='Comment'
+        verbose_name_plural='Comments'
 

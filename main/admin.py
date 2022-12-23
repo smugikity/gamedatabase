@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Banner,Category,Brand,Color,Size,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook
+from .models import Banner,Category,Brand,Color,Size,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment,ACTIVE,INACTIVE,PRIVATE
+from django.contrib import messages
+from django.utils.translation import ngettext
 
 # admin.site.register(Banner)
 admin.site.register(Brand)
@@ -50,3 +52,59 @@ admin.site.register(Wishlist)
 class UserAddressBookAdmin(admin.ModelAdmin):
 	list_display=('user','address','status')
 admin.site.register(UserAddressBook,UserAddressBookAdmin)
+
+
+# Edited
+@admin.action(description='Mark selected active')
+def set_status_active(self, request, queryset):
+    queryset.update(status=ACTIVE)
+    self.message_user(request, ngettext('%d objects was successfully marked as active.',updated) % updated, messages.SUCCESS)
+
+@admin.action(description='Mark selected inactive')
+def set_status_inactive(self, request, queryset):
+    queryset.update(status=INACTIVE)
+    self.message_user(request, ngettext('%d objects was successfully marked as inactive.',updated) % updated, messages.SUCCESS)
+
+@admin.action(description='Mark selected private')
+def set_status_private(self, request, queryset):
+    queryset.update(status=PRIVATE)
+    self.message_user(request, ngettext('%d objects was successfully marked as private.',updated) % updated, messages.SUCCESS)
+
+class GenreAdmin(admin.ModelAdmin):
+	list_display=('id','title','description','get_parent_genre','status')
+	actions=(set_status_active,set_status_inactive,set_status_private)
+admin.site.register(Genre,GenreAdmin)
+
+class PublisherAdmin(admin.ModelAdmin):
+	list_display=('id','title','description','image_tag','status')
+	actions=(set_status_active,set_status_inactive,set_status_private)
+admin.site.register(Publisher,PublisherAdmin)
+
+class DeveloperAdmin(admin.ModelAdmin):
+	list_display=('id','title','description','image_tag','status')
+	actions=(set_status_active,set_status_inactive,set_status_private)
+admin.site.register(Developer,DeveloperAdmin)
+
+class PlatformAdmin(admin.ModelAdmin):
+    list_display=('id','title','description','image_tag','status')
+    actions=(set_status_active,set_status_inactive,set_status_private)
+admin.site.register(Platform,PlatformAdmin)
+
+class GameAdmin(admin.ModelAdmin):
+    list_display=('id','title','description','image_tag','status')
+    actions=(set_status_active,set_status_inactive,set_status_private)
+admin.site.register(Game,GameAdmin)
+
+class PersonalListAdmin(admin.ModelAdmin):
+	list_display=('id','title','description','user','status')
+admin.site.register(PersonalList,PersonalListAdmin)
+
+class RatingAdmin(admin.ModelAdmin):
+	list_display=('id','user','game','review_rating','review_text')
+admin.site.register(Rating,RatingAdmin)
+
+class CommentAdmin(admin.ModelAdmin):
+	list_display=('id','user','game','content')
+admin.site.register(Comment,CommentAdmin)
+
+
