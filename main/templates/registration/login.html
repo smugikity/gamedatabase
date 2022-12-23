@@ -8,6 +8,14 @@
 		<form method="post">
 			{% csrf_token %}
 			{{form.as_table}}
+			{% if form.errors %}
+			{{form.errors}}
+			{% for error in form.errors %}
+			<div class="alert alert-danger">
+			<strong>{{ error|escape }}</strong>
+			</div>
+			{% endfor %}
+			{% endif %} 
 			<tr>
 				<td colspan="2">
 					<input type="submit" value="Login" class="btn btn-primary" />

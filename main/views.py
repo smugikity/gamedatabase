@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from .forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import user_logged_in
 #paypal
 from django.urls import reverse
 from django.conf import settings

@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+from django.contrib.sessions.models import Session
 from django.utils.html import mark_safe
 from django.contrib.auth.models import User
 # Banner
@@ -171,11 +173,18 @@ class UserAddressBook(models.Model):
 
 #Edited
 
+# User session
+class UserSession(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    session = models.OneToOneField(Session, on_delete=models.CASCADE, primary_key=True, related_name="usersessions", related_query_name="usersession")
+    class Meta:
+        verbose_name_plural='User sessions'
+
 # Genre
 class Genre(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    parentGenre=models.ForeignKey('self',null=True)
+    parentGenre=models.ForeignKey('self',null=True,on_delete=models.SET_NULL)
     image=models.ImageField(upload_to="genre_imgs/")
 
     class Meta:
@@ -211,7 +220,7 @@ class Developer(models.Model):
     foundingYear=models.DateField()
     website=models.URLField(null=True)
     image=models.ImageField(upload_to="brand_imgs/")
-    publisher=models.ForeignKey(Publisher, null=True)
+    publisher=models.ForeignKey(Publisher, null=True,on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural='Developers'
@@ -282,13 +291,13 @@ class Rating(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     game=models.ForeignKey(Product,on_delete=models.CASCADE)
     review_text=models.TextField()
-    review_rating=models.CharField(choices=RATING,max_length=150)
+    review_rating=models.SmallIntegerField(choices=RATING,max_length=150)
 
     class Meta:
         verbose_name_plural='Rating'
 
     def get_review_rating(self):
-        return int(self.review_rating)
+        return self.review_rating
 
 # Comment
 class Comment(models.Model):
