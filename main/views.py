@@ -450,5 +450,6 @@ def game_detail(request,id):
 
 	# Fetch avg rating for reviews
 	avg_reviews=getattr(game, 'avg_rating')
+	avg_star=round(avg_reviews*2)
 
-	return render(request, 'game_detail.html',{'data':game,'genres':genres,'developers':developers,'publishers':publishers,'platforms':platforms,'reviewForm':reviewForm,'reviews':reviews,'comments':comments,'avg_reviews':avg_reviews})
+	return render(request, 'game_detail.html',{'data':game,'genres':genres,'developers':developers,'publishers':publishers,'platforms':platforms,'reviewForm':reviewForm,'reviews':reviews,'comments':comments,'avg_reviews':avg_reviews,'avg_star':avg_star})
