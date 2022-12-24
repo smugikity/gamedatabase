@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'index.css' %}"/>
 <!-- Home Slider -->
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
@@ -15,11 +17,11 @@
   <div class="carousel-inner">
     {% for banner in banners %}
     {% if forloop.counter == 1 %}
-    <div class="carousel-item active">
-      {% else %}
+      <div class="carousel-item active">
+    {% else %}
       <div class="carousel-item">
-      {% endif %}
-      <img src="/media/{{banner.img}}" class="d-block w-100" alt="...">
+    {% endif %}
+      <div style="background-image:url(/media/{{banner.img}});" class="d-block banner" ></div>
     </div>
     {% endfor %}
   </div>
@@ -35,11 +37,32 @@
 </div>
 <main class="container my-4">
 	<!-- Featured Products -->
-	<h3 class="my-4 border-bottom pb-1">Featured Products</h3>
+	<h3 class="my-4 border-bottom pb-1">Featured Games</h3>
 	<div class="row">
-    {% for product in data %}
+    {% for game in data %}
 		<div class="col-md-3 mb-4">
-			<div class="card shadow">
+      <div class="thumb-wrapper">
+        <span class="wish-icon"><i class="fa fa-heart-o"></i></span>
+        <div class="img-box">
+          <img src="/media/{{game.image}}" class="img-responsive img-game" alt=""/>									
+        </div>
+        <div class="thumb-content">
+          <h4>{{game.title}}</h4>									
+          <div class="star-rating">
+            <ul class="list-inline">
+              <li class="list-inline-item"><i class="fa fa-star"></i></li>
+              <li class="list-inline-item"><i class="fa fa-star"></i></li>
+              <li class="list-inline-item"><i class="fa fa-star"></i></li>
+              <li class="list-inline-item"><i class="fa fa-star"></i></li>
+              <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+            </ul>
+          </div>
+          <p class="item-price"><strike>$400.00</strike> <b>$369.00</b></p>
+          <a href="#" class="btn btn-primary">Add to Cart</a>
+        </div>						
+      </div>
+
+			{% comment %} <div class="card shadow">
 			  <a href="/product/{{product.slug}}/{{product.id}}"><img src="/media/{{product.productattribute_set.first.image}}" class="card-img-top" alt="{{product.title}}"></a>
 			  <div class="card-body">
 			    <h5 class="card-text"><a href="/product/{{product.slug}}/{{product.id}}">{{product.title}}</a></h5>
@@ -62,7 +85,8 @@
 			  		<i class="fa fa-star text-warning"></i>
 			  	</span>
 			  </div>
-			</div>
+			</div> {% endcomment %}
+
 		</div>
     {% endfor %}
 	</div>

@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import JsonResponse,HttpResponse
-from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook
+from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment
 from django.db.models import Max,Min,Count,Avg
 from django.db.models.functions import ExtractMonth
 from django.template.loader import render_to_string
@@ -14,11 +14,25 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
+from random import randint
+
 # Home Page
 def home(request):
 	banners=Banner.objects.all().order_by('-id')
-	data=Product.objects.filter(is_featured=True).order_by('-id')
-	return render(request,'index.html',{'data':data,'banners':banners})
+	# data=Product.objects.filter(is_featured=True).order_by('-id')
+	random_games = []
+	max_id = Game.objects.all().aggregate(max_id=Max("id"))['max_id']
+	if max_id != None:
+		iterated = []
+		total = 12
+		for x in range(0,total):
+			pk = randint(1, max_id)
+			if pk not in iterated:
+				iterated.append(pk)
+				game = Game.objects.get(pk=pk)
+				if game: random_games.append(game)
+				else: total += 1
+	return render(request,'index.html',{'data':random_games,'banners':banners})
 
 # Category
 def category_list(request):
@@ -406,3 +420,35 @@ def update_address(request,id):
 			msg='Data has been saved'
 	form=AddressBookForm(instance=address)
 	return render(request, 'user/update-address.html',{'form':form,'msg':msg})
+
+# Edited
+
+# Game Detail
+def game_detail(request,id):
+	game=Game.objects.get(id=id)
+	genres=game.genre.values_list("id","title")
+	developers_query=game.developer
+	developers=developers_query.values_list("id","title")
+	publishers=developers_query.values_list("publisher__id","publisher_title")
+	platforms=game.platform.values_list("id","title")
+	# related_game=Game.objects.filter(genre=game.genre).exclude(id=id)[:4]
+
+	reviewForm=ReviewAdd()
+
+	# Check
+	# canAdd=True
+	# reviewCheck=ProductReview.objects.filter(user=request.user,product=product).count()
+	# if request.user.is_authenticated:
+	# 	if reviewCheck > 0:
+	# 		canAdd=False
+	# End
+
+	# Fetch reviews
+	reviews=Rating.objects.filter(game=game)
+	comments=Comment.objects.filter(game=game)
+	# End
+
+	# Fetch avg rating for reviews
+	avg_reviews=getattr(game, 'avg_rating')
+
+	return render(request, 'game_detail.html',{'data':game,'genres':genres,'developers':developers,'publishers':publishers,'platforms':platforms,'reviewForm':reviewForm,'reviews':reviews,'comments':comments,'avg_reviews':avg_reviews})

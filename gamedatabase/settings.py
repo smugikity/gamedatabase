@@ -26,15 +26,13 @@ SECRET_KEY = 'pggni(t+5rj@%zzmpw#orp_pmx2r%xo9v8_q_t#6wo@pf+n3sp'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'main',
-    'jet.dashboard',
-    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'paypal.standard.ipn',
-    'livereload'
 ]
 
 MIDDLEWARE = [
@@ -141,8 +138,6 @@ LOGOUT_REDIRECT_URL='login'
 
 PAYPAL_RECEIVER_EMAIL = 'sb-c5xgx6555500@business.example.com'
 PAYPAL_TEST = True
-
-JET_SIDE_MENU_COMPACT = True
 
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

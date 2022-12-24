@@ -1,1 +1,1 @@
-web: gunicorn bottleShop.wsgi
+web: gunicorn gamedatabase.wsgi

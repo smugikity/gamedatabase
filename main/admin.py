@@ -57,18 +57,18 @@ admin.site.register(UserAddressBook,UserAddressBookAdmin)
 # Edited
 @admin.action(description='Mark selected active')
 def set_status_active(self, request, queryset):
-    queryset.update(status=ACTIVE)
-    self.message_user(request, ngettext('%d objects was successfully marked as active.',updated) % updated, messages.SUCCESS)
+    updated=queryset.update(status=ACTIVE)
+    self.message_user(request, ngettext('%d object was successfully marked as active.','%d objects were successfully marked as active.',updated) % updated, messages.SUCCESS)
 
 @admin.action(description='Mark selected inactive')
 def set_status_inactive(self, request, queryset):
-    queryset.update(status=INACTIVE)
-    self.message_user(request, ngettext('%d objects was successfully marked as inactive.',updated) % updated, messages.SUCCESS)
+    updated=queryset.update(status=INACTIVE)
+    self.message_user(request, ngettext('%d story was successfully marked as inactive.','%d objects were successfully marked as inactive.',updated) % updated, messages.SUCCESS)
 
 @admin.action(description='Mark selected private')
 def set_status_private(self, request, queryset):
-    queryset.update(status=PRIVATE)
-    self.message_user(request, ngettext('%d objects was successfully marked as private.',updated) % updated, messages.SUCCESS)
+    updated=queryset.update(status=PRIVATE)
+    self.message_user(request, ngettext('%d story was successfully marked as private.','%d objects were successfully marked as private.',updated) % updated, messages.SUCCESS)
 
 class GenreAdmin(admin.ModelAdmin):
 	list_display=('id','title','description','get_parent_genre','status')
@@ -92,6 +92,7 @@ admin.site.register(Platform,PlatformAdmin)
 
 class GameAdmin(admin.ModelAdmin):
     list_display=('id','title','description','image_tag','status')
+    list_edit=('id','title','description','genre','developer','platform','image','status')
     actions=(set_status_active,set_status_inactive,set_status_private)
 admin.site.register(Game,GameAdmin)
 

@@ -203,10 +203,12 @@ class Genre(models.Model):
         verbose_name_plural='Genres'
 
     def get_parent_genre(self):
-        return self.parentGenre.title
+        if self.parent_genre == None: return ""
+        return self.parent_genre.title
 
     def image_tag(self):
-        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+        if self.image:
+            return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
 
     def __str__(self):
         return self.title
@@ -216,8 +218,8 @@ class Publisher(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
     founding_year=models.DateField(blank=True,null=True)
-    website=models.URLField(null=True,blank=True,null=True)
-    image=models.ImageField(upload_to="brand_imgs/",blank=True,null=True)
+    website=models.URLField(blank=True,null=True)
+    image=models.ImageField(upload_to="publisher_imgs/",blank=True,null=True)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
@@ -227,7 +229,8 @@ class Publisher(models.Model):
         return self.title
 
     def image_tag(self):
-        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+        if self.image:
+            return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
 
 # Developer
 class Developer(models.Model):
@@ -235,7 +238,7 @@ class Developer(models.Model):
     description=models.TextField()
     founding_year=models.DateField(blank=True,null=True)
     website=models.URLField(blank=True,null=True)
-    image=models.ImageField(upload_to="brand_imgs/",blank=True,null=True)
+    image=models.ImageField(upload_to="developer_imgs/",blank=True,null=True)
     publisher=models.ForeignKey(Publisher,blank=True,null=True,on_delete=models.SET_NULL)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
@@ -246,33 +249,35 @@ class Developer(models.Model):
         return self.title
 
     def image_tag(self):
-        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+        if self.image:
+            return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
 
 # Platform
 class Platform(models.Model):
     title=models.CharField(max_length=100)
     description=models.TextField()
-    image=models.ImageField(upload_to="product_imgs/",blank=True,null=True)
+    image=models.ImageField(upload_to="platform_imgs/",blank=True,null=True)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:
         verbose_name_plural='Platforms'
 
     def __str__(self):
-        return self.product.title
+        return self.title
 
     def image_tag(self):
-        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+        if self.image:
+            return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
 
 # Game
 class Game(models.Model):
     title=models.CharField(max_length=200)
     description=models.TextField()
     release_date=models.DateField(blank=True,null=True)
-    genre=models.ManyToManyField(Genre)
-    developer=models.ManyToManyField(Publisher)
-    platform=models.ManyToManyField(Platform)
-    image=models.ImageField(upload_to="games_imgs/",null=True)
+    genre=models.ManyToManyField(Genre,blank=True)
+    developer=models.ManyToManyField(Developer,blank=True)
+    platform=models.ManyToManyField(Platform,blank=True)
+    image=models.ImageField(upload_to="game_imgs/",blank=True,null=True)
     avg_rating=models.FloatField(default=0)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
@@ -283,14 +288,15 @@ class Game(models.Model):
         return self.title
 
     def image_tag(self):
-        return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+        if self.image:
+            return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
 
 # Personal List
 class PersonalList(models.Model):
     title=models.CharField(max_length=200)
     description=models.TextField()
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    product=models.ManyToManyField(Game)
+    game=models.ManyToManyField(Game,blank=True)
 
     class Meta:
         verbose_name_plural='Personal Lists'
@@ -309,7 +315,7 @@ RATING=(
 # Rating
 class Rating(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    game=models.ForeignKey(Product,on_delete=models.CASCADE)
+    game=models.ForeignKey(Game,on_delete=models.CASCADE)
     review_rating=models.SmallIntegerField(choices=RATING,max_length=150)
     review_text=models.TextField(blank=True)
 
@@ -322,7 +328,7 @@ class Rating(models.Model):
 # Comment
 class Comment(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    game=models.ForeignKey(Product,on_delete=models.CASCADE)
+    game=models.ForeignKey(Game,on_delete=models.CASCADE)
     content=models.TextField()
 
     class Meta:
