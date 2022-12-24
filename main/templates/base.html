@@ -48,9 +48,9 @@
 			  <li class="nav-item">
 		        <a class="nav-link text-white" href="{% url 'brand-list' %}">Publishers</a>
 		      </li>
-		      <li class="nav-item">
+		      {% comment %} <li class="nav-item">
 		        <a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Collection (<span class="cart-list">{{request.session.cartdata|length}}</span>)</a>
-		      </li>
+		      </li> {% endcomment %}
 		      <li class="nav-item dropdown">
 		        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		          <i class="fa fa-user"></i> My Account

@@ -16,22 +16,29 @@ from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 from random import randint
 
-# Home Page
-def home(request):
-	banners=Banner.objects.all().order_by('-id')
-	# data=Product.objects.filter(is_featured=True).order_by('-id')
+def get_n_random_games(n):
+	total = Game.objects.all().count()
+	if total <= n:
+		return Game.objects.all()
 	random_games = []
 	max_id = Game.objects.all().aggregate(max_id=Max("id"))['max_id']
 	if max_id != None:
 		iterated = []
-		total = 12
-		for x in range(0,total):
+		for x in range(0,n):
 			pk = randint(1, max_id)
 			if pk not in iterated:
 				iterated.append(pk)
 				game = Game.objects.get(pk=pk)
 				if game: random_games.append(game)
-				else: total += 1
+				else: n += 1
+			else: n += 1
+	return random_games
+
+# Home Page
+def home(request):
+	banners=Banner.objects.all().order_by('-id')
+	# data=Product.objects.filter(is_featured=True).order_by('-id')
+	random_games = get_n_random_games(12)
 	return render(request,'index.html',{'data':random_games,'banners':banners})
 
 # Category
