@@ -54,29 +54,13 @@
           <img src="/media/{{game.image}}" class="img-responsive img-game" alt=""/>									
         </div>
         <div class="thumb-content">
-          <h4>{{game.title}}</h4>									
-          <div class="star-rating">
-            <ul class="list-inline">
-              <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
-              <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
-              <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
-              <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
-              <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
-            </ul>
-            <script>
-              star= Math.round(parseFloat("{{game.avg_rating}}")*2);
-              for(var child=document.currentScript.previousElementSibling.firstChild.nextElementSibling; child!==null; child=child.nextElementSibling) {
-                if (star>=2) {
-                  child.firstChild.className="fa fa-star";
-                  star -= 2;
-                } else if (star==1) {
-                  child.firstChild.className="fa fa-star-half-o";
-                  star -= 1;
-                }
-              }
-            </script>
-          </div>
-          <p class="item-price"><b>{{game.genre.first.title}}</b></p>
+          <h4 class="text-danger"><strong>{{game.title}}</strong></h4>		
+          <h5 class="text-danger">{{game.avg_rating}}<small class="text-muted"> ({{game.n_ratings}})</small></h5>					
+          <ul class="list-inline mt-4">
+            {% for genre in game.primary_genres %}
+            <li class="list-inline-item">{{genre.title}}</li> 
+            {% endfor %}
+          </ul>
           <a href="#" class="btn btn-primary">View game</a>
         </div>						
       </div>

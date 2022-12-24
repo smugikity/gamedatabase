@@ -48,15 +48,6 @@
     margin-left: 5px;
 }
 
-.item-price {
-	font-size: 14px;
-	padding: 2px 0;
-}
-.item-price strike {
-	opacity: 0.7;
-	margin-right: 5px;
-}
-
 .wish-icon {
 	position: absolute;
 	right: 10px;
