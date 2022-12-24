@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Ecommerce Bootstrap Template</title>
+	<title>Game Database</title>
 	<!-- Font Awesome -->
 	<link rel="stylesheet" type="text/css" href="{% static 'font-awesome-master/css/font-awesome.min.css' %}" />
 	<!-- Bootstrap 4 CSS -->
@@ -18,7 +18,7 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-danger">
 		<div class="container">
-		  <a class="navbar-brand" href="/">Bottle Shop</a>
+		  <a class="navbar-brand" href="/">GameDatabase</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
@@ -36,13 +36,13 @@
 		        <a class="nav-link text-white" href="/">Home</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'category-list' %}">Categories</a>
+		        <a class="nav-link text-white" href="{% url 'category-list' %}">Search</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'brand-list' %}">Brands</a>
+		        <a class="nav-link text-white" href="{% url 'brand-list' %}">Genres</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Cart (<span class="cart-list">{{request.session.cartdata|length}}</span>)</a>
+		        <a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Wishlist (<span class="cart-list">{{request.session.cartdata|length}}</span>)</a>
 		      </li>
 		      <li class="nav-item dropdown">
 		        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -69,27 +69,25 @@
 <footer class="pt-4 my-md-5 pt-md-5 border-top container">
     <div class="row">
         <div class="col-12 col-md">
-        <a href="#">Bottle Shop</a>
-        <small class="d-block mb-3 text-muted">&copy; 2017-2020</small>
+        <a href="#">Game Database</a>
+        <small class="d-block mb-3 text-muted">&copy; 2022-2023</small>
         </div>
         <div class="col-6 col-md">
-        <h5>Features</h5>
+        <h5>Association</h5>
         <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="#">Cool stuff</a></li>
-            <li><a class="text-muted" href="#">Random feature</a></li>
-            <li><a class="text-muted" href="#">Team feature</a></li>
-            <li><a class="text-muted" href="#">Stuff for developers</a></li>
-            <li><a class="text-muted" href="#">Another one</a></li>
-            <li><a class="text-muted" href="#">Last time</a></li>
+            <li><a class="text-muted" href="#">Metaverse</a></li>
+            <li><a class="text-muted" href="#">Ubisoft</a></li>
+            <li><a class="text-muted" href="#">IGN.com</a></li>
+            <li><a class="text-muted" href="#">metacritic</a></li>
         </ul>
         </div>
         <div class="col-6 col-md">
-        <h5>Resources</h5>
+        <h5>Connect</h5>
         <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="#">Resource</a></li>
-            <li><a class="text-muted" href="#">Resource name</a></li>
-            <li><a class="text-muted" href="#">Another resource</a></li>
-            <li><a class="text-muted" href="#">Final resource</a></li>
+            <li><a class="text-muted" href="#">Facebook</a></li>
+            <li><a class="text-muted" href="#">Instagram</a></li>
+            <li><a class="text-muted" href="#">VK</a></li>
+            <li><a class="text-muted" href="#">TikTok</a></li>
         </ul>
         </div>
         <div class="col-6 col-md">
