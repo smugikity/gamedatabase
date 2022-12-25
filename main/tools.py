@@ -1,5 +1,6 @@
 from main.models import Game, Rating, Developer, Publisher, Platform, Genre 
 from django.db.models import Max,Min,Count,Avg
+from django.db.models.functions import Lower
 from random import randint
 from math import ceil
 
@@ -62,9 +63,11 @@ def get_list(custom,sort,n_per,page):
 	max_page = ceil(count/n_per)
 	if (max_page<page): return None
 	start = n_per*(page-1); end = n_per*page
-	if (sort == 2):
-		data = models.objects.annotate(num=Count('game')).order_by('-num').values('title','image')[start:end]
+	if (sort == 0):
+		data = models.objects.all().order_by('-id').values('title','image')[start:end]
+	elif (sort == 1):
+		data = models.objects.all().order_by(Lower('title')).values('title','image')[start:end]
 	else:
-		data = models.objects.all().order_by(SORT[sort]).values('title','image')[start:end]
+		data = models.objects.annotate(num=Count('game')).order_by('-num').values('title','image')[start:end]
 	
 	return count, max_page, data

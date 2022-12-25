@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import JsonResponse,HttpResponse,HttpResponseNotFound
+from django.http import JsonResponse,HttpResponse,HttpResponseNotFound,Http404
 from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment
 from django.db.models import Max,Min,Count,Avg
 from django.db.models.functions import ExtractMonth
@@ -423,7 +423,7 @@ def handler404(request, exception, template_name='404.html'):
 
 def list(request,custom):
 	sort = 0
-	n_per = 16
+	n_per = 9
 	page = 1
 	form = ListSortForm
 	try:
@@ -438,7 +438,7 @@ def list(request,custom):
 			else: raise ValidationError
 		return render(request, 'list.html',{'custom':custom,'form':form,'count':count, 'cur_page': page,'max_page':max_page,'data':data})
 	except (TypeError, ValidationError) as error:
-		return HttpResponseNotFound(error)
+		raise Http404(error)
 
 
 # Game Detail

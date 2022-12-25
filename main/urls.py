@@ -45,6 +45,7 @@ urlpatterns=[
     # Edited
     path('game/<int:id>',views.game_detail,name='game-detail'),
     path('list/<str:custom>',views.list,name='list'),
+    path('404',views.handler404,name='404'),
 ]
 
 if settings.DEBUG:
