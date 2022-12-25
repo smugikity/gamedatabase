@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'list.css' %}" />
+<main class="container my-4">
+<script>
+	$(document).ready(function(){
+		max_page = {{ max_page }};
+		console.log(max_page);
+		col = document.getElementById('page-collections');
+		previous = col.firstElementChild;
+		first = col.children[1];
+		next = col.lastElementChild;
+		pageValue = document.getElementById('page-value');
+		form = document.forms.listsort;
+		current = Number(pageValue.value);
+		console.log(current);
+		previous.addEventListener('click',function() {
+			goToPage(current-1);
+		});
+		first.addEventListener('click',function() {
+			goToPage(1);
+		});
+		next.addEventListener('click',function() {
+			goToPage(current+1);
+		});
+		if (max_page<6) {
+			renderPage(2,max_page);
+		} else {
+			if (current<4) {
+				renderPage(2,4);
+				renderEllipsis();
+				renderPage(max_page,max_page);
+			} else if (current>max_page-3) {
+				renderEllipsis();
+				renderPage(max_page-3,max_page);
+			} else {
+				renderEllipsis();
+				renderPage(current-1,current+1);
+				renderEllipsis();
+				renderPage(max_page,max_page);
+			}
+		}
+		if (current == 1) first.classList.add("active");
+		function renderPage(start,end) {
+			for (let i=start; i<=end; i++) {
+				clone = first.cloneNode(true);
+				clone.firstElementChild.textContent=i;
+				if (i === current) {
+					console.log(i);
+					clone.classList.add("active");
+				}
+				clone.addEventListener('click',function() {
+					goToPage(i);
+				});
+				col.insertBefore(clone,next);
+			}
+		}
+		
+		function renderEllipsis() {
+			clone = first.cloneNode(true);
+			clone.firstElementChild.textContent="..";
+			col.insertBefore(clone,next);
+		}
+		function goToPage(page) {
+			if (page<1 || page>max_page) {return;}
+			pageValue.value = page;
+			form.submit();
+		}
+	});	
+</script>
+<h3 class="my-4 border-bottom pb-1"><span class="text-muted">List of </span>{{custom}}</h3>
+<form name="listsort" method="post">
+{% csrf_token %}
+<div class="bg-white rounded d-flex flex-wrap mt-5	" id="header"> 
+		<div class="d-flex align-items-center">
+			<button class="btn btn-hide text-uppercase" type="submit" id="filter-btn" onclick="changeBtnTxt()"> 
+				<span id="btn-txt">Sort</span> <span class="fa fa-angle-right" id="filter-angle"></span>
+			</button>
+		</div>
+		<div class="d-flex align-items-center"> 
+			{{ form.sort }}
+		</div>
+		<div class="d-inline-flex align-items-center">
+			<div class="d-inline-flex" id="select2">
+				Games:{{ form.n_per }}
+			</div>
+			<div class="font-weight-bold mx-1">from {{ count }}</div>
+		</div>
+		<!--hidden field for page-->
+		<div><input type="hidden"  name="page" value="{{ cur_page }}" id="page-value"/></div>
+		<div class="ml-auto mr-2">
+			<div id="page-collections" class="pagination d-flex align-items-center">
+				<div class="page-item"> 
+					<button class="page-link btn" type="button" aria-label="Previous" id="page-previous"> <span aria-hidden="true" class="font-weight-bold">&lt;</span> <span class="sr-only">Previous</span> </button> 
+				</div>
+				<div class="page-item">
+					<button class="page-link btn" type="button">1</button>
+				</div>
+				
+				<div class="page-item"> 
+					<button class="page-link btn" type="button" aria-label="Next" id="page-next"> <span aria-hidden="true" class="font-weight-bold">&gt;</span> <span class="sr-only">Next</span> </button> 
+				</div>
+			</div>
+		</div>	
+</div>
+</form>
+
+<div id="content" class="mx-0 my-3">
+<div class="row">
+	{% if data %}
+	{% for item in data %}
+		<div class="col-lg-4 col-md-6 pt-2">
+			<div class="card d-flex flex-column align-items-center">
+				<div class="product-name">{{ item.title }}</div>
+				<div class="card-img "> <img src="/media/{{item.image}}" alt=""> </div>
+				{% comment %} <div class="card-body pt-4">
+					<div class="d-flex align-items-center price">
+					<div class="del mr-2"><span class="text-dark">5500 uah</span></div>
+					<div class="font-weight-bold">4500 uah</div>
+					</div>
+				</div> {% endcomment %}
+			</div>
+		</div>
+	{% endfor %}
+	{% endif %}
+	
+</div>
+</div>
+</main>
+{% endblock %}

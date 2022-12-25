@@ -19,7 +19,7 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-danger">
 		<div class="container">
-		  <a class="navbar-brand" href="/">Game Database</a>
+		  <a class="navbar-brand" href="/">GD</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
@@ -40,13 +40,13 @@
 		        <a class="nav-link text-white" href="{% url 'category-list' %}">Search</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'brand-list' %}">Genres</a>
+		        <a class="nav-link text-white" href="{% url 'list' 'genre' %}">Genre</a>
 		      </li>
 			  <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'brand-list' %}">Developers</a>
+		        <a class="nav-link text-white" href="{% url 'list' 'publisher' %}">Publisher</a>
 		      </li>
 			  <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'brand-list' %}">Publishers</a>
+		        <a class="nav-link text-white" href="{% url 'list' 'platform' %}">Platform</a>
 		      </li>
 		      {% comment %} <li class="nav-item">
 		        <a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Collection (<span class="cart-list">{{request.session.cartdata|length}}</span>)</a>

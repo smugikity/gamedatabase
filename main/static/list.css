@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background-color: #f4f4f4;
+}
+
+
+#header {
+  width: 100%;
+  height: auto;
+  box-shadow: 5px 5px 15px #e8e8e8;
+  vertical-align: middle;
+}
+
+button.btn.btn-hide {
+  height: inherit;
+  background-color: #ff935d;
+  color: #fff;
+  font-size: 0.82rem;
+  padding-left: 40px;
+  padding-right: 40px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.btn:focus {
+  box-shadow: none;
+}
+
+.pagination .page-item .page-link {
+  color: #333;
+  border: none;
+  width: 40px;
+  text-align: center;
+}
+.pagination .page-item.active .page-link {
+  background-color: #fff;
+  border: 1px solid #333;
+}
+select,#select2 {
+  outline: none;
+  padding: 6px 6px;
+  margin: 0px 4px;
+  color: #999;
+  font-size: 0.85rem;
+  width: 100%;
+  max-width: 140px;
+}
+
+#select2 {
+  border: 1px solid #777;
+}
+#pro {
+  border: none;
+  color: #333;
+  font-weight: 700;
+  text-align: end;
+  width: 100%;
+}
+#filterbar {
+  width: 30%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  float: left;
+}
+#filterbar input[type="radio"] {
+  visibility: hidden;
+}
+#filterbar input[type="radio"]:checked {
+  background-color: #16c79a;
+  border: none;
+}
+#filterbar .btn.btn-success {
+  background-color: #ddd;
+  color: #333;
+  border: none;
+  width: 115px;
+}
+#filterbar .btn.btn-success:hover {
+  background-color: #aff1e1;
+  color: #444;
+}
+#filterbar .btn-success:not(:disabled):not(.disabled).active,
+#filterbar .btn-success:not(:disabled):not(.disabled):active {
+  background-color: #16c79a;
+  color: #fff;
+}
+label {
+  cursor: pointer;
+}
+
+#price {
+  height: 45px;
+}
+
+.card {
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.3s all ease-in-out;
+  height: 300px;
+  width:100%;
+}
+.card:hover {
+  box-shadow: 2px 2px 15px #fd9a6ce5;
+  transform: scale(1.02);
+}
+.card .product-name {
+  font-weight: 600;
+}
+.card .text-muted {
+  font-size: 0.82rem;
+}
+.card-img {
+    height: 240px;
+	margin-top: 10px;
+	width: 100%;
+	position: relative;
+}
+
+.card-img img {
+  max-width: 100%;
+	max-height: 100%;
+	display: inline-block;
+	position: absolute;
+	bottom: 0;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+}
+
+.del {
+  text-decoration: line-through;
+  color: red;
+}
+
+.selected-page {
+    color: red;
+    font-style: bold;
+}

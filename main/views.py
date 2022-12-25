@@ -1,10 +1,10 @@
 from django.shortcuts import render,redirect
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse,HttpResponse,HttpResponseNotFound
 from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment
 from django.db.models import Max,Min,Count,Avg
 from django.db.models.functions import ExtractMonth
 from django.template.loader import render_to_string
-from .forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm
+from .forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm,ListSortForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from django.forms import ValidationError
@@ -413,6 +413,33 @@ def update_address(request,id):
 	return render(request, 'user/update-address.html',{'form':form,'msg':msg})
 
 # Edited
+
+# 404
+def handler404(request, exception, template_name='404.html'):
+    response = render(request, template_name)
+    response.status_code = 404
+    return response
+
+
+def list(request,custom):
+	sort = 0
+	n_per = 16
+	page = 1
+	form = ListSortForm
+	try:
+		count,max_page,data = tools.get_list(custom,sort,n_per,page)
+		if request.method == 'POST':
+			form = ListSortForm(request.POST)
+			if form.is_valid():
+				sort = int(form.cleaned_data['sort'])
+				n_per = form.cleaned_data['n_per']
+				page = form.cleaned_data['page']
+				count,max_page,data = tools.get_list(custom,sort,n_per,page)
+			else: raise ValidationError
+		return render(request, 'list.html',{'custom':custom,'form':form,'count':count, 'cur_page': page,'max_page':max_page,'data':data})
+	except (TypeError, ValidationError) as error:
+		return HttpResponseNotFound(error)
+
 
 # Game Detail
 def game_detail(request,id):

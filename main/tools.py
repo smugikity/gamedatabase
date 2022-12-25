@@ -1,5 +1,7 @@
-from main.models import Game, Rating
+from main.models import Game, Rating, Developer, Publisher, Platform, Genre 
+from django.db.models import Max,Min,Count,Avg
 from random import randint
+from math import ceil
 
 def game_info(pid):
 	game = Game.objects.get(pk=pid)
@@ -23,7 +25,7 @@ def all_game_info():
 				'image': game.image,
 				'avg_rating': game.avg_rating,
 				'n_ratings': Rating.objects.filter(game=game).count(),
-				'primary_genres': game.genre.values('title'),
+				'primary_genres': game.genre.all()[:3],
 			})
 	return data
 	
@@ -44,3 +46,25 @@ def get_n_random_games(n):
 				else: n += 1
 			else: n += 1
 	return random_games
+
+# Custom list of Models
+CUSTOM_LIST={
+    'genre': Genre,
+    'developer': Developer,
+    'publisher': Publisher,
+    'platform': Platform,
+}
+SORT=['id','title']
+def get_list(custom,sort,n_per,page):
+	models = CUSTOM_LIST[custom]
+	if (not models or (sort > 2 or sort < 0)): return None
+	count = models.objects.count()
+	max_page = ceil(count/n_per)
+	if (max_page<page): return None
+	start = n_per*(page-1); end = n_per*page
+	if (sort == 2):
+		data = models.objects.annotate(num=Count('game')).order_by('-num').values('title','image')[start:end]
+	else:
+		data = models.objects.all().order_by(SORT[sort]).values('title','image')[start:end]
+	
+	return count, max_page, data
