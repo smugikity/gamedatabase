@@ -6,11 +6,11 @@
 	<!-- Font Awesome -->
 	<link rel="stylesheet" type="text/css" href="{% static 'font-awesome-master/css/font-awesome.min.css' %}" />
 	<!-- Bootstrap 4 CSS -->
-	<link rel="stylesheet" type="text/css" href="{% static 'bs4/bootstrap.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'bs53/bootstrap.min.css' %}" />
 	<!-- Main Jquery -->
 	<script type="text/javascript" src="{% static 'jquery.min.js' %}"></script>
 	<!-- Bootstrap 4 JS -->
-	<script type="text/javascript" src="{% static 'bs4/bootstrap.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'bs53/bootstrap.min.js' %}"></script>
 	<!-- CustomJs -->
 	<link rel="stylesheet" type="text/css" href="{% static 'custom.css' %}" />
 	<script type="text/javascript" src="{% static 'custom.js' %}"></script>
@@ -26,31 +26,31 @@
 		  <div class="collapse navbar-collapse" id="navbarNav">
 		  	<form class="form-inline my-2 my-lg-0" action="/search">
 		      <div class="input-group">
-				  <input name="q" type="text" class="form-control" placeholder="search" />
-				  <div class="input-group-append">
-				    <button class="btn btn-dark" type="submit" id="button-addon2">Search</button>
-				  </div>
+					<input name="q" type="text" class="form-control" placeholder="search" />
+					<div class="input-group-append">
+						<button class="btn btn-dark" type="submit" id="button-addon2">Search</button>
+					</div>
 				</div>
 		    </form>
-		    <ul class="navbar-nav ml-auto">
-		      <li class="nav-item">
-		        <a class="nav-link text-white" href="/">Home</a>
-		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'category-list' %}">Search</a>
-		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'list' 'genre' %}">Genre</a>
-		      </li>
-			  <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'list' 'publisher' %}">Publisher</a>
-		      </li>
-			  <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'list' 'platform' %}">Platform</a>
-		      </li>
-		      {% comment %} <li class="nav-item">
-		        <a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Collection (<span class="cart-list">{{request.session.cartdata|length}}</span>)</a>
-		      </li> {% endcomment %}
+		    <ul class="navbar-nav ms-auto">
+				<li class="nav-item">
+					<a class="nav-link text-white" href="/">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link text-white" href="{% url 'category-list' %}">Search</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link text-white" href="{% url 'list' 'genre' %}">Genre</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link text-white" href="{% url 'list' 'publisher' %}">Publisher</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link text-white" href="{% url 'list' 'platform' %}">Platform</a>
+				</li>
+				{% comment %} <li class="nav-item">
+				<a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Collection (<span class="cart-list">{{request.session.cartdata|length}}</span>)</a>
+				</li> {% endcomment %}
 		      <li class="nav-item dropdown">
 		        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		          <i class="fa fa-user"></i> My Account
@@ -73,40 +73,40 @@
     {% block content %}
     {% endblock %}
 
-<footer class="pt-4 my-md-5 pt-md-5 border-top container">
-    <div class="row">
-        <div class="col-12 col-md">
-        <a href="#">Game Database</a>
-        <small class="d-block mb-3 text-muted">&copy; 2022-2023</small>
-        </div>
-        <div class="col-6 col-md">
-        <h5>Association</h5>
-        <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="#">Metaverse</a></li>
-            <li><a class="text-muted" href="#">Ubisoft</a></li>
-            <li><a class="text-muted" href="#">IGN.com</a></li>
-            <li><a class="text-muted" href="#">metacritic</a></li>
-        </ul>
-        </div>
-        <div class="col-6 col-md">
-        <h5>Connect</h5>
-        <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="#">Facebook</a></li>
-            <li><a class="text-muted" href="#">Instagram</a></li>
-            <li><a class="text-muted" href="#">VK</a></li>
-            <li><a class="text-muted" href="#">TikTok</a></li>
-        </ul>
-        </div>
-        <div class="col-6 col-md">
-        <h5>About</h5>
-        <ul class="list-unstyled text-small">
-            <li><a class="text-muted" href="#">Team</a></li>
-            <li><a class="text-muted" href="#">Locations</a></li>
-            <li><a class="text-muted" href="#">Privacy</a></li>
-            <li><a class="text-muted" href="#">Terms</a></li>
-        </ul>
-        </div>
-    </div>
-    </footer>
+	<footer class="pt-4 my-md-5 pt-md-5 border-top container">
+	<div class="row">
+		<div class="col-12 col-md">
+			<a href="#">Game Database</a>
+			<small class="d-block mb-3 text-muted">&copy; 2022-2023</small>
+		</div>
+		<div class="col-6 col-md">
+			<h5>Association</h5>
+			<ul class="list-unstyled text-small">
+				<li><a class="text-muted" href="#">Metaverse</a></li>
+				<li><a class="text-muted" href="#">Ubisoft</a></li>
+				<li><a class="text-muted" href="#">IGN.com</a></li>
+				<li><a class="text-muted" href="#">metacritic</a></li>
+			</ul>
+		</div>
+		<div class="col-6 col-md">
+			<h5>Connect</h5>
+			<ul class="list-unstyled text-small">
+				<li><a class="text-muted" href="#">Facebook</a></li>
+				<li><a class="text-muted" href="#">Instagram</a></li>
+				<li><a class="text-muted" href="#">VK</a></li>
+				<li><a class="text-muted" href="#">TikTok</a></li>
+			</ul>
+		</div>
+		<div class="col-6 col-md">
+			<h5>About</h5>
+			<ul class="list-unstyled text-small">
+				<li><a class="text-muted" href="#">Team</a></li>
+				<li><a class="text-muted" href="#">Locations</a></li>
+				<li><a class="text-muted" href="#">Privacy</a></li>
+				<li><a class="text-muted" href="#">Terms</a></li>
+			</ul>
+		</div>
+	</div>
+	</footer>
 </body>
 </html>

@@ -64,10 +64,16 @@ def get_list(custom,sort,n_per,page):
 	if (max_page<page): return None
 	start = n_per*(page-1); end = n_per*page
 	if (sort == 0):
-		data = models.objects.all().order_by('-id').values('title','image')[start:end]
+		data = models.objects.all().order_by('id').values('id','title','image')[start:end]
 	elif (sort == 1):
-		data = models.objects.all().order_by(Lower('title')).values('title','image')[start:end]
+		data = models.objects.all().order_by(Lower('title')).values('id','title','image')[start:end]
 	else:
-		data = models.objects.annotate(num=Count('game')).order_by('-num').values('title','image')[start:end]
+		data = models.objects.annotate(num=Count('game')).order_by('-num').values('id','title','image')[start:end]
 	
 	return count, max_page, data
+
+def get_custom_item(custom,id):
+	models = CUSTOM_LIST[custom]
+	object = Genre.objects.get(pk=id).__dict__
+	data =  {k: v for k, v in object.items() if (k!='_state' and k!='status')}
+	return data

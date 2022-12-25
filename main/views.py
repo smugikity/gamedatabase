@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse,HttpResponse,HttpResponseNotFound,Http404
 from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment
 from django.db.models import Max,Min,Count,Avg
+from django.core.exceptions import ObjectDoesNotExist,MultipleObjectsReturned
 from django.db.models.functions import ExtractMonth
 from django.template.loader import render_to_string
 from .forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm,ListSortForm
@@ -15,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 
 from main import tools
+import json
 
 # Game info - basic info of a game to present in catalog 
 
@@ -420,7 +422,6 @@ def handler404(request, exception, template_name='404.html'):
     response.status_code = 404
     return response
 
-
 def list(request,custom):
 	sort = 0
 	n_per = 9
@@ -438,6 +439,15 @@ def list(request,custom):
 			else: raise ValidationError
 		return render(request, 'list.html',{'custom':custom,'form':form,'count':count, 'cur_page': page,'max_page':max_page,'data':data})
 	except (TypeError, ValidationError) as error:
+		raise Http404(error)
+
+def view(request,custom,id):
+	try:
+		if request.method == 'GET':
+			data = tools.get_custom_item(custom,id)
+			return JsonResponse(data)
+		else: raise JsonResponse({'status': 'Invalid request'}, status=400)
+	except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
 		raise Http404(error)
 
 

@@ -2,11 +2,9 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'list.css' %}" />
-<main class="container my-4">
 <script>
 	$(document).ready(function(){
 		max_page = {{ max_page }};
-		console.log(max_page);
 		col = document.getElementById('page-collections');
 		previous = col.firstElementChild;
 		first = col.children[1];
@@ -14,19 +12,11 @@
 		pageValue = document.getElementById('page-value');
 		form = document.forms.listsort;
 		current = Number(pageValue.value);
-		console.log(current);
-		previous.addEventListener('click',function() {
-			goToPage(current-1);
-		});
-		first.addEventListener('click',function() {
-			goToPage(1);
-		});
-		next.addEventListener('click',function() {
-			goToPage(current+1);
-		});
-		if (max_page<6) {
-			renderPage(2,max_page);
-		} else {
+		previous.addEventListener('click',function() {goToPage(current-1);});
+		first.addEventListener('click',function() {goToPage(1);});
+		next.addEventListener('click',function() {goToPage(current+1);});
+		if (max_page<6) {renderPage(2,max_page);} 
+		else {
 			if (current<4) {
 				renderPage(2,4);
 				renderEllipsis();
@@ -56,7 +46,6 @@
 				col.insertBefore(clone,next);
 			}
 		}
-		
 		function renderEllipsis() {
 			clone = first.cloneNode(true);
 			clone.firstElementChild.textContent="..";
@@ -68,11 +57,25 @@
 			form.submit();
 		}
 	});	
+	function viewCustomItem(custom,id) {
+		$.ajax({
+			url: '/view/'+custom+'/'+id,
+			type: "GET",
+			dataType: "json",
+			success: (data) => {
+			  console.log(data);
+			},
+			error: (error) => {
+			  console.log(error);
+			}
+		  });
+	}
 </script>
+<main class="container my-4">
 <h3 class="my-4 border-bottom pb-1"><span class="text-muted">List of </span>{{custom}}</h3>
 <form name="listsort" method="post">
 {% csrf_token %}
-<div class="bg-white rounded d-flex flex-wrap mt-5	" id="header"> 
+<div class="bg-white rounded d-flex flex-wrap mt-5" id="header"> 
 		<div class="d-flex align-items-center">
 			<button class="btn btn-hide text-uppercase" type="submit" id="filter-btn" onclick="changeBtnTxt()"> 
 				<span id="btn-txt">Sort</span> <span class="fa fa-angle-right" id="filter-angle"></span>
@@ -111,7 +114,7 @@
 	{% if data %}
 	{% for item in data %}
 		<div class="col-lg-4 col-md-6 pt-2">
-			<div class="card d-flex flex-column align-items-center">
+			<div class="card d-flex flex-column align-items-center" onclick='viewCustomItem("{{ custom }}",{{ item.id }});'>
 				<div class="product-name">{{ item.title }}</div>
 				<div class="card-img "> <img src="/media/{{item.image}}" alt=""> </div>
 				{% comment %} <div class="card-body pt-4">
@@ -127,5 +130,34 @@
 	
 </div>
 </div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+	Launch demo modal
+</button>
+  
+<!-- Modal -->
+<div class="modal" id="contentModal" tabindex="-1" role="dialog" aria-labelledby="contentModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+	<div class="modal-content">
+	<div class="modal-header">
+		<h5 class="modal-title" id="contentModalLabel">Modal title</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		...
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-primary">Save changes</button>
+	</div>
+	</div>
+</div>
+</div>
 </main>
+
+
 {% endblock %}
