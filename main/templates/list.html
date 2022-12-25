@@ -1,7 +1,52 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{% static 'list.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}" />
+
+<!-- Modal -->
+<div class="modal" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-centered">
+	<div class="modal-content">
+		<div class="modal-body movie-card-container d-flex">
+			<div class="image-container ">
+				<div class="bg-image" style='background-image: url("https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_SX300.jpg");'></div>
+			</div>
+			<div class="movie-info">
+				<h2>Movie Details</h2>
+				<div>
+					<h1>Frozen</h1><small>Released Date: 27 Nov 2013</small>
+				</div>
+				<h4>Rating: 7.4 / 10</h4>
+				<p>Fearless optimist Anna teams up with rugged mountain man Kristoff and his loyal reindeer Sven and sets off on an epic journey to find her sister Elsa, whose icy powers have trapped the kingdom of Arendelle in eternal winter. Encountering Everest-like conditions, mystical trolls and a hilarious snowman named Olaf, Anna and Kristoff battle the elemen</p>
+				<div class="tags-container"><span>Animation</span><span>Adventure</span><span>Comedy</span></div>
+			</div>
+			
+
+			{% comment %} <div className="movie-card-container">
+				<div className="image-container">
+					<div
+						className="bg-image
+						style='background-image: url("https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_SX300.jpg");'
+					></div>
+				</div>
+				<div className="movie-info">
+					<h2>Movie Details</h2>
+					<div>
+						<h1>{Title}</h1>
+						<small>Released Date: {Released}</small>
+					</div>
+					<h4>Rating: {imdbRating} / 10</h4>
+					<p>{Plot && Plot.substr(0, 350)}</p>
+					<div className="tags-container">
+						{Genre && Genre.split(', ').map(g => <span>{g}</span>)}
+					</div>
+				</div>
+			</div> {% endcomment %}
+		</div>
+	</div>
+</div>
+</div>
+
 <script>
 	$(document).ready(function(){
 		max_page = {{ max_page }};
@@ -77,7 +122,7 @@
 {% csrf_token %}
 <div class="bg-white rounded d-flex flex-wrap mt-5" id="header"> 
 		<div class="d-flex align-items-center">
-			<button class="btn btn-hide text-uppercase" type="submit" id="filter-btn" onclick="changeBtnTxt()"> 
+			<button class="btn btn-hide text-uppercase" type="submit" id="filter-btn"> 
 				<span id="btn-txt">Sort</span> <span class="fa fa-angle-right" id="filter-angle"></span>
 			</button>
 		</div>
@@ -110,52 +155,24 @@
 </form>
 
 <div id="content" class="mx-0 my-3">
-<div class="row">
-	{% if data %}
-	{% for item in data %}
-		<div class="col-lg-4 col-md-6 pt-2">
-			<div class="card d-flex flex-column align-items-center" onclick='viewCustomItem("{{ custom }}",{{ item.id }});'>
-				<div class="product-name">{{ item.title }}</div>
-				<div class="card-img "> <img src="/media/{{item.image}}" alt=""> </div>
-				{% comment %} <div class="card-body pt-4">
-					<div class="d-flex align-items-center price">
-					<div class="del mr-2"><span class="text-dark">5500 uah</span></div>
-					<div class="font-weight-bold">4500 uah</div>
-					</div>
-				</div> {% endcomment %}
+	<div class="row">
+		{% if data %}
+		{% for item in data %}
+			<div class="col-lg-4 col-md-6 pt-2">
+				<div class="card d-flex flex-column align-items-center" onclick='viewCustomItem("{{ custom }}",{{ item.id }});' data-toggle="modal" data-target="#viewModal">
+					<div class="product-name">{{ item.title }}</div>
+					<div class="card-img "> <img src="/media/{{item.image}}" alt=""> </div>
+					{% comment %} <div class="card-body pt-4">
+						<div class="d-flex align-items-center price">
+						<div class="del mr-2"><span class="text-dark">5500 uah</span></div>
+						<div class="font-weight-bold">4500 uah</div>
+						</div>
+					</div> {% endcomment %}
+				</div>
 			</div>
-		</div>
-	{% endfor %}
-	{% endif %}
-	
-</div>
-</div>
-
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-	Launch demo modal
-</button>
-  
-<!-- Modal -->
-<div class="modal" id="contentModal" tabindex="-1" role="dialog" aria-labelledby="contentModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-	<div class="modal-content">
-	<div class="modal-header">
-		<h5 class="modal-title" id="contentModalLabel">Modal title</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-		</button>
+		{% endfor %}
+		{% endif %}
 	</div>
-	<div class="modal-body">
-		...
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		<button type="button" class="btn btn-primary">Save changes</button>
-	</div>
-	</div>
-</div>
 </div>
 </main>
 
