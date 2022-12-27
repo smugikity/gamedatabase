@@ -74,7 +74,7 @@ def get_list(custom,sort,n_per,page):
 
 def get_custom_item(custom,id):
 	models = CUSTOM_LIST[custom]
-	object = Genre.objects.get(pk=id).__dict__
+	object = models.objects.get(pk=id).__dict__
 	data =  {k: v for k, v in object.items() if (k!='_state' and k!='status')}
 	data['custom'] = custom
 	return data
