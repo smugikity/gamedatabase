@@ -11,52 +11,11 @@
 	<script type="text/javascript" src="{% static 'resources/jquery.min.js' %}"></script>
 	<!-- Bootstrap 5.3 JS -->
 	<script type="text/javascript" src="{% static 'resources/bs53/bootstrap.min.js' %}"></script>
-	{% comment %} <!-- Vue (change to vue.min.js for production)-->
-	<script type="text/javascript" src="{% static 'resources/vue.js' %}"></script> {% endcomment %}
 	<!-- CustomJs -->
 	<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}" />
 	<script type="text/javascript" src="{% static 'js/custom.js' %}"></script>
 	<link rel="icon" type="image/x-icon" href="{% static 'media/images/favicon.png' %}">
 </head>
-
-{% comment %} <script type="importmap">
-{
-	"imports": {
-	"vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
-	}
-}
-</script>
-
-<script type="module">
-import {createApp,defineAsyncComponent } from 'vue'
-import Test from '/static/js/component.js'
-
-const motherfucker = createApp({
-	el: '#app',
-	delimiters: ["[[", "]]"],
-	components: {
-		Test
-	},
-	data() {
-		message: 'Hello Vue!'
-	},
-	methods: {
-		greet: function (event) {
-			// `this` inside methods points to the Vue instance
-			alert('Hello ' + this.name + '!')
-			// `event` is the native DOM event
-			alert(event.target.tagName)
-			
-		}
-	}
-}).mount('#app');
-
-export default function test(){
-	alert('Ok boomer')
-}
-
-</script> {% endcomment %}
-
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-danger">

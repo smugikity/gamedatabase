@@ -2,26 +2,25 @@
 {% load static %}
 {% block content %}
 
-{% verbatim script %}
-<script type="text/javascript" src="{% static 'js/list.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}" />
+<script type="text/javascript" src="{% static 'js/list.js' %}"></script>
+{% verbatim modal %}
 <!-- Modal -->
 <div class="modal" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-lg modal-dialog-centered">
 	<div class="modal-content">
 		<div class="modal-body movie-card-container d-flex" id="modal-container" style="word-break: break-word;">
-			<img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px; margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto;">
+
 		</div>
 	</div>
 </div>
 </div>
-{% endverbatim script %}
+{% endverbatim modal %}
 
 <main class="container my-4">
 
-<h3 class="my-4 border-bottom pb-1"><span class="text-muted">List of </span>{{custom}}</h3>
-<form name="listsort" method="post">
-{% csrf_token %}
+<h3 class="my-4 border-bottom pb-1"><span class="text-muted">List of </span>{{ custom }}</h3>
+
 <div class="bg-white rounded d-flex flex-wrap mt-5" id="header"> 
 		<div class="d-flex align-items-center">
 			<button class="btn btn-hide text-uppercase" type="submit" id="filter-btn"> 
@@ -29,16 +28,26 @@
 			</button>
 		</div>
 		<div class="d-flex align-items-center"> 
-			{{ form.sort }}
+			<select name="sort" id="sort" onchange="goToPage(current);" value="{{ sort }}">
+				{% for key,value in sort_choice.items %}
+					<option value="{{ key }}">{{ value }}</option>
+				{% endfor %}
+			</select>
+			<script> 
+				$('#sort option[value="{{ sort }}"]').attr('selected','selected');
+			</script>
 		</div>
 		<div class="d-inline-flex align-items-center">
 			<div class="d-inline-flex" id="select2">
-				Games:{{ form.n_per }}
+				Games: <input type="number" name="n_per" id="pro" min="1" max="15" value="{{ n_per }}" onchange="goToPage(current);"/>
 			</div>
 			<div class="font-weight-bold mx-1">from {{ count }}</div>
 		</div>
 		<!--hidden field for page-->
-		<div><input type="hidden"  name="page" value="{{ cur_page }}" id="page-value"/></div>
+		<div>
+			<input type="hidden" value="{{ cur_page }}" id="django-page"/>
+			<input type="hidden" value="{{ custom }}" id="django-custom"/>
+		</div>
 		<div class="ms-auto mr-2">
 			<div id="page-collections" class="pagination d-flex align-items-center" value="{{ max_page }}">
 				<div class="page-item" id="page-previous"> 
@@ -50,14 +59,15 @@
 			</div>
 		</div>	
 </div>
-</form>
+
 
 <div id="content" class="mx-0 my-3">
-	<div class="row">
+	<!--Custom card list-->
+	<div class="row px-4">
 		{% if data %}
 		{% for item in data %}
 			<div class="col-lg-4 col-md-6 pt-2">
-				<div class="card d-flex flex-column align-items-center" onclick='viewCustomItem("{{ custom }}",{{ item.id }});' data-toggle="modal" data-target="#viewModal">
+				<div class="card d-flex flex-column align-items-center" onclick='viewCustomItem({{ item.id }});' data-toggle="modal" data-target="#viewModal">
 					<div class="product-name">{{ item.title }}</div>
 					<div class="card-img "> <img src="/media/{{item.image}}" alt=""> </div>
 					{% comment %} <div class="card-body pt-4">

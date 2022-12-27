@@ -1,8 +1,7 @@
 $(document).ready(function(){
     max_page = $('#page-collections').attr('value');
-    pageValue = $('#page-value');
-    current = parseInt(pageValue.val());
-    pageValue.val(1);
+    custom = $('#django-custom').val();
+    current = parseInt($('#django-page').val());
     modalContainer = $('#modal-container')
     $('#page-previous:first-child').on( "click", function() {goToPage(current-1);});
     $('#page-next:first-child').on( "click", function() {goToPage(current+1);});
@@ -45,7 +44,6 @@ $(document).ready(function(){
     }
     $("#viewModal").on("hidden.bs.modal", function () {
         modalContainer.empty();
-        modalContainer.append(loading);
     });
 });	
 function truncate(str, n){
@@ -55,8 +53,7 @@ function goToPage(page) {
     try {
         page = parseInt(page);
         if (!isFinite(page) || page<1 || page>max_page) {throw "exceed";}
-        pageValue.val(page);
-        document.forms.listsort.submit();
+        window.location.replace('/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page);
     }
     catch(err) {
         console.log(err);
@@ -65,7 +62,8 @@ function goToPage(page) {
 }
 const loading = `<img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px; margin-left: auto; 
 margin-right: auto; margin-top: auto; margin-bottom: auto;">`
-function viewCustomItem(custom,id) {
+function viewCustomItem(id) {
+    modalContainer.append(loading);
     $.ajax({
         url: '/view/'+custom+'/'+id,
         type: "GET",

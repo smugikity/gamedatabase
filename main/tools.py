@@ -61,7 +61,8 @@ def get_list(custom,sort,n_per,page):
 	if (not models or (sort > 2 or sort < 0)): return None
 	count = models.objects.count()
 	max_page = ceil(count/n_per)
-	if (max_page<page): return None
+	if (page<1): page = 1
+	if (max_page<page): page = max_page
 	start = n_per*(page-1); end = n_per*page
 	if (sort == 0):
 		data = models.objects.all().order_by('id').values('id','title','image')[start:end]
@@ -69,6 +70,22 @@ def get_list(custom,sort,n_per,page):
 		data = models.objects.all().order_by(Lower('title')).values('id','title','image')[start:end]
 	else:
 		data = models.objects.annotate(num=Count('game')).order_by('-num').values('id','title','image')[start:end]
+	
+	return count, max_page, data
+
+def get_game_list(sort,n_per,page):
+	if (sort > 2 or sort < 0): return None
+	count = Game.objects.count()
+	max_page = ceil(count/n_per)
+	if (page<1): page = 1
+	if (max_page<page): page = max_page
+	start = n_per*(page-1); end = n_per*page
+	if (sort == 0):
+		data = Game.objects.all().order_by('id').values('id','title','image')[start:end]
+	elif (sort == 1):
+		data = Game.objects.all().order_by(Lower('title')).values('id','title','image')[start:end]
+	else:
+		data = Game.objects.annotate(num=Count('game')).order_by('-num').values('id','title','image')[start:end]
 	
 	return count, max_page, data
 
