@@ -44,9 +44,9 @@ urlpatterns=[
 
     # Edited
     path('game/<int:id>',views.game_detail,name='game-detail'),
-    path('list/<str:custom>',views.list,name='list'),
+    path('list/<str:custom>',views.custom_list,name='list'),
     path('search/<str:custom>',views.search,name='search'),
-    path('view/<str:custom>/<int:id>',views.view,name='view'),
+    path('view/<str:custom>/<int:id>',views.view_item,name='view'),
     path('game-list',views.game_list,name='game-list'),
     path('404',views.handler404,name='404'),
 ]

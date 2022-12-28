@@ -428,14 +428,14 @@ SORT_CHOICES = {
     2: "By popularity",
 	3: "By rating"
 }
-def list(request,custom):
+def custom_list(request,custom):
 	sort=int(request.GET.get('sort',0)) 
 	n_per=int(request.GET.get('n_per',9))
 	page=int(request.GET.get('page',1))
 	count,max_page,data = tools.get_list(custom,sort,n_per,page)
-	return render(request, 'list.html',{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES)[:3]}, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
+	return render(request, 'list.html',{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]}, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
 
-def view(request,custom,id):
+def view_item(request,custom,id):
 	try:
 		data = tools.get_custom_item(custom,id)
 		return JsonResponse(data)
