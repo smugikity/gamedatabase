@@ -1,9 +1,12 @@
 $(document).ready(function(){
-    $('.select2-class').select2();
 
-    $('#select2-genre').select2({
+    //
+    $('.select2-class').select2();
+    $('.select2-class').select2({
         ajax: {
-            url: "/search/genre",
+            url: function () {
+                return '/search/' + this.attr('value');
+            },
             dataType: 'json',
             delay: 250,
             data: function (params) {
@@ -16,25 +19,24 @@ $(document).ready(function(){
                     results: data.items
                 };
             },
-            cache: true
         },
-        placeholder: 'Search for genres',
+        placeholder: 'Search',
         minimumInputLength: 1,
         templateResult: formatSelect2Result,
         templateSelection: formatSelect2Selecion
     });
       
-    function formatSelect2Result (genre) {
-        if (genre.loading) {
+    function formatSelect2Result (item) {
+        if (item.loading) {
             return 'loading...';
         }
-        return genre.title;
+        return item.title;
     }
     
-    function formatSelect2Selecion (genre) {
-        return genre.title;
+    function formatSelect2Selecion (item) {
+        return item.title;
     }
-
+    //
 
 
 

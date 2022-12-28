@@ -133,6 +133,7 @@ label {
 label {
   cursor: pointer;
 }
+/* could delete later start */
 .tick {
   display: block;
   position: relative;
@@ -182,6 +183,7 @@ label {
   border-width: 0 3px 3px 0;
   transform: rotate(45deg) scale(2);
 }
+/* could delete end */
 .box {
   padding: 10px;
 }
@@ -192,34 +194,6 @@ label {
 }
 #price {
   height: 45px;
-}
-#size input[type="checkbox"] {
-  visibility: hidden;
-}
-#size input[type="checkbox"]:checked {
-  background-color: #16c79a;
-  border: none;
-}
-#size .btn.btn-success {
-  background-color: #ddd;
-  color: #333;
-  border: none;
-  width: 40px;
-  font-size: 0.8rem;
-  border-radius: 0;
-}
-#size .btn.btn-success:hover {
-  background-color: #aff1e1;
-  color: #444;
-}
-#size .btn-success:not(:disabled):not(.disabled).active,
-#size .btn-success:not(:disabled):not(.disabled):active {
-  background-color: #16c79a;
-  color: #fff;
-}
-#size label {
-  margin: 10px;
-  margin-left: 0px;
 }
 
 
