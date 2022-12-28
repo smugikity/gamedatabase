@@ -30,7 +30,6 @@ urlpatterns=[
     path('my-orders',views.my_orders, name='my_orders'),
     path('my-orders-items/<int:id>',views.my_order_items, name='my_order_items'),
     # End
-
     # Wishlist
     path('add-wishlist',views.add_wishlist, name='add_wishlist'),
     path('my-wishlist',views.my_wishlist, name='my_wishlist'),
@@ -42,6 +41,14 @@ urlpatterns=[
     path('activate-address',views.activate_address, name='activate-address'),
     path('update-address/<int:id>',views.update_address, name='update-address'),
     path('edit-profile',views.edit_profile, name='edit-profile'),
+
+    # Edited
+    path('game/<int:id>',views.game_detail,name='game-detail'),
+    path('list/<str:custom>',views.list,name='list'),
+    path('search/<str:custom>',views.search,name='search'),
+    path('view/<str:custom>/<int:id>',views.view,name='view'),
+    path('game-list',views.game_list,name='game-list'),
+    path('404',views.handler404,name='404'),
 ]
 
 if settings.DEBUG:

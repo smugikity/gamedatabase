@@ -1,0 +1,110 @@
+:root {
+	--color-white: #ffffff;
+	--color-light: #f1f5f9;
+	--color-black: #121212;
+	--color-night: #001632;
+
+	--color-red: #f44336;
+	--color-blue: #1a73e8;
+	--color-gray: #80868b;
+	--color-grayish: #dadce0;
+	
+	--shadow-normal: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+		0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	--shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	--shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+		0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+
+a {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	cursor: pointer;
+	border: none;
+	outline: none;
+	background: none;
+	text-decoration: none;
+}
+
+.text {
+	font-family: inherit;
+	line-height: inherit;
+	text-transform: unset;
+	text-rendering: optimizeLegibility;
+}
+
+.text-large {
+	font-size: 2rem;
+	font-weight: 600;
+	color: var(--color-black);
+}
+
+.text-normal {
+	font-size: 1rem;
+	font-weight: 400;
+	color: var(--color-black);
+}
+
+.text-links {
+	font-size: 1rem;
+	font-weight: 400;
+	color: var(--color-blue);
+}
+.text-links:hover {
+	text-decoration: underline;
+}
+
+
+.wrapper {
+	max-width: 32rem;
+	width: 100%;
+	border: none;
+	outline: none;
+	border-radius: 0.25rem;
+	color: var(--color-black);
+	background: var(--color-white);
+	box-shadow: var(--shadow-large);
+}
+
+.form {
+	width: 100%;
+	height: auto;
+	/* margin-top: 2rem; */
+}
+
+.input-field {
+	font-family: inherit;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: inherit;
+	width: 100%;
+	height: auto;
+	border: none;
+	outline: none;
+	border-radius: 2rem;
+	color: var(--color-black);
+	background: var(--color-light);
+	text-transform: unset;
+	text-rendering: optimizeLegibility;
+}
+
+.input-submit {
+	font-family: inherit;
+	font-size: 1rem;
+	font-weight: 500;
+	line-height: inherit;
+	cursor: pointer;
+	min-width: 40%;
+	height: auto;
+	border: none;
+	outline: none;
+	border-radius: 2rem;
+	color: var(--color-white);
+	background: var(--color-blue);
+	box-shadow: var(--shadow-medium);
+	text-transform: capitalize;
+	text-rendering: optimizeLegibility;
+}

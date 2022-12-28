@@ -5,15 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "LiveServer",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
-            "console": "integratedTerminal",
-            "args": ["livereload"],
-            "justMyCode": true
-        },
-        {
             "name": "Server",
             "type": "python",
             "request": "launch",
@@ -29,11 +20,4 @@
             }
           }
     ],
-    "compounds": [
-        {
-          "name": "RunLiveServer",
-          "configurations": ["LiveServer", "Server"],
-          "stopAll": true
-        }
-      ]
 }
