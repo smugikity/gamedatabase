@@ -54,6 +54,7 @@ CUSTOM_LIST={
     'developer': Developer,
     'publisher': Publisher,
     'platform': Platform,
+	'game': Game,
 }
 SORT=['id','title']
 def get_list(custom,sort,n_per,page):
@@ -73,19 +74,26 @@ def get_list(custom,sort,n_per,page):
 	
 	return count, max_page, data
 
+def get_search(custom,term):
+	models = CUSTOM_LIST[custom]
+	if (not models): return None
+	data = models.objects.filter(title__istartswith=term).order_by('-id').values('id','title')
+	data = list(data)
+	return len(data), data
+
 def get_game_list(sort,n_per,page):
-	if (sort > 2 or sort < 0): return None
+	if (sort > 3 or sort < 0): return None
 	count = Game.objects.count()
 	max_page = ceil(count/n_per)
 	if (page<1): page = 1
 	if (max_page<page): page = max_page
 	start = n_per*(page-1); end = n_per*page
 	if (sort == 0):
-		data = Game.objects.all().order_by('id').values('id','title','image')[start:end]
+		data = Game.objects.all().order_by('id').values('id','title','image','avg_rating')[start:end]
 	elif (sort == 1):
-		data = Game.objects.all().order_by(Lower('title')).values('id','title','image')[start:end]
-	else:
-		data = Game.objects.annotate(num=Count('game')).order_by('-num').values('id','title','image')[start:end]
+		data = Game.objects.all().order_by(Lower('title')).values('id','title','image','avg_rating')[start:end]
+	elif (sort == 2):
+		data = Game.objects.annotate(num=Count('rating')).order_by('-num').values('id','title','image','avg_rating')[start:end]
 	
 	return count, max_page, data
 

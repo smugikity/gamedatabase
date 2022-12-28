@@ -5,7 +5,7 @@ from django.db.models import Max,Min,Count,Avg
 from django.core.exceptions import ObjectDoesNotExist,MultipleObjectsReturned
 from django.db.models.functions import ExtractMonth
 from django.template.loader import render_to_string
-from .forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm,ListSortForm
+from main.forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from django.forms import ValidationError
@@ -16,7 +16,6 @@ from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 
 from main import tools
-import json
 
 # Game info - basic info of a game to present in catalog 
 
@@ -95,10 +94,10 @@ def product_detail(request,slug,id):
 	return render(request, 'product_detail.html',{'data':product,'related':related_products,'colors':colors,'sizes':sizes,'reviewForm':reviewForm,'canAdd':canAdd,'reviews':reviews,'avg_reviews':avg_reviews})
 
 # Search
-def search(request):
+def search(request,custom):
 	q=request.GET['q']
-	data=Product.objects.filter(title__icontains=q).order_by('-id')
-	return render(request,'search.html',{'data':data})
+	total_count, items=tools.get_search(custom,q)
+	return JsonResponse({"total_count":total_count,"items":items})
 
 # Filter Data
 def filter_data(request):
@@ -427,13 +426,14 @@ SORT_CHOICES = {
     0: "By default",
     1: "By name",
     2: "By popularity",
+	3: "By rating"
 }
 def list(request,custom):
 	sort=int(request.GET.get('sort',0)) 
 	n_per=int(request.GET.get('n_per',9))
 	page=int(request.GET.get('page',1))
 	count,max_page,data = tools.get_list(custom,sort,n_per,page)
-	return render(request, 'list.html',{'custom':custom, 'sort_choice': SORT_CHOICES, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
+	return render(request, 'list.html',{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES)[:3]}, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
 
 def view(request,custom,id):
 	try:
@@ -444,20 +444,12 @@ def view(request,custom,id):
 
 # Game List
 def game_list(request):
-	sort = 0
-	n_per = 9
-	page = 1
-	form = ListSortForm
-	#try:	
-	if request.method == 'POST':
-		form = ListSortForm(request.POST)
-		if form.is_valid():
-			sort = int(form.cleaned_data['sort'])
-			n_per = form.cleaned_data['n_per']
-			page = form.cleaned_data['page']
-		else: raise ValidationError
+	sort=int(request.GET.get('sort',0)) 
+	n_per=int(request.GET.get('n_per',9))
+	page=int(request.GET.get('page',1))
 	count,max_page,data = tools.get_game_list(sort,n_per,page)
-	return render(request, 'game_list.html',{'form':form,'count':count, 'cur_page': page,'max_page':max_page,'data':data})
+	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
+
 	#except (TypeError, ValidationError) as error:
 	#	raise Http404(error)
 
