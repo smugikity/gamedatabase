@@ -6,3 +6,13 @@
 .errorlist li{
 	color: red;
 }
+
+.bannercss {
+	display: block;
+	max-width:1980px;
+	min-width: 1980px;
+	max-height:800px;
+	min-height: 800px;
+	width: auto;
+	height: auto;
+}

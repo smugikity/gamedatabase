@@ -6,3 +6,9 @@
 .errorlist li{
 	color: red;
 }
+.bannercss {
+    float: left;
+    width: 500px;
+    height: 500px;
+    object-fit: cover;
+}
