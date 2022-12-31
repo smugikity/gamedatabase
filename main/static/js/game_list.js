@@ -1,7 +1,6 @@
-$(document).ready(function(){
-
-    //
-    $('.select2-class').select2();
+$(document).ready(function() {
+    $('#datepicker').datepicker();
+    //Select2 
     $('.select2-class').select2({
         ajax: {
             url: function () {
@@ -16,34 +15,30 @@ $(document).ready(function(){
             },
             processResults: function (data) {
                 return {
-                    results: data.items
+                    results: data.items,
                 };
             },
         },
-        placeholder: 'Search',
+        placeholder: 'Type something',
         minimumInputLength: 1,
         templateResult: formatSelect2Result,
         templateSelection: formatSelect2Selecion
-    });
-      
+    }); 
     function formatSelect2Result (item) {
         if (item.loading) {
             return 'loading...';
         }
         return item.title;
     }
-    
     function formatSelect2Selecion (item) {
         return item.title;
     }
-    //
+    //End select 2
 
-
-
+    
     max_page = $('#page-collections').attr('value');
     custom = $('#django-custom').val();
     current = parseInt($('#django-page').val());
-    modalContainer = $('#modal-container')
     $('#page-previous:first-child').on( "click", function() {goToPage(current-1);});
     $('#page-next:first-child').on( "click", function() {goToPage(current+1);});
     const templatePage1 = `<div class="page-item"><button class="page-link btn" type="button" onclick=goToPage(this.textContent)>`;
@@ -83,49 +78,30 @@ $(document).ready(function(){
     function renderEllipsis() {
         return templatePage1 + "..." + templatePage2;
     }
-    $("#viewModal").on("hidden.bs.modal", function () {
-        modalContainer.empty();
-    });
+
+    $('#reset-button').on("click", function() {
+        $('.select2-class').val(null).trigger('change');
+        $('#datepicker').datepicker('clearDates');
+    })
+    $('#apply-button').on("click",function() { goToPage(current);});
 });	
-function truncate(str, n){
-    return (str.length > n) ? str.slice(0, n-1) + '&hellip;' : str;
-};
+
 function goToPage(page) {
     try {
         page = parseInt(page);
         if (!isFinite(page) || page<1 || page>max_page) {throw "exceed";}
-        window.location.replace('/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page);
+        var url_string = '/game-list/?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page;
+        const startdate = $('#datepicker-start').datepicker('getFormattedDate');
+        if (startdate) url_string += '&startdate='+startdate;
+        const enddate = $('#datepicker-end').datepicker('getFormattedDate');
+        if (enddate) url_string += '&enddate='+enddate;
+        $('#select2-genre').select2('data').forEach(genre => {url_string += '&genre='+genre.id});
+        $('#select2-publisher').select2('data').forEach(publisher => {url_string += '&publisher='+publisher.id});
+        $('#select2-platform').select2('data').forEach(platform => {url_string += '&platform='+platform.id});
+        window.location.replace(url_string);
     }
     catch(err) {
         console.log(err);
         return;
     }
-}
-const loading = `<img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px; margin-left: auto; 
-margin-right: auto; margin-top: auto; margin-bottom: auto;">`
-function viewCustomItem(id) {
-    modalContainer.append(loading);
-    $.ajax({
-        url: '/view/'+custom+'/'+id,
-        type: "GET",
-        dataType: "json",
-        success: (data) => {
-            var tem = `<div class="image-container ">
-                <div class="bg-image" id="modal-image" style='background-image: url("/media/`+data.image+`");'></div>
-            </div>
-            <div class="movie-info">
-                <h2>`+data.custom+` no.`+data.id+`</h2>
-                <div>
-                    <h1>`+data.title+`</h1><small>Released Date: 27 Nov 2013</small>
-                </div>
-                <h4>Rating: 7.4 / 10</h4>
-                <p>`+data.description+`</p>
-                <div class="tags-container"><span>Animation</span><span>Adventure</span><span>Comedy</span></div>
-            </div>`
-            console.log(data);
-            modalContainer.empty();
-            modalContainer.append(tem);
-        },
-        error: (error) => {console.log(error);}
-      });
 }

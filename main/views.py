@@ -23,7 +23,7 @@ from main import tools
 def home(request):
 	banners=Banner.objects.all().order_by('-id')
 	# data=Product.objects.filter(is_featured=True).order_by('-id')
-	random_games = tools.get_n_random_games(12)
+	random_games = tools.get_n_random_games(50)
 	return render(request,'index.html',{'data':random_games,'banners':banners})
 
 # Category
@@ -447,7 +447,12 @@ def game_list(request):
 	sort=int(request.GET.get('sort',0)) 
 	n_per=int(request.GET.get('n_per',9))
 	page=int(request.GET.get('page',1))
-	count,max_page,data = tools.get_game_list(sort,n_per,page)
+	startdate=request.GET.get('startdate','01/01/0000')
+	enddate=request.GET.get('enddate','31/12/9999')
+	genres=request.GET.getlist('genre')
+	publishers=request.GET.getlist('genre')
+	platforms=request.GET.getlist('platform')
+	count,max_page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
 	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
 
 	#except (TypeError, ValidationError) as error:

@@ -136,6 +136,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL='home'
 LOGOUT_REDIRECT_URL='login'
 
+DATE_FORMAT = "d/m/Y"
+
+DATETIME_INPUT_FORMATS=[
+    '%d/%m/%y',
+]
+
 PAYPAL_RECEIVER_EMAIL = 'sb-c5xgx6555500@business.example.com'
 PAYPAL_TEST = True
 

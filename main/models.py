@@ -239,7 +239,7 @@ class Developer(models.Model):
     founding_year=models.DateField(blank=True,null=True)
     website=models.URLField(blank=True,null=True)
     image=models.ImageField(upload_to="developer_imgs/",blank=True,null=True)
-    publisher=models.OneToOneField(Publisher,blank=True,null=True,on_delete=models.SET_NULL)
+    publisher=models.ForeignKey(Publisher,blank=True,null=True,on_delete=models.SET_NULL)
     status=models.PositiveSmallIntegerField(choices=STATUS,default=INACTIVE)
 
     class Meta:

@@ -30,17 +30,20 @@ button.btn.btn-hide {
   border: 1px solid #333;
 }
 #sort,#select-game {
+  width: 130px;
+}
+#sort,#select-game,#datepicker input,.select2-filter {
   outline: none;
   padding: 6px 6px;
   margin: 0px 4px;
   color: #999;
   font-size: 0.85rem;
-  width: 130px;
 }
 
-#select-game {
+#select-game,#datepicker input,.select2-filter {
   border: 1px solid #777;
 }
+
 #pro {
   border: none;
   color: #333;
@@ -108,13 +111,6 @@ label {
   border-radius: 15px;
   float: left;
 }
-#filterbar input[type="radio"] {
-  visibility: hidden;
-}
-#filterbar input[type="radio"]:checked {
-  background-color: #16c79a;
-  border: none;
-}
 #filterbar .btn.btn-success {
   background-color: #ddd;
   color: #333;
@@ -125,65 +121,11 @@ label {
   background-color: #aff1e1;
   color: #444;
 }
-#filterbar .btn-success:not(:disabled):not(.disabled).active,
-#filterbar .btn-success:not(:disabled):not(.disabled):active {
+#filterbar .btn.btn-success.active {
   background-color: #16c79a;
   color: #fff;
 }
-label {
-  cursor: pointer;
-}
-/* could delete later start */
-.tick {
-  display: block;
-  position: relative;
-  padding-left: 23px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin: 0;
-}
-.tick input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-.check {
-  position: absolute;
-  top: 1px;
-  left: 0;
-  height: 18px;
-  width: 18px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-}
-.tick:hover input ~ .check {
-  background-color: #f3f3f3;
-}
-.tick input:checked ~ .check {
-  background-color: #ffffff;
-}
-.check:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-.tick input:checked ~ .check:after {
-  display: block;
-  transform: rotate(45deg) scale(1);
-}
-.tick .check:after {
-  left: 6px;
-  top: 2px;
-  width: 5px;
-  height: 10px;
-  border: solid rgb(0, 0, 0);
-  border-width: 0 3px 3px 0;
-  transform: rotate(45deg) scale(2);
-}
-/* could delete end */
+
 .box {
   padding: 10px;
 }
@@ -191,9 +133,6 @@ label {
   color: #11698e;
   font-size: 0.9rem;
   font-weight: 800;
-}
-#price {
-  height: 45px;
 }
 
 
@@ -268,6 +207,11 @@ label {
   font-size: 12px;
   padding: 3px 10px;
   margin: 5px;
+}
+
+#datepicker span {
+  margin: auto;
+  padding: 5px;
 }
 
 @media (max-width: 768px) {

@@ -2,8 +2,10 @@
 {% load static %}
 {% block content %}
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'resources/select2/select2.min.css' %}"/>
+<script type="text/javascript" src="{% static 'resources/select2/select2.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'resources/datepicker/datepicker.min.css' %}"/>
+<script type="text/javascript" src="{% static 'resources/datepicker/datepicker.min.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/game_list.css' %}" />
 <script type="text/javascript" src="{% static 'js/game_list.js' %}"></script>
 
@@ -14,8 +16,8 @@
 
 <div class="bg-white rounded d-flex flex-wrap mt-5" id="header"> 
 	<div class="d-flex align-items-center">
-		<button class="btn btn-hide text-uppercase" type="button" data-toggle="collapse" data-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn" onclick="changeBtnTxt()"> 
-			<span class="fas fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> 
+		<button class="btn btn-hide text-uppercase" type="button" data-toggle="collapse" data-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn"> 
+			<span class="fa fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> 
 		</button>
 	</div>
 	<div class="d-flex align-items-center"> 
@@ -57,71 +59,62 @@
 	<div id="filterbar" class="collapse">
 		<div class="box border-bottom">
 			<div class="form-group text-center">
-				<div class="btn-group  d-flex flex-wrap" data-toggle="buttons"> 
-					<label class="btn btn-success form-check-label"> 
-						<input class="form-check-input" type="radio"> Reset 
-					</label> 
-					<label class="btn btn-success form-check-label active"> 
-						<input class="form-check-input" type="radio" checked> Apply 
-					</label> 
+				<div class="btn-group d-flex flex-wrap"> 
+					<button type="button" id="reset-button" class="btn btn-success form-check-label"> 
+						Reset
+					</button> 
+					<button type="button" id="apply-button" class="btn btn-success form-check-label active"> 
+						Apply
+					</button> 
 				</div>
 			</div>
-			<div> <label class="tick">New <input type="checkbox" checked="checked"> <span class="check"></span> </label> </div>
-			<div> <label class="tick">Sale <input type="checkbox"> <span class="check"></span> </label> </div>
+			{% comment %} <div> <label class="tick">New <input type="checkbox" checked="checked"> <span class="check"></span> </label> </div>
+			<div> <label class="tick">Sale <input type="checkbox"> <span class="check"></span> </label> </div> {% endcomment %}
 		</div>
 		<div class="box border-bottom">
-			<div class="box-label text-uppercase d-flex align-items-center">RATINGS 
-				<button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#rating-box" aria-expanded="false" aria-controls="price">
-					<span class="fas fa-plus"></span>
+			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">DATE 
+				<button class="btn" type="button" data-toggle="collapse" data-target="#rating-box" aria-expanded="false" aria-controls="price">
+					<span class="fa fa-plus"></span>
 				</button> 
 			</div>
 			<div id="rating-box" class="collapse">
-				<div class="middle">
-					<div class="multi-range-slider"> <input type="range" id="input-left" min="0" max="100" value="10"> <input type="range" id="input-right" min="0" max="100" value="50">
-					<div class="slider">
-						<div class="track"></div>
-						<div class="range"></div>
-						<div class="thumb left"></div>
-						<div class="thumb right"></div>
-					</div>
-					</div>
-				</div>
-				<div class="d-flex align-items-center justify-content-between mt-2">
-					<div> <span id="amount-left" class="font-weight-bold"></span> uah </div>
-					<div> <span id="amount-right" class="font-weight-bold"></span> uah </div>
+				<div class="input-daterange input-group" id="datepicker">
+					<input type="text" class="input-sm form-control" name="start" id="datepicker-start"/>
+					<span class="input-group-addon">to</span>
+					<input type="text" class="input-sm form-control" name="end" id="datepicker-end"/>
 				</div>
 			</div>
 		</div>
 		<div class="box border-bottom">
-			<div class="box-label text-uppercase d-flex align-items-center">GENRE 
-				<button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#genre-box" aria-expanded="false" aria-controls="inner-box" id="out" onclick="outerFilter()"> 
-					<span class="fas fa-plus"></span> 
+			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">GENRE 
+				<button class="btn" type="button" data-toggle="collapse" data-target="#genre-box" aria-expanded="false" aria-controls="inner-box" id="out"> 
+					<span class="fa fa-plus"></span> 
 				</button> 
 			</div>
 			<div id="genre-box" class="collapse mt-2 mr-1">
-				<select id="select2-genre" class="select2-class" name="genres[]" multiple="multiple" style="width: 100%" value="genre">
+				<select id="select2-genre" class="select2-class select2-filter" name="genres[]" multiple="multiple" style="width: 100%" value="genre">
 				</select>
 			</div>
 		</div>
 		<div class="box border-bottom">
-			<div class="box-label text-uppercase d-flex align-items-center">PUBLISHER 
-				<button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#publisher-box" aria-expanded="false" aria-controls="inner-box2">
-					<span class="fas fa-plus"></span>
+			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">PUBLISHER 
+				<button class="btn" type="button" data-toggle="collapse" data-target="#publisher-box" aria-expanded="false" aria-controls="inner-box2">
+					<span class="fa fa-plus"></span>
 				</button>
 			</div>
 			<div id="publisher-box"  class="collapse mt-2 mr-1">
-				<select id="select2-publisher" class="select2-class" name="publishers[]" multiple="multiple" style="width: 100%" value="publisher">
+				<select id="select2-publisher" class="select2-class select2-filter" name="publishers[]" multiple="multiple" style="width: 100%" value="publisher">
 				</select>
 			</div>
 		</div>
 		<div class="box">
-			<div class="box-label text-uppercase d-flex align-items-center">PLATFORM 
-				<button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#platform-box" aria-expanded="false" aria-controls="size">
-					<span class="fas fa-plus"></span>
+			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">PLATFORM 
+				<button class="btn" type="button" data-toggle="collapse" data-target="#platform-box" aria-expanded="false" aria-controls="size">
+					<span class="fa fa-plus"></span>
 				</button> 
 			</div>
 			<div id="platform-box"  class="collapse mt-2 mr-1">
-				<select id="select2-platform" class="select2-class" name="platforms[]" multiple="multiple" style="width: 100%" value="platform">
+				<select id="select2-platform" class="select2-class select2-filter" name="platforms[]" multiple="multiple" style="width: 100%" value="platform">
 				</select>
 			</div>
 		</div>
@@ -132,7 +125,7 @@
 		{% if data %}
 		{% for item in data %}
 			<div class="col-lg-4 col-md-6 pb-2">
-				<div class="card d-flex flex-column align-items-center" onclick='viewCustomItem("{{ custom }}",{{ item.id }});' data-toggle="modal" data-target="#viewModal">
+				<div class="card d-flex flex-column align-items-center">
 					<div class="product-name">{{ item.title }}</div>
 					<div class="card-img "> <img src="/media/{{item.image}}" alt=""> </div>
 					{% comment %} <div class="card-body pt-4">
