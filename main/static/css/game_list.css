@@ -29,10 +29,10 @@ button.btn.btn-hide {
   background-color: #fff;
   border: 1px solid #333;
 }
-#sort,#select-game {
+#sort,#n_per {
   width: 130px;
 }
-#sort,#select-game,#datepicker input,.select2-filter {
+#sort,#n_per,#datepicker input,.select2-filter {
   outline: none;
   padding: 6px 6px;
   margin: 0px 4px;
@@ -40,7 +40,7 @@ button.btn.btn-hide {
   font-size: 0.85rem;
 }
 
-#select-game,#datepicker input,.select2-filter {
+#n_per,#datepicker input,.select2-filter {
   border: 1px solid #777;
 }
 
@@ -105,7 +105,8 @@ label {
 }
 
 #filterbar {
-  width: 25%;
+  width: 70%;
+  max-width: 300px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 15px;
@@ -215,12 +216,18 @@ label {
 }
 
 @media (max-width: 768px) {
+  #filterbar {
+    max-width: 220px;
+  }
   .image-container {
       flex: 5;
   }
 }
 
 @media (max-width: 700px) {
+  #filterbar {
+    max-width: 150px;
+  }
   .image-container {
       -webkit-clip-path: circle(80% at 45px 70px);
       clip-path: circle(80% at 45px 70px);

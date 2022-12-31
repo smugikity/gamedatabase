@@ -20,7 +20,7 @@ function goToPage(page) {
         cardSection.empty();
         $('#loading-img').show()
         page = parseInt(page);
-        if (!isFinite(page) || page<1 || page>max_page) {throw "exceed";}
+        if (!isFinite(page) || page<1) {throw "exceed";}
         
         $.ajax({
 			url: '/src/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page,
@@ -33,11 +33,8 @@ function goToPage(page) {
                 $('#loading-img').hide()
 				pageSection.html(res.p);
                 cardSection.html(res.c);
-			//	$(".ajaxLoader").hide();
 			}
 		});
-
-        // window.location.replace('/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page);
     }
     catch(err) {
         console.log(err);

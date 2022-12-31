@@ -29,7 +29,7 @@ button.btn.btn-hide {
   background-color: #fff;
   border: 1px solid #333;
 }
-#sort,#select2 {
+#sort,#n_per {
   outline: none;
   padding: 6px 6px;
   margin: 0px 4px;
@@ -38,7 +38,7 @@ button.btn.btn-hide {
   width: 130px;
 }
 
-#select2 {
+#n_per {
   border: 1px solid #777;
 }
 #pro {

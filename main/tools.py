@@ -104,11 +104,12 @@ def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
 	subquery3 = Platform.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(id=F("id"), title=F("title"))).values_list("data")
 	query_list = Game.objects.filter(query).annotate(genre_list=ArraySubquery(subquery1)).annotate(dev_list=ArraySubquery(subquery2)).annotate(plat_list=ArraySubquery(subquery3))
 	count = query_list.count()
-
 	max_page = ceil(count/n_per)
+	if (max_page==0): return 0,0,1,[]
 	if (page<1): page = 1
 	if (max_page<page): page = max_page
 	start = n_per*(page-1); end = n_per*page
+	print(max_page)
 	if (sort == 0):
 		data = query_list.order_by('id').values('id','title','image','avg_rating','genre_list','dev_list','plat_list')[start:end]
 	elif (sort == 1):
@@ -117,7 +118,8 @@ def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
 		data = query_list.annotate(num=Count('rating')).order_by('-num').values('id','title','image','avg_rating','genre_list','dev_list','plat_list')[start:end]
 	elif (sort == 3):
 		data = query_list.order_by('-avg_rating').values('id','title','image','avg_rating','genre_list','dev_list','plat_list')[start:end]
-	return count, max_page, data
+	print(data)
+	return count, max_page, page, data
 
 def get_custom_item(custom,id):
 	models = CUSTOM_LIST[custom]

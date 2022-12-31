@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
+import datetime
 
 from main import tools
 
@@ -428,26 +429,72 @@ SORT_CHOICES = {
     2: "By popularity",
 	3: "By rating"
 }
+DEFAULT_LIST_PARAS = {
+	'sort': 0,
+	'n_per': 9,
+	'page': 1,
+	'startdate': '01/01/1000',
+	'enddate': '31/12/9999',
+	'date_format_src': '%d/%m/%Y',
+	'date_format_dest': '%Y-%m-%d',
+}
 #default sort=0, n_per=9, page=1
 def custom_list(request,custom):
-	sort=int(request.GET.get('sort',0)) 
-	n_per=int(request.GET.get('n_per',9))
-	page=int(request.GET.get('page',1))
+	sort=DEFAULT_LIST_PARAS['sort']
+	n_per=DEFAULT_LIST_PARAS['n_per']
+	page=DEFAULT_LIST_PARAS['page']
 	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
 	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
 	return render(request, 'list.html',
 	{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]},'p':p,'c':c})
 
-def custom_src_list(request,custom):
-	sort=int(request.GET.get('sort',0)) 
-	n_per=int(request.GET.get('n_per',9))
-	page=int(request.GET.get('page',1))
+def src_custom_list(request,custom):
+	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
+	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
+	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
 	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
 	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
-#	return render(request, 'list.html',{'custom':custom, 'count':count, 'max_page':max_page,'data':data})
+
+
+# Game List
+def game_list(request):
+	sort=DEFAULT_LIST_PARAS['sort']
+	n_per=DEFAULT_LIST_PARAS['n_per']
+	page=DEFAULT_LIST_PARAS['page']
+	startdate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['startdate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
+	enddate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['enddate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
+	genres=[]
+	publishers=[]
+	platforms=[]
+	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES,'p':p,'c':c})
+
+	#except (TypeError, ValidationError) as error:
+	#	raise Http404(error)
+
+# Game List
+def src_game_list(request):
+	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
+	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
+	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
+	startdate=datetime.datetime.strptime(request.GET.get('startdate',DEFAULT_LIST_PARAS['startdate']),DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
+	enddate=datetime.datetime.strptime(request.GET.get('enddate',DEFAULT_LIST_PARAS['enddate']),DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
+	genres=request.GET.getlist('genre')
+	publishers=request.GET.getlist('publisher')
+	platforms=request.GET.getlist('platform')
+	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	return JsonResponse({'p': p,'c': c})
+
+	#except (TypeError, ValidationError) as error:
+	#	raise Http404(error)
+
 
 def view_item(request,custom,id):
 	try:
@@ -455,22 +502,6 @@ def view_item(request,custom,id):
 		return JsonResponse(data)
 	except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
 		raise Http404(error)
-
-# Game List
-def game_list(request):
-	sort=int(request.GET.get('sort',0)) 
-	n_per=int(request.GET.get('n_per',9))
-	page=int(request.GET.get('page',1))
-	startdate=request.GET.get('startdate','01/01/0000')
-	enddate=request.GET.get('enddate','31/12/9999')
-	genres=request.GET.getlist('genre')
-	publishers=request.GET.getlist('genre')
-	platforms=request.GET.getlist('platform')
-	count,max_page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
-	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
-
-	#except (TypeError, ValidationError) as error:
-	#	raise Http404(error)
 
 # Game Detail
 def game_detail(request,id):
