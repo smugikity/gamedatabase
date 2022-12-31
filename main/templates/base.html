@@ -20,52 +20,52 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-danger">
 		<div class="container">
-		  <a class="navbar-brand" href="/">GD</a>
+		  <a class="navbar-brand" href="/">Game Database <3</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
 		  <div class="collapse navbar-collapse" id="navbarNav">
-		  	<form class="form-inline my-2 my-lg-0" action="/search">
+		  	{% comment %} <form class="form-inline my-2 my-lg-0" action="/search">
 		      <div class="input-group">
 					<input name="q" type="text" class="form-control" placeholder="search" />
 					<div class="input-group-append">
 						<button class="btn btn-dark" type="submit" id="button-addon2">Search</button>
 					</div>
 				</div>
-		    </form>
+		    </form> {% endcomment %}
 		    <ul class="navbar-nav ms-auto">
 				<li class="nav-item">
 					<a class="nav-link text-white" href="/">Home</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link text-white" href="{% url 'category-list' %}">Search</a>
+					<a class="nav-link text-white" href="{% url 'game-list' %}">Game</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link text-white" href="{% url 'list' 'genre' %}">Genre</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link text-white" href="{% url 'list' 'publisher' %}">Publisher</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link text-white" href="{% url 'list' 'platform' %}">Platform</a>
+				<li class="nav-item dropdown">
+					<a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'list' 'genre' %}">Genre</a>
+						<a class="dropdown-item" href="{% url 'list' 'publisher' %}">Publisher</a>
+						<a class="dropdown-item" href="{% url 'list' 'developer' %}">Developer</a>
+						<a class="dropdown-item" href="{% url 'list' 'platform' %}">Platform</a>
+					</div>
 				</li>
 				{% comment %} <li class="nav-item">
 				<a class="nav-link text-white" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Collection (<span class="cart-list">{{request.session.cartdata|length}}</span>)</a>
 				</li> {% endcomment %}
-		      <li class="nav-item dropdown">
-		        <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		          <i class="fa fa-user"></i> My Account
-		        </a>
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		        {% if user.is_authenticated %}
-		        	<a class="dropdown-item" href="{% url 'my_dashboard' %}">Dashboard</a>
-		        	<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-	        	{% else %}
-	        		<a class="dropdown-item" href="{% url 'login' %}">Login</a>
-		          <a class="dropdown-item" href="{% url 'signup' %}">Signup</a>
-		        {% endif %}
-		        </div>
-		      </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="fa fa-user"></i> My Account
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					{% if user.is_authenticated %}
+						<a class="dropdown-item" href="{% url 'my_dashboard' %}">Dashboard</a>
+						<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+					{% else %}
+						<a class="dropdown-item" href="{% url 'login' %}">Login</a>
+					<a class="dropdown-item" href="{% url 'signup' %}">Signup</a>
+					{% endif %}
+					</div>
+				</li>
 		    </ul>
 		  </div>
 		</div>

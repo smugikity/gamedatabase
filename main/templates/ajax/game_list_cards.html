@@ -1,0 +1,16 @@
+{% if data %}
+    {% for item in data %}
+        <div class="col-lg-4 col-md-6 pt-2">
+            <div class="card d-flex flex-column align-items-center" onclick='viewGame({{ item.id }});'">
+                <div class="product-name">{{ item.title }}</div>
+                <div class="card-img "> <img src="/media/{{item.image}}" alt=""> </div>
+                {% comment %} <div class="card-body pt-4">
+                    <div class="d-flex align-items-center price">
+                    <div class="del mr-2"><span class="text-dark">5500 uah</span></div>
+                    <div class="font-weight-bold">4500 uah</div>
+                    </div>
+                </div> {% endcomment %}
+            </div>
+        </div>
+    {% endfor %}    
+{% endif %}

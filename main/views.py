@@ -24,7 +24,7 @@ from main import tools
 def home(request):
 	banners=Banner.objects.all().order_by('-id')
 	# data=Product.objects.filter(is_featured=True).order_by('-id')
-	random_games = tools.get_n_random_games(50)
+	random_games = tools.get_n_random_games(12)
 	return render(request,'index.html',{'data':random_games,'banners':banners})
 
 # Category
@@ -104,7 +104,7 @@ def game_search(request):
 	q=request.GET['q']
 	count,max_page,page,data = tools.get_game_search(q)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
-	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
 
 # Filter Data
@@ -478,7 +478,7 @@ def game_list(request):
 	platforms=[]
 	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
-	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES,'p':p,'c':c})
 
 	#except (TypeError, ValidationError) as error:
@@ -496,7 +496,7 @@ def src_game_list(request):
 	platforms=request.GET.getlist('platform')
 	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
-	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
 
 	#except (TypeError, ValidationError) as error:

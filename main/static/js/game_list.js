@@ -46,6 +46,7 @@ $(document).ready(function() {
     $('#reset-button').on("click", function() {
         $('.select2-class').val(null).trigger('change');
         $('#datepicker').datepicker('clearDates');
+        $('#search-text').val("");
     })
 
     $('#apply-button').on("click",function() {goToPage(current);});
@@ -110,4 +111,8 @@ function searchPage(term) {
         console.log(err);
         return;
     }
+}
+
+function viewGame(id) {
+    window.location.href = ('/view/game/'+id);
 }
