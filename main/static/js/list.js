@@ -1,47 +1,9 @@
 $(document).ready(function(){
-    max_page = $('#page-collections').attr('value');
+    current = 1;
     custom = $('#django-custom').val();
-    current = parseInt($('#django-page').val());
-    modalContainer = $('#modal-container')
-    $('#page-previous:first-child').on( "click", function() {goToPage(current-1);});
-    $('#page-next:first-child').on( "click", function() {goToPage(current+1);});
-    const templatePage1 = `<div class="page-item"><button class="page-link btn" type="button" onclick=goToPage(this.textContent)>`;
-    const templatePage1active = `<div class="page-item active"><button class="page-link btn" type="button">`;
-    const templatePage2 = `</button></div>`;
-    pages = "";
-    if (max_page<6) {
-        pages += renderPage(1,max_page);
-    } 
-    else {
-        if (current<4) {
-            pages += renderPage(1,4);
-            pages += renderEllipsis();
-            pages += renderPage(max_page,max_page);
-        } else if (current>max_page-3) {
-            pages += renderPage(1,1);
-            pages += renderEllipsis();
-            pages += renderPage(max_page-3,max_page);
-        } else {
-            pages += renderPage(1,1);
-            pages += renderEllipsis();
-            pages += renderPage(current-1,current+1);
-            pages += renderEllipsis();
-            pages += renderPage(max_page,max_page);
-        }
-    }
-    $(pages).insertBefore('#page-next');
-
-    function renderPage(start,end) {
-        var template = "";
-        for (let i=start; i<=end; i++) {
-            if (i === current) {template += templatePage1active + i + templatePage2;}
-            else {template += templatePage1 + i + templatePage2;}
-        }
-        return template;
-    }
-    function renderEllipsis() {
-        return templatePage1 + "..." + templatePage2;
-    }
+    modalContainer = $('#modal-container');
+    pageSection = $("#page-section");
+    cardSection = $("#card-section");
     $("#viewModal").on("hidden.bs.modal", function () {
         modalContainer.empty();
     });
@@ -49,17 +11,40 @@ $(document).ready(function(){
 function truncate(str, n){
     return (str.length > n) ? str.slice(0, n-1) + '&hellip;' : str;
 };
+
+templatePage1 = `<div class="page-item"><button class="page-link btn" type="button" onclick=goToPage(this.textContent)>`;
+templatePage1active = `<div class="page-item active"><button class="page-link btn" type="button">`;
+templatePage2 = `</button></div>`;
 function goToPage(page) {
     try {
+        cardSection.empty();
+        $('#loading-img').show()
         page = parseInt(page);
         if (!isFinite(page) || page<1 || page>max_page) {throw "exceed";}
-        window.location.replace('/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page);
+        
+        $.ajax({
+			url: '/src/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page,
+			dataType:'json',
+			// beforeSend:function(){
+			// 	$(".ajaxLoader").show();
+			// },
+			success:function(res){
+				console.log(res);
+                $('#loading-img').hide()
+				pageSection.html(res.p);
+                cardSection.html(res.c);
+			//	$(".ajaxLoader").hide();
+			}
+		});
+
+        // window.location.replace('/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page);
     }
     catch(err) {
         console.log(err);
         return;
     }
 }
+
 const loading = `<img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px; margin-left: auto; 
 margin-right: auto; margin-top: auto; margin-bottom: auto;">`
 function viewCustomItem(id) {

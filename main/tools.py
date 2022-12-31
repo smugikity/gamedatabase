@@ -64,8 +64,8 @@ def get_list(custom,sort,n_per,page):
 	if (not models or (sort > 2 or sort < 0)): return None
 	count = models.objects.count()
 	max_page = ceil(count/n_per)
-	if (page<1): page = 1
-	if (max_page<page): page = max_page
+	if (page<1): page=1
+	if (page>max_page): page=max_page
 	start = n_per*(page-1); end = n_per*page
 	if (sort == 0):
 		data = models.objects.all().order_by('id').values('id','title','image')[start:end]
@@ -74,7 +74,7 @@ def get_list(custom,sort,n_per,page):
 	else:
 		data = models.objects.annotate(num=Count('game')).order_by('-num').values('id','title','image')[start:end]
 	
-	return count, max_page, data
+	return count, max_page, page, data
 
 def get_search(custom,term):
 	models = CUSTOM_LIST[custom]

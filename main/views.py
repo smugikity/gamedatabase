@@ -428,12 +428,26 @@ SORT_CHOICES = {
     2: "By popularity",
 	3: "By rating"
 }
+#default sort=0, n_per=9, page=1
 def custom_list(request,custom):
 	sort=int(request.GET.get('sort',0)) 
 	n_per=int(request.GET.get('n_per',9))
 	page=int(request.GET.get('page',1))
-	count,max_page,data = tools.get_list(custom,sort,n_per,page)
-	return render(request, 'list.html',{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]}, 'sort': sort, 'n_per': n_per, 'cur_page': page, 'count':count, 'max_page':max_page,'data':data})
+	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	return render(request, 'list.html',
+	{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]},'p':p,'c':c})
+
+def custom_src_list(request,custom):
+	sort=int(request.GET.get('sort',0)) 
+	n_per=int(request.GET.get('n_per',9))
+	page=int(request.GET.get('page',1))
+	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	return JsonResponse({'p': p,'c': c})
+#	return render(request, 'list.html',{'custom':custom, 'count':count, 'max_page':max_page,'data':data})
 
 def view_item(request,custom,id):
 	try:

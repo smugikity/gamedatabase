@@ -1,0 +1,49 @@
+<div id="page-collections" class="pagination d-flex align-items-center" value="{{ max_page }}">
+    <div class="font-weight-bold mx-1">({{ count }})</div>
+    <div class="page-item" id="page-previous"> 
+        <button class="page-link btn" type="button" aria-label="Previous"> <span aria-hidden="true" class="font-weight-bold">&lt;</span> <span class="sr-only">Previous</span> </button> 
+    </div>
+    <div class="page-item" id="page-next"> 
+        <button class="page-link btn" type="button" aria-label="Next"> <span aria-hidden="true" class="font-weight-bold">&gt;</span> <span class="sr-only">Next</span> </button> 
+    </div>
+</div>
+<script type="text/javascript">
+    max_page = {{ max_page }};
+    current = {{ page }};
+    $('#page-previous:first-child').on( "click", function() {goToPage(current-1);});
+    $('#page-next:first-child').on( "click", function() {goToPage(current+1);});
+    pages = "";
+    if (max_page<6) {
+        pages += renderPage(1,max_page);
+    } 
+    else {
+        if (current<4) {
+            pages += renderPage(1,4);
+            pages += renderEllipsis();
+            pages += renderPage(max_page,max_page);
+        } else if (current>max_page-3) {
+            pages += renderPage(1,1);
+            pages += renderEllipsis();
+            pages += renderPage(max_page-3,max_page);
+        } else {
+            pages += renderPage(1,1);
+            pages += renderEllipsis();
+            pages += renderPage(current-1,current+1);
+            pages += renderEllipsis();
+            pages += renderPage(max_page,max_page);
+        }
+    }
+    $(pages).insertBefore('#page-next');
+
+    function renderPage(start,end) {
+        var template = "";
+        for (let i=start; i<=end; i++) {
+            if (i === current) {template += templatePage1active + i + templatePage2;}
+            else {template += templatePage1 + i + templatePage2;}
+        }
+        return template;
+    }
+    function renderEllipsis() {
+        return templatePage1 + "..." + templatePage2;
+    } 
+</script>
