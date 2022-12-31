@@ -43,13 +43,14 @@ urlpatterns=[
     path('edit-profile',views.edit_profile, name='edit-profile'),
 
     # Edited
-    path('game/<int:id>',views.game_detail,name='game-detail'),
     path('list/<str:custom>',views.custom_list,name='list'),
     path('src/list/<str:custom>',views.src_custom_list,name='src-list'),
-    path('search/<str:custom>',views.search,name='search'),
-    path('view/<str:custom>/<int:id>',views.view_item,name='view'),
     path('game-list',views.game_list,name='game-list'),
     path('src/game-list',views.src_game_list,name='src-game-list'),
+    path('search/<str:custom>',views.search,name='search'),
+    path('game-search',views.game_search,name='game-search'),
+    path('view/<str:custom>/<int:id>',views.view_item,name='view'),
+    path('view/game/<int:id>',views.game_detail,name='game-detail'),
     path('404',views.handler404,name='404'),
 ]
 

@@ -100,6 +100,13 @@ def search(request,custom):
 	total_count, items=tools.get_search(custom,q)
 	return JsonResponse({"total_count":total_count,"items":items})
 
+def game_search(request):
+	q=request.GET['q']
+	count,max_page,page,data = tools.get_game_search(q)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	return JsonResponse({'p': p,'c': c})
+
 # Filter Data
 def filter_data(request):
 	colors=request.GET.getlist('color[]')

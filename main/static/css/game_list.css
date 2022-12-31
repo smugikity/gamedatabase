@@ -32,7 +32,7 @@ button.btn.btn-hide {
 #sort,#n_per {
   width: 130px;
 }
-#sort,#n_per,#datepicker input,.select2-filter {
+#sort,#n_per,#datepicker input,.select2-filter,.form-control {
   outline: none;
   padding: 6px 6px;
   margin: 0px 4px;
@@ -40,7 +40,7 @@ button.btn.btn-hide {
   font-size: 0.85rem;
 }
 
-#n_per,#datepicker input,.select2-filter {
+#n_per,#datepicker input,.select2-filter,.form-control {
   border: 1px solid #777;
 }
 
@@ -49,6 +49,13 @@ button.btn.btn-hide {
   color: #333;
   font-weight: 700;
   text-align: end;
+}
+
+input.form-control:focus{
+	box-shadow: none;
+	border: 1.5px solid #E3E6ED;
+	background-color: #F7F8FD;
+	letter-spacing: 1px;
 }
 
 label {
@@ -77,7 +84,7 @@ label {
   font-size: 0.82rem;
 }
 .card-img {
-    height: 240px;
+  height: 240px;
 	margin-top: 10px;
 	width: 100%;
 	position: relative;

@@ -83,6 +83,16 @@ def get_search(custom,term):
 	data = list(data)
 	return len(data), data
 
+def get_game_search(term):
+	subquery1 = Genre.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(id=F("id"), title=F("title"))).values_list("data")
+	subquery2= Developer.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(id=F("id"), title=F("title"))).values_list("data")
+	subquery3 = Platform.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(id=F("id"), title=F("title"))).values_list("data")
+	data = Game.objects.filter(title__istartswith=term).annotate(genre_list=ArraySubquery(subquery1)).annotate(dev_list=ArraySubquery(subquery2)).annotate(plat_list=ArraySubquery(subquery3)).order_by('-id').values('id','title','image','avg_rating','genre_list','dev_list','plat_list')
+	count = len(data)
+	if (count==0): max_page=0
+	else: max_page=1
+	return count, max_page, 1, data
+
 def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms):
 	if (sort > 3 or sort < 0): return None
 	query =  Q(release_date__gte=startdate) & Q(release_date__lte=enddate)

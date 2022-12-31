@@ -39,10 +39,15 @@ $(document).ready(function() {
     pageSection = $("#page-section");
     cardSection = $("#card-section");
 
+    $('#search-button').on("click", function() {
+        searchPage($('#search-text').val());
+    })
+
     $('#reset-button').on("click", function() {
         $('.select2-class').val(null).trigger('change');
         $('#datepicker').datepicker('clearDates');
     })
+
     $('#apply-button').on("click",function() {goToPage(current);});
 });	
 
@@ -65,6 +70,30 @@ function goToPage(page) {
         $('#select2-platform').select2('data').forEach(platform => {url_string += '&platform='+platform.id});
         $.ajax({
 			url: url_string,
+			dataType:'json',
+			// beforeSend:function(){
+			// 	$(".ajaxLoader").show();
+			// },
+			success:function(res){
+				console.log(res);
+                $('#loading-img').hide()
+				pageSection.html(res.p);
+                cardSection.html(res.c);
+			}
+		});
+    }
+    catch(err) {
+        console.log(err);
+        return;
+    }
+}
+
+function searchPage(term) {
+    try {
+        cardSection.empty();
+        $('#loading-img').show()
+        $.ajax({
+			url: '/game-search?q='+term,
 			dataType:'json',
 			// beforeSend:function(){
 			// 	$(".ajaxLoader").show();
