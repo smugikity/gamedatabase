@@ -100,12 +100,20 @@ def search(request,custom):
 	total_count, items=tools.get_search(custom,q)
 	return JsonResponse({"total_count":total_count,"items":items})
 
-def game_search(request):
+def custom_search_list(request,custom):
+	q=request.GET['q']
+	count,max_page,page,data = tools.get_custom_search(custom,q)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	return JsonResponse({'p': p,'c': c})
+
+def game_search_list(request):
 	q=request.GET['q']
 	count,max_page,page,data = tools.get_game_search(q)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
 	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
+	
 
 # Filter Data
 def filter_data(request):
@@ -441,8 +449,8 @@ DEFAULT_LIST_PARAS = {
 	'n_per': 9,
 	'page': 1,
 	'startdate': '01/01/1000',
-	'enddate': '31/12/9999',
-	'date_format_src': '%d/%m/%Y',
+	'enddate': '12/31/9999',
+	'date_format_src': '%m/%d/%Y',
 	'date_format_dest': '%Y-%m-%d',
 }
 #default sort=0, n_per=9, page=1

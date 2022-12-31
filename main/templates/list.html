@@ -3,6 +3,7 @@
 {% block content %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}" />
 <script type="text/javascript" src="{% static 'js/list.js' %}"></script>
 {% verbatim modal %}
 <!-- Modal -->
@@ -23,8 +24,8 @@
 
 <div class="bg-white rounded d-flex flex-wrap mt-5" id="header"> 
 		<div class="d-flex align-items-center">
-			<button class="btn btn-hide text-uppercase" type="submit" id="filter-btn"> 
-				<span id="btn-txt">Sort</span> <span class="fa fa-angle-right" id="filter-angle"></span>
+			<button class="btn btn-hide text-uppercase" type="button" data-toggle="collapse" data-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn"> 
+				<span class="fa fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> 
 			</button>
 		</div>
 		<div class="d-flex align-items-center"> 
@@ -55,15 +56,41 @@
 </div>
 
 
-<div id="content" class="mx-0 my-3">
-	<!--Custom card list-->
-	<div id="loading-img"  class="text-center" style="display: none;">
-		<img src="/media/loading.gif" class= " mx-auto d-block" alt="Loading" style="width: 200px; height: 200px; ">
+<div id="content" class="d-flex align-items-start mx-0 my-5"/>
+	<!--Filters start-->
+	<div id="filterbar" class="collapse w-25">
+		<div class="box border-bottom">
+			<div class="input-group">
+				<input id="search-text" type="text" class="form-control">
+				<div class="input-group-append"><button id="search-button" class="btn btn-primary" type="button"><i class="fa fa-search"></i></button></div>
+			</div>
+		</div>
+		<div class="box">
+			<div class="form-group text-center">
+				<div class="btn-group d-flex flex-wrap"> 
+					<button type="button" id="reset-button" class="btn btn-success form-check-label"> 
+						Reset
+					</button> 
+					<button type="button" id="apply-button" class="btn btn-success form-check-label active"> 
+						Apply
+					</button> 
+				</div>
+			</div>
+			{% comment %} <div> <label class="tick">New <input type="checkbox" checked="checked"> <span class="check"></span> </label> </div>
+			<div> <label class="tick">Sale <input type="checkbox"> <span class="check"></span> </label> </div> {% endcomment %}
+		</div>
 	</div>
-	<div id="card-section" class="row px-4">
-		{% autoescape off %}
-			{{ c }}
-		{% endautoescape %}
+
+	<!--Custom card list-->
+	<div class="px-3 flex-grow-1 w-75">
+		<div id="loading-img" class="text-center" style="display: none;">
+			<img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px;">
+		</div>
+		<div id="card-section" class="row">
+			{% autoescape off %}
+					{{ c }}
+			{% endautoescape %}
+		</span>
 	</div>
 </div>
 </main>

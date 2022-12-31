@@ -7,6 +7,15 @@ $(document).ready(function(){
     $("#viewModal").on("hidden.bs.modal", function () {
         modalContainer.empty();
     });
+    $('#search-button').on("click", function() {
+        searchPage($('#search-text').val());
+    })
+    $('#reset-button').on("click", function() {
+        $('.select2-class').val(null).trigger('change');
+        $('#datepicker').datepicker('clearDates');
+        $('#search-text').val("");
+    })
+    $('#apply-button').on("click",function() {goToPage(current);});
 });	
 function truncate(str, n){
     return (str.length > n) ? str.slice(0, n-1) + '&hellip;' : str;
@@ -69,4 +78,28 @@ function viewCustomItem(id) {
         },
         error: (error) => {console.log(error);}
       });
+}
+
+function searchPage(term) {
+    try {
+        cardSection.empty();
+        $('#loading-img').show()
+        $.ajax({
+			url: '/custom-search/'+custom+'?q='+term,
+			dataType:'json',
+			// beforeSend:function(){
+			// 	$(".ajaxLoader").show();
+			// },
+			success:function(res){
+				console.log(res);
+                $('#loading-img').hide()
+				pageSection.html(res.p);
+                cardSection.html(res.c);
+			}
+		});
+    }
+    catch(err) {
+        console.log(err);
+        return;
+    }
 }
