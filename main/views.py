@@ -24,8 +24,9 @@ from main import tools
 def home(request):
 	banners=Banner.objects.all().order_by('-id')
 	# data=Product.objects.filter(is_featured=True).order_by('-id')
-	random_games = tools.get_n_random_games(12)
-	return render(request,'index.html',{'data':random_games,'banners':banners})
+	data = tools.get_n_random_games(9)
+	c=render_to_string('ajax/game_list_cards.html',{'data':data})
+	return render(request,'index.html',{'c':c,'banners':banners})
 
 # Category
 def category_list(request):

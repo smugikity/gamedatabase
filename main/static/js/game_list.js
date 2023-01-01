@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    //list pages start
+    pageSection = $("#page-section");
+    cardSection = $("#card-section");
+    //list pages end
+
     $('#datepicker').datepicker();
     //Select2 
     $('.select2-class').select2({
@@ -35,10 +40,6 @@ $(document).ready(function() {
     }
     //End select 2
 
-    current = 1;
-    pageSection = $("#page-section");
-    cardSection = $("#card-section");
-
     $('#search-button').on("click", function() {
         searchPage($('#search-text').val());
     })
@@ -52,9 +53,14 @@ $(document).ready(function() {
     $('#apply-button').on("click",function() {goToPage(current);});
 });	
 
-templatePage1 = `<div class="page-item"><button class="page-link btn" type="button" onclick=goToPage(this.textContent)>`;
-templatePage1active = `<div class="page-item active"><button class="page-link btn" type="button">`;
-templatePage2 = `</button></div>`;
+function viewGameItem(id) {
+    window.location.href = ('/view/game/'+id);
+}
+
+//list pages start
+const templatePage1 = `<div class="page-item"><button class="page-link btn" type="button" onclick=goToPage(this.textContent)>`;
+const templatePage1active = `<div class="page-item active"><button class="page-link btn" type="button">`;
+const templatePage2 = `</button></div>`;
 function goToPage(page) {
     try {
         cardSection.empty();
@@ -88,7 +94,6 @@ function goToPage(page) {
         return;
     }
 }
-
 function searchPage(term) {
     try {
         cardSection.empty();
@@ -112,7 +117,5 @@ function searchPage(term) {
         return;
     }
 }
+//list pages end
 
-function viewGame(id) {
-    window.location.href = ('/view/game/'+id);
-}

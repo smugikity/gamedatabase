@@ -46,7 +46,10 @@
 	<!-- Featured Games -->
 	<h3 class="my-4 border-bottom pb-1">Featured Games</h3>
 	<div class="row">
-    {% for game in data %}
+    {% autoescape off %}
+					{{ c }}
+    {% endautoescape %}
+    {% comment %} {% for game in data %}
 		<div class="col-md-3 mb-4">
       <div class="thumb-wrapper">
         <span class="wish-icon"><i class="fa fa-heart"></i></span>
@@ -57,7 +60,7 @@
           <h4 class="text-danger"><strong>{{game.title}}</strong></h4>		
           <h5 class="text-danger">{{game.avg_rating}}<small class="text-muted"> ({{game.n_ratings}})</small></h5>					
           <ul class="list-inline mt-4">
-            {% for genre in game.primary_genres %}
+            {% for genre in game.genre_list.all|slice:"0:3" %}
             <li class="list-inline-item">{{genre.title}}</li> 
             {% endfor %}
           </ul>
@@ -66,7 +69,7 @@
       </div>
 
 		</div>
-    {% endfor %}
+    {% endfor %} {% endcomment %}
 	</div>
 	<p class="my-4 text-center"><a href="{% url 'game-list' %}" class="btn btn-dark btn-sm">All Games <i class="fa fa-long-arrow-alt-right"></i></a></p>
 </main>
