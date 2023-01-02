@@ -181,7 +181,8 @@ class Profile(models.Model):
     bio = models.TextField(default='Hi! I\'m using Game Database. <3')
     country = models.CharField(max_length=60,default='Russia',null=True,blank=True)
     
-    
+    class Meta:
+        verbose_name_plural='Profiles'
     def __str__(self):
         return self.user.username
 

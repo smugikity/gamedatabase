@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Banner,Category,Brand,Color,Size,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment,ACTIVE,INACTIVE,PRIVATE
+from .models import Banner,Category,Brand,Color,Size,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment,Profile,ACTIVE,INACTIVE,PRIVATE
 from django.contrib import messages
 from django.utils.translation import ngettext
 
@@ -107,5 +107,9 @@ admin.site.register(Rating,RatingAdmin)
 class CommentAdmin(admin.ModelAdmin):
 	list_display=('id','user','game','content')
 admin.site.register(Comment,CommentAdmin)
+
+class ProfileAdmin(admin.ModelAdmin):
+	list_display=('id','user','image','bio','country')
+admin.site.register(Profile,ProfileAdmin)
 
 

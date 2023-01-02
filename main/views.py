@@ -336,6 +336,12 @@ def handler404(request, exception, template_name='404.html'):
     response.status_code = 404
     return response
 
+@login_required
+def self_profile(request):
+	if (request.user.is_authenticated):
+		return profile(request,request.user.username)
+	else: return Http404()
+
 def profile(request, username):
 	user = User.objects.get(username=username)
 	try:
