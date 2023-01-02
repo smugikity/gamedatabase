@@ -1,25 +1,4 @@
 $(document).ready(function() {
-    //list pages start
-    pageSection = $("#page-section");
-    cardSection = $("#card-section");
-    //list pages end
-    try {
-        $.ajax({
-            url: '/src/game-list',
-            dataType:'json',
-            success:function(res){
-                console.log(res);
-                $('#loading-img').hide()
-                pageSection.html(res.p);
-                cardSection.html(res.c);
-            }
-        });
-    }
-    catch(err) {
-        console.log(err);
-        return;
-    }
-
     $('#datepicker').datepicker();
     //Select2 
     $('.select2-class').select2({
@@ -72,6 +51,15 @@ $(document).ready(function() {
         searching = 0;
         goToPage(current);
     });
+    //list pages start
+    pageSection = $("#page-section");
+    cardSection = $("#card-section");
+    //list pages end
+    select2Genre=$('#select2-genre');
+    select2Publisher=$('#select2-publisher');
+    select2Platform=$('#select2-platform');
+    searching=0;
+    goToPage(1);
 });	
 
 //list pages start
@@ -84,18 +72,29 @@ function goToPage(page) {
         $('#loading-img').show()
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
+
+        var url_string = '/src/game-list?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page;
+        const startdate = $('#datepicker-start').datepicker('getFormattedDate');
+        if (startdate) url_string += '&startdate='+startdate;
+        const enddate = $('#datepicker-end').datepicker('getFormattedDate');
+        if (enddate) url_string += '&enddate='+enddate;
+        select2Genre.select2('data').forEach(genre => {url_string += '&genre='+genre.id});
+        select2Publisher.select2('data').forEach(publisher => {url_string += '&publisher='+publisher.id});
+        select2Platform.select2('data').forEach(platform => {url_string += '&platform='+platform.id});
+
         term = searchText.val().trim();
         if (searching && term !== "") {
-            url='/game-search?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
+            url_string+='&q='+term;
         }
-        else url='/src/game-list?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page
+        
         $.ajax({
-            url: url,
+            url: url_string,
             dataType:'json',
             // beforeSend:function(){
             // 	$(".ajaxLoader").show();
             // },
             success:function(res){
+                
                 console.log(res);
                 $('#loading-img').hide()
                 pageSection.html(res.p);

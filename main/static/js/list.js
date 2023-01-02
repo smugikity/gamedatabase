@@ -1,28 +1,4 @@
 $(document).ready(function() {
-    //list pages start
-    pageSection = $('#page-section');
-    cardSection = $('#card-section');
-    //list pages end
-    try {
-        $.ajax({
-            url: '/src/list/'+custom,
-            dataType:'json',
-            // beforeSend:function(){
-            // 	$(".ajaxLoader").show();
-            // },
-            success:function(res){
-                console.log(res);
-                $('#loading-img').hide()
-                pageSection.html(res.p);
-                cardSection.html(res.c);
-            }
-        });
-    }
-    catch(err) {
-        console.log(err);
-        return;
-    }
-
     modalContainer = $('#modal-container');
     $("#viewModal").on("hidden.bs.modal", function () {
         modalContainer.empty();
@@ -41,6 +17,31 @@ $(document).ready(function() {
         searching = 0;
         goToPage(current);
     });
+    //list pages start
+    pageSection = $('#page-section');
+    cardSection = $('#card-section');
+    //list pages end
+    searching=0;    
+    goToPage(1);
+    // try {
+    //     $.ajax({
+    //         url: '/src/list/'+custom,
+    //         dataType:'json',
+    //         // beforeSend:function(){
+    //         // 	$(".ajaxLoader").show();
+    //         // },
+    //         success:function(res){
+    //             console.log(res);
+    //             $('#loading-img').hide()
+    //             pageSection.html(res.p);
+    //             cardSection.html(res.c);
+    //         }
+    //     });
+    // }
+    // catch(err) {
+    //     console.log(err);
+    //     return;
+    // }
 });	
 
 

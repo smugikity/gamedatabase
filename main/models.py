@@ -330,6 +330,7 @@ class Rating(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     game=models.ForeignKey(Game,on_delete=models.CASCADE)
     review_rating=models.SmallIntegerField(choices=RATING,max_length=150)
+    review_title=models.CharField(max_length=200,blank=True)
     review_text=models.TextField(blank=True)
 
     class Meta:

@@ -31,7 +31,7 @@
 {% endfor %}
  
 <script type="text/javascript">
-{% comment %} {% if user.is_authenticated %} {% endcomment %}
+{% if is_authenticated %}
 $('.wish-icon i').on("click", function() {
     id = $(this).attr('value')
     if ($(this).hasClass("fa-heart")) {
@@ -65,7 +65,7 @@ $('.wish-icon i').on("click", function() {
     }
     $(this).toggleClass('fa-heart fa-heart-o');
 })
-{% comment %} {% endif %} {% endcomment %}
+{% endif %}
 function viewGameItem(id) {
     window.location.href = ('/view/game/'+id);
 }

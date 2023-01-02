@@ -404,7 +404,7 @@ def src_game_list(request):
 	else: count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,user=user)
 	print(data)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
-	c=render_to_string('ajax/game_list_cards.html',{'data':data})
+	c=render_to_string('ajax/game_list_cards.html',{'data':data,'is_authenticated':request.user.is_authenticated})
 	return JsonResponse({'p': p,'c': c})
 
 	#except (TypeError, ValidationError) as error:
@@ -445,7 +445,7 @@ def game_search_list(request):
 		count,max_page,page,data = tools.get_game_search(sort,n_per,page,q,model_list=PersonalList.objects.get(pk=int(list_id)).game,user=user)
 	else: count,max_page,page,data = tools.get_game_search(sort,n_per,page,q,user=user)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
-	c=render_to_string('ajax/game_list_cards.html',{'data':data})
+	c=render_to_string('ajax/game_list_cards.html',{'data':data,'is_authenticated':request.user.is_authenticated})
 	return JsonResponse({'p': p,'c': c})
 
 # Personal List
