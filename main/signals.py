@@ -15,15 +15,16 @@ def remove_all_sessions(sender, user, request, **kwargs):
     if user is not None:
         Session.objects.filter(usersession__user=user).delete()
 
-user_logged_in.connect(remove_other_sessions)
-user_logged_out.connect(remove_all_sessions)
-
-@receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-        PersonalList.objects.create(user=instance)
+        PersonalList.objects.create(user=instance,title="Wishlist")
+        print("Created user with profile and wishlist")
 
-@receiver(post_save, sender=User)
-def save_profile(sender, instance, **kwargs):
-    instance.profile.save()
+user_logged_in.connect(remove_other_sessions)
+user_logged_out.connect(remove_all_sessions)
+post_save.connect(create_profile, sender=User)
+
+# @receiver(post_save, sender=User)
+# def save_profile(sender, instance, **kwargs):
+#     instance.profile.save()

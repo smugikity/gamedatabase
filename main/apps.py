@@ -4,4 +4,4 @@ from suit.apps import DjangoSuitConfig
 class MainConfig(AppConfig):
     name = 'main'
     def ready(self):
-        from main import signals  
+        from main import signals

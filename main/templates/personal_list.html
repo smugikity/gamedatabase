@@ -7,12 +7,14 @@
 <link rel="stylesheet" type="text/css" href="{% static 'resources/datepicker/datepicker.min.css' %}"/>
 <script type="text/javascript" src="{% static 'resources/datepicker/datepicker.min.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}" />
-<script type="text/javascript" src="{% static 'js/game_list.js' %}"></script>
+<script type="text/javascript">const list_id = {{ list_id }};</script>
+<script type="text/javascript" src="{% static 'js/personal_list.js' %}"></script>
 
 
 <main class="container my-4">
 
-<h3 class="my-4 border-bottom pb-1"><span class="text-muted">List of </span>Games</h3>
+<h3 class="my-4 border-bottom pb-1"><span class="text-muted">{{ owned_user }}'s </span>{{ list_title }}</h3>
+<div>{{ list_description }}</div>
 
 <div class="bg-white rounded d-flex flex-wrap mt-5" id="header"> 
 	<div class="d-flex align-items-center">

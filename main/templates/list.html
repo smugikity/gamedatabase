@@ -2,8 +2,9 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}"/>
+<script type="text/javascript">const custom = "{{ custom }}";</script>
 <script type="text/javascript" src="{% static 'js/list.js' %}"></script>
 {% verbatim modal %}
 <!-- Modal -->
@@ -44,14 +45,8 @@
 				{{ custom }}: <input style="width:100%;" type="number" name="n_per" id="pro" min="1" max="15" value="9" onchange="goToPage(current);"/>
 			</div>
 		</div>
-		<!--hidden field for custom-->
-		<div>
-			<input type="hidden" value="{{ custom }}" id="django-custom"/>
-		</div>
 		<div id="page-section" class="ms-auto mr-2">
-			{% autoescape off %}
-				{{ p }}
-			{% endautoescape %}
+
 		</div>	
 </div>
 
@@ -83,13 +78,11 @@
 
 	<!--Custom card list-->
 	<div class="px-3 flex-grow-1 w-75">
-		<div id="loading-img" class="text-center" style="display: none;">
+		<div id="loading-img" class="text-center">
 			<img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px;">
 		</div>
 		<div id="card-section" class="row">
-			{% autoescape off %}
-					{{ c }}
-			{% endautoescape %}
+
 		</span>
 	</div>
 </div>

@@ -44,14 +44,19 @@ urlpatterns=[
     path('game-list',views.game_list,name='game-list'),
     path('src/game-list',views.src_game_list,name='src-game-list'),
     path('search/<str:custom>',views.search,name='search'),
-    path('custom-search/<str:custom>',views.custom_search_list,name='custom-search'),
-    path('game-search',views.game_search_list,name='game-search'),
+    path('src/custom-search/<str:custom>',views.custom_search_list,name='custom-search'),
+    path('src/game-search',views.game_search_list,name='game-search'),
     path('view/<str:custom>/<int:id>',views.view_item,name='view'),
     path('view/game/<int:id>',views.game_detail,name='game-detail'),
     re_path(r'profile/(?P<username>\w+)/$',views.profile,name='profile'),
-    path('p-list/<int:id>',views.personal_list,name='personal-list'),
     path('404',views.handler404,name='404'),
-
+    #Personal list
+    path('p-list/<int:id>',views.personal_list,name='personal-list'),
+    path('p-list/<int:id>/add',views.personal_list_add,name='personal-list-add'),
+    path('p-list/<int:id>/remove',views.personal_list_remove,name='personal-list-remove'),
+    path('p-list/wishlist',views.wishlist,name='personal-list'),
+    path('p-list/wishlist/add',views.wishlist_add,name='personal-list-add'),
+    path('p-list/wishlist/remove',views.wishlist_remove,name='personal-list-remove'),
 ]
 
 if settings.DEBUG:

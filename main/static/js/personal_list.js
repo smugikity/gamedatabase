@@ -1,3 +1,4 @@
+const addon_url = 'list_id='+list_id;
 $(document).ready(function() {
     //list pages start
     pageSection = $("#page-section");
@@ -5,9 +6,9 @@ $(document).ready(function() {
     //list pages end
     try {
         $.ajax({
-            url: '/src/game-list',
+            url: '/src/game-list'+'?'+addon_url,
             dataType:'json',
-            success:function(res){
+            success:function(res) {
                 console.log(res);
                 $('#loading-img').hide()
                 pageSection.html(res.p);
@@ -86,9 +87,9 @@ function goToPage(page) {
         if (!isFinite(page) || page<1) {throw "exceed";}
         term = searchText.val().trim();
         if (searching && term !== "") {
-            url='/game-search?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
+            url='/src/game-search?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term+'&'+addon_url;
         }
-        else url='/src/game-list?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page
+        else url='/src/game-list?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&'+addon_url;
         $.ajax({
             url: url,
             dataType:'json',

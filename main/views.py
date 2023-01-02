@@ -88,34 +88,7 @@ def product_detail(request,slug,id):
 	avg_reviews= ProductReview.objects.filter(product=product).aggregate(avg_rating=Avg('review_rating'))
 	# End
 
-	return render(request, 'product_detail.html',{'data':product,'related':related_products,'colors':colors,'sizes':sizes,'reviewForm':reviewForm,'canAdd':canAdd,'reviews':reviews,'avg_reviews':avg_reviews})
-
-# Search
-def search(request,custom):
-	q=request.GET.get('q')
-	total_count, items=tools.get_search(custom,q)
-	return JsonResponse({"total_count":total_count,"items":items})
-
-def custom_search_list(request,custom):
-	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
-	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
-	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
-	q=request.GET.get('q')
-	count,max_page,page,data = tools.get_custom_search(custom,sort,n_per,page,q)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
-	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
-	return JsonResponse({'p': p,'c': c})
-
-def game_search_list(request):
-	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
-	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
-	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
-	q=request.GET.get('q')
-	count,max_page,page,data = tools.get_game_search(sort,n_per,page,q)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
-	c=render_to_string('ajax/game_list_cards.html',{'data':data})
-	return JsonResponse({'p': p,'c': c})
-	
+	return render(request, 'product_detail.html',{'data':product,'related':related_products,'colors':colors,'sizes':sizes,'reviewForm':reviewForm,'canAdd':canAdd,'reviews':reviews,'avg_reviews':avg_reviews})	
 
 # Filter Data
 def filter_data(request):
@@ -387,59 +360,25 @@ DEFAULT_LIST_PARAS = {
 	'enddate': '12/31/9999',
 	'date_format_src': '%m/%d/%Y',
 	'date_format_dest': '%Y-%m-%d',
+	'wishlist_id': 0,
 }
 #default sort=0, n_per=9, page=1
 def custom_list(request,custom):
-	sort=DEFAULT_LIST_PARAS['sort']
-	n_per=DEFAULT_LIST_PARAS['n_per']
-	page=DEFAULT_LIST_PARAS['page']
-	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
-	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
 	return render(request, 'list.html',
-	{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]},'p':p,'c':c})
+	{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]}})
 
 def src_custom_list(request,custom):
 	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
 	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
 	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
-	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
+	count,max_page,page,data = tools.get_custom_list(custom,sort,n_per,page)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
 	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
 
-
 # Game List
 def game_list(request):
-	sort=DEFAULT_LIST_PARAS['sort']
-	n_per=DEFAULT_LIST_PARAS['n_per']
-	page=DEFAULT_LIST_PARAS['page']
-	startdate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['startdate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
-	enddate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['enddate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
-	genres=[]
-	publishers=[]
-	platforms=[]
-	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
-	c=render_to_string('ajax/game_list_cards.html',{'data':data})
-	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES,'p':p,'c':c})
-
-	#except (TypeError, ValidationError) as error:
-	#	raise Http404(error)
-
-def personal_list(request):
-	sort=DEFAULT_LIST_PARAS['sort']
-	n_per=DEFAULT_LIST_PARAS['n_per']
-	page=DEFAULT_LIST_PARAS['page']
-	startdate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['startdate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
-	enddate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['enddate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
-	genres=[]
-	publishers=[]
-	platforms=[]
-	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
-	c=render_to_string('ajax/game_list_cards.html',{'data':data})
-	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES,'p':p,'c':c})
+	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES})
 
 # Game List
 def src_game_list(request):
@@ -451,7 +390,13 @@ def src_game_list(request):
 	genres=request.GET.getlist('genre')
 	publishers=request.GET.getlist('publisher')
 	platforms=request.GET.getlist('platform')
-	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
+	if (request.user.is_authenticated): user=request.user
+	else: user=None
+	list_id=request.GET.get('list_id')
+	if list_id:
+		count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,model_list=PersonalList.objects.get(pk=int(list_id)).game,user=user)
+	else: count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,user=user)
+	print(data)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
 	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
@@ -459,13 +404,94 @@ def src_game_list(request):
 	#except (TypeError, ValidationError) as error:
 	#	raise Http404(error)
 
-
 def view_item(request,custom,id):
 	try:
 		data = tools.get_custom_item(custom,id)
 		return JsonResponse(data)
 	except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
 		raise Http404(error)
+
+# Search
+def search(request,custom):
+	q=request.GET.get('q')
+	total_count, items=tools.get_search(custom,q)
+	return JsonResponse({"total_count":total_count,"items":items})
+
+def custom_search_list(request,custom):
+	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
+	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
+	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
+	q=request.GET.get('q')
+	count,max_page,page,data = tools.get_custom_search(custom,sort,n_per,page,q)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
+	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
+	return JsonResponse({'p': p,'c': c})
+
+def game_search_list(request):
+	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
+	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
+	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
+	q=request.GET.get('q')
+	if (request.user.is_authenticated): user=request.user
+	else: user=None
+	list_id=request.GET.get('list_id')
+	if list_id:
+		count,max_page,page,data = tools.get_game_search(sort,n_per,page,q,model_list=PersonalList.objects.get(pk=int(list_id)).game,user=user)
+	else: count,max_page,page,data = tools.get_game_search(sort,n_per,page,q,user=user)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
+	c=render_to_string('ajax/game_list_cards.html',{'data':data})
+	return JsonResponse({'p': p,'c': c})
+
+# Personal List
+def personal_list(request,id):
+	# try:
+	list = get_list_object_if_wishlist(request,id)
+	return render(request, 'personal_list.html',{'sort_choice': SORT_CHOICES,'list_id':list.id,'list_title':list.title,'list_description':list.description,'owned_user':list.user.username})
+	# except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
+	# 	raise Http404(error)
+	
+@login_required
+def personal_list_add(request,id):
+	try:
+		list = get_list_object_if_wishlist(request,id)
+		game_id = int(request.GET.get('game'))
+		if (request.user.is_authenticated) and (request.user.id == list.user.id) and (game_id):
+			if Game.objects.filter(pk=game_id).exists(): 
+				list.game.add(game_id)
+				return HttpResponse()
+		else: raise ValueError
+	except (ObjectDoesNotExist,MultipleObjectsReturned,ValueError) as error:
+		return Http404(error)
+
+@login_required
+def personal_list_remove(request,id):
+	try:
+		list = get_list_object_if_wishlist(request,id)
+		game_id = int(request.GET.get('game'))
+		if (request.user.is_authenticated) and (request.user.id == list.user.id) and (game_id):
+			if Game.objects.filter(pk=game_id).exists(): 
+				list.game.remove(game_id)
+				return HttpResponse()
+			else: raise ObjectDoesNotExist
+		else: raise ValueError
+	except (ObjectDoesNotExist,MultipleObjectsReturned,ValueError) as error:
+		return Http404(error)
+
+def get_list_object_if_wishlist(request,id):
+	if (id==DEFAULT_LIST_PARAS['wishlist_id']):
+		id=PersonalList.objects.filter(user=request.user).first().id
+	return PersonalList.objects.get(pk=id)
+	
+# Wishlist
+@login_required
+def wishlist(request):
+	return personal_list(request,DEFAULT_LIST_PARAS['wishlist_id'])
+@login_required
+def wishlist_add(request):
+	return personal_list_add(request,DEFAULT_LIST_PARAS['wishlist_id'])
+@login_required
+def wishlist_remove(request):
+	return personal_list_remove(request,DEFAULT_LIST_PARAS['wishlist_id'])
 
 # Game Detail
 def game_detail(request,id):

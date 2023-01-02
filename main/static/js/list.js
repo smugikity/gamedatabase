@@ -1,11 +1,28 @@
 $(document).ready(function() {
-    searching = 0;
     //list pages start
     pageSection = $('#page-section');
     cardSection = $('#card-section');
     //list pages end
+    try {
+        $.ajax({
+            url: '/src/list/'+custom,
+            dataType:'json',
+            // beforeSend:function(){
+            // 	$(".ajaxLoader").show();
+            // },
+            success:function(res){
+                console.log(res);
+                $('#loading-img').hide()
+                pageSection.html(res.p);
+                cardSection.html(res.c);
+            }
+        });
+    }
+    catch(err) {
+        console.log(err);
+        return;
+    }
 
-    custom = $('#django-custom').val();
     modalContainer = $('#modal-container');
     $("#viewModal").on("hidden.bs.modal", function () {
         modalContainer.empty();
@@ -72,7 +89,7 @@ function goToPage(page) {
         if (!isFinite(page) || page<1) {throw "exceed";}
         term = searchText.val().trim();
         if (searching && term !== "") {
-            url='/custom-search/'+custom+'?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
+            url='/src/custom-search/'+custom+'?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
         }
         else url='/src/list/'+custom+'?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page
         $.ajax({

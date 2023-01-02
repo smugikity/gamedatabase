@@ -3,7 +3,13 @@
 {% for game in data %}
     <div class="col-lg-4 col-md-6 pt-2">
         <div class="card d-flex flex-column align-items-center">
-            <span class="wish-icon"><i class="fa fa-heart"></i></span>
+            <span class="wish-icon">
+                {% if game.is_favorited %}
+                    <i class="fa fa-heart" value="{{ game.id }}"></i>
+                {% else %}
+                    <i class="fa fa-heart-o" value="{{ game.id }}"></i>
+                {% endif %}
+            </span>
             <div class="card-img d-flex justify-content-center" onclick='viewGameItem({{ game.id }});'> <img class="rounded" src="/media/{{ game.image }}" alt="image"></div>
             <div class="card-content" onclick='viewGameItem({{ game.id }});'>
                 <div class="text-danger"><strong>{{ game.title }}</strong></div>		
@@ -22,13 +28,44 @@
             </div> {% endcomment %}
         </div>
     </div>
-{% endfor %}   
-<script>
-$(document).ready(function(){
-    $(".wish-icon i").click(function(){
-        $(this).toggleClass("fa-heart fa-heart-o");
-    });
-});
+{% endfor %}
+ 
+<script type="text/javascript">
+{% comment %} {% if user.is_authenticated %} {% endcomment %}
+$('.wish-icon i').on("click", function() {
+    id = $(this).attr('value')
+    if ($(this).hasClass("fa-heart")) {
+        try {
+            $.ajax({
+                url: '/p-list/wishlist/remove?game='+id,
+                success:function(res) {
+                    console.log(res);
+                    
+                }
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return;
+        }
+    } else {
+        try {
+            $.ajax({
+                url: '/p-list/wishlist/add?game='+id,
+                success:function(res) {
+                    console.log(res);
+                    
+                }
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return;
+        }
+    }
+    $(this).toggleClass('fa-heart fa-heart-o');
+})
+{% comment %} {% endif %} {% endcomment %}
 function viewGameItem(id) {
     window.location.href = ('/view/game/'+id);
 }

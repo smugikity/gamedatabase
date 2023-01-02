@@ -1,5 +1,5 @@
-from main.models import Game, Rating, Developer, Publisher, Platform, Genre 
-from django.db.models import Max,Min,Count,Avg,Q,OuterRef,F
+from main.models import Game, Rating, Developer, Publisher, Platform,Genre,PersonalList
+from django.db.models import Max,Min,Count,Avg,Q,OuterRef,F,Exists
 from django.db.models.functions import Lower,JSONObject
 from django.contrib.postgres.expressions import ArraySubquery
 import numpy as np
@@ -36,16 +36,21 @@ def get_custom_search(custom,sort,n_per,page,term):
 	query_list = models.objects.filter(title__istartswith=term)
 	return get_by_page(query_list,sort,n_per,page,False)
 
-def get_game_search(sort,n_per,page,term):
-	query_list = Game.objects.filter(title__istartswith=term).annotate(n_ratings=Count('rating')).annotate(genre_list=ArraySubquery(subquery_game_genre)).annotate(dev_list=ArraySubquery(subquery_game_developer)).annotate(plat_list=ArraySubquery(subquery_game_platform))
-	return get_by_page(query_list,sort,n_per,page,True)
+def get_game_search(sort,n_per,page,term,model_list=Game.objects,user=None):
+	query_list = model_list.filter(title__istartswith=term).annotate(n_ratings=Count('rating')).annotate(genre_list=ArraySubquery(subquery_game_genre))#.annotate(dev_list=ArraySubquery(subquery_game_developer)).annotate(plat_list=ArraySubquery(subquery_game_platform))
+	# favorited annotate check if its in wishlist (for heart button)
+	if user: 
+		wishlist_id = PersonalList.objects.filter(user=user).first().id
+		s_query = PersonalList.objects.filter(pk=wishlist_id,game__id=OuterRef("pk"))
+		query_list = query_list.annotate(is_favorited=Exists(s_query))
+	return get_by_page(query_list,sort,n_per,page,True,user=user)
 
-def get_list(custom,sort,n_per,page):
+def get_custom_list(custom,sort,n_per,page):
 	models = CUSTOM_LIST[custom]
 	query_list = models.objects.all()
 	return get_by_page(query_list,sort,n_per,page,False)
 
-def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms):
+def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,model_list=Game.objects,user=None):
 	if (sort > 3 or sort < 0): return None
 	query =  Q(release_date__gte=startdate) & Q(release_date__lte=enddate)
 	if (len(genres)>0):
@@ -60,10 +65,15 @@ def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
 		query &= Q(platform__id=platforms[0])
 		for thing in platforms[1:]:
 			query |= Q(platform__id=thing)
-	query_list = Game.objects.filter(query).annotate(n_ratings=Count('rating')).annotate(genre_list=ArraySubquery(subquery_game_genre)).annotate(dev_list=ArraySubquery(subquery_game_developer)).annotate(plat_list=ArraySubquery(subquery_game_platform))
-	return get_by_page(query_list,sort,n_per,page,True)
+	query_list = model_list.filter(query).annotate(n_ratings=Count('rating')).annotate(genre_list=ArraySubquery(subquery_game_genre))#.annotate(dev_list=ArraySubquery(subquery_game_developer)).annotate(plat_list=ArraySubquery(subquery_game_platform))
+	# favorited annotate check if its in wishlist (for heart button)
+	if user: 
+		wishlist_id = PersonalList.objects.filter(user=user).first().id
+		s_query = PersonalList.objects.filter(pk=wishlist_id,game__id=OuterRef("pk"))
+		query_list = query_list.annotate(is_favorited=Exists(s_query))
+	return get_by_page(query_list,sort,n_per,page,True,user=user)
 
-def get_by_page(query_list,sort,n_per,page,is_game):
+def get_by_page(query_list,sort,n_per,page,is_game,user=None):
 	count = query_list.count()
 	max_page = ceil(count/n_per)
 	if (max_page==0): return 0,1,1,[]
@@ -79,7 +89,9 @@ def get_by_page(query_list,sort,n_per,page,is_game):
 	elif (is_game and sort == 3):
 		data = query_list.order_by('-avg_rating')[start:end]
 	else: return None
-	if (is_game): return count,max_page,page,data.values('id','title','image','avg_rating','n_ratings','genre_list','dev_list','plat_list')
+	if (is_game): 
+		if (user):return count,max_page,page,data.values('id','title','image','avg_rating','n_ratings','genre_list','is_favorited') #,'dev_list','plat_list'
+		else: return count,max_page,page,data.values('id','title','image','avg_rating','n_ratings','genre_list') #,'dev_list','plat_list'
 	else: return count,max_page,page,data.values('id','title','image')
 	 
 def get_custom_item(custom,id):
