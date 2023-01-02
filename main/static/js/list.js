@@ -1,4 +1,5 @@
-$(document).ready(function(){
+$(document).ready(function() {
+    searching = 0;
     //list pages start
     pageSection = $('#page-section');
     cardSection = $('#card-section');
@@ -9,15 +10,20 @@ $(document).ready(function(){
     $("#viewModal").on("hidden.bs.modal", function () {
         modalContainer.empty();
     });
+    searchText = $('#search-text');
+    sort = $('#sort');
+    n_per = $('#pro');
     $('#search-button').on("click", function() {
-        searchPage($('#search-text').val());
+        searching = 1;
+        goToPage(1);
     })
     $('#reset-button').on("click", function() {
-        $('.select2-class').val(null).trigger('change');
-        $('#datepicker').datepicker('clearDates');
         $('#search-text').val("");
     })
-    $('#apply-button').on("click",function() {goToPage(current);});
+    $('#apply-button').on("click",function() {
+        searching = 0;
+        goToPage(current);
+    });
 });	
 
 
@@ -64,9 +70,13 @@ function goToPage(page) {
         $('#loading-img').show()
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
-        
+        term = searchText.val().trim();
+        if (searching && term !== "") {
+            url='/custom-search/'+custom+'?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
+        }
+        else url='/src/list/'+custom+'?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page
         $.ajax({
-            url: '/src/list/'+custom+'?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page,
+            url: url,
             dataType:'json',
             // beforeSend:function(){
             // 	$(".ajaxLoader").show();
@@ -84,27 +94,3 @@ function goToPage(page) {
         return;
     }
 }
-function searchPage(term) {
-    try {
-        cardSection.empty();
-        $('#loading-img').show()
-        $.ajax({
-			url: '/custom-search/'+custom+'?q='+term,
-			dataType:'json',
-			// beforeSend:function(){
-			// 	$(".ajaxLoader").show();
-			// },
-			success:function(res){
-				console.log(res);
-                $('#loading-img').hide()
-				pageSection.html(res.p);
-                cardSection.html(res.c);
-			}
-		});
-    }
-    catch(err) {
-        console.log(err);
-        return;
-    }
-}
-//list pages end

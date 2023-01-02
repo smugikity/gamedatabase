@@ -174,6 +174,17 @@ class UserAddressBook(models.Model):
 
 #Edited
 
+# Extending User Model Using a One-To-One Link
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='profile_imgs/default.png', upload_to='profile_imgs')
+    bio = models.TextField(default='Hi! I\'m using Game Database. <3')
+    country = models.CharField(max_length=60,default='Russia',null=True,blank=True)
+    
+    
+    def __str__(self):
+        return self.user.username
+
 # User session
 class UserSession(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -231,7 +242,7 @@ class Publisher(models.Model):
 
     def image_tag(self):
         if self.image:
-            return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
+            return mark_safe('<img src="%s" width="50" height="50"/>' % (self.image.url))
 
 # Developer
 class Developer(models.Model):
@@ -294,7 +305,7 @@ class Game(models.Model):
 
 # Personal List
 class PersonalList(models.Model):
-    title=models.CharField(max_length=200)
+    title=models.CharField(max_length=200,blank=False,null=False)
     description=models.TextField()
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     game=models.ManyToManyField(Game,blank=True)

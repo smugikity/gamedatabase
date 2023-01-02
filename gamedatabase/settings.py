@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -141,10 +140,6 @@ DATE_FORMAT = "d/m/Y"
 DATETIME_INPUT_FORMATS=[
     '%d/%m/%y',
 ]
-
-PAYPAL_RECEIVER_EMAIL = 'sb-c5xgx6555500@business.example.com'
-PAYPAL_TEST = True
-
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

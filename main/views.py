@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.http import JsonResponse,HttpResponse,HttpResponseNotFound,Http404
-from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment
+from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment,Profile
 from django.db.models import Max,Min,Count,Avg
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist,MultipleObjectsReturned
 from django.db.models.functions import ExtractMonth
 from django.template.loader import render_to_string
@@ -9,13 +10,7 @@ from main.forms import SignupForm,ReviewAdd,AddressBookForm,ProfileForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from django.forms import ValidationError
-#paypal
-from django.urls import reverse
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from paypal.standard.forms import PayPalPaymentsForm
 import datetime
-
 from main import tools
 
 # Game info - basic info of a game to present in catalog 
@@ -97,21 +92,27 @@ def product_detail(request,slug,id):
 
 # Search
 def search(request,custom):
-	q=request.GET['q']
+	q=request.GET.get('q')
 	total_count, items=tools.get_search(custom,q)
 	return JsonResponse({"total_count":total_count,"items":items})
 
 def custom_search_list(request,custom):
-	q=request.GET['q']
-	count,max_page,page,data = tools.get_custom_search(custom,q)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
+	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
+	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
+	q=request.GET.get('q')
+	count,max_page,page,data = tools.get_custom_search(custom,sort,n_per,page,q)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
 	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
 
 def game_search_list(request):
-	q=request.GET['q']
-	count,max_page,page,data = tools.get_game_search(q)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
+	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
+	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
+	q=request.GET.get('q')
+	count,max_page,page,data = tools.get_game_search(sort,n_per,page,q)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
 	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
 	
@@ -211,27 +212,6 @@ def update_cart_item(request):
 	t=render_to_string('ajax/cart-list.html',{'cart_data':request.session['cartdata'],'totalitems':len(request.session['cartdata']),'total_amt':total_amt})
 	return JsonResponse({'data':t,'totalitems':len(request.session['cartdata'])})
 
-#Chart
-def chart(request):
-	colors=request.GET.getlist('color[]')
-	categories=request.GET.getlist('category[]')
-	brands=request.GET.getlist('brand[]')
-	sizes=request.GET.getlist('size[]')
-	minRating=request.GET['minRating']
-	allProducts=Product.objects.all().order_by('-id').distinct()
-	allProducts=allProducts.filter(productattribute__price__gte=minPrice)
-	allProducts=allProducts.filter(productattribute__price__lte=maxPrice)
-	if len(colors)>0:
-		allProducts=allProducts.filter(productattribute__color__id__in=colors).distinct()
-	if len(categories)>0:
-		allProducts=allProducts.filter(category__id__in=categories).distinct()
-	if len(brands)>0:
-		allProducts=allProducts.filter(brand__id__in=brands).distinct()
-	if len(sizes)>0:
-		allProducts=allProducts.filter(productattribute__size__id__in=sizes).distinct()
-	t=render_to_string('ajax/product-list.html',{'data':allProducts})
-	return JsonResponse({'data':t})
-
 # Signup Form
 def signup(request):
 	if request.method=='POST':
@@ -246,61 +226,6 @@ def signup(request):
 	else:
 		form=SignupForm
 	return render(request, 'registration/signup.html', {'form':form})
-
-
-# Checkout
-@login_required
-def checkout(request):
-	total_amt=0
-	totalAmt=0
-	if 'cartdata' in request.session:
-		for p_id,item in request.session['cartdata'].items():
-			totalAmt+=int(item['qty'])*float(item['price'])
-		# Order
-		order=CartOrder.objects.create(
-				user=request.user,
-				total_amt=totalAmt
-			)
-		# End
-		for p_id,item in request.session['cartdata'].items():
-			total_amt+=int(item['qty'])*float(item['price'])
-			# OrderItems
-			items=CartOrderItems.objects.create(
-				order=order,
-				invoice_no='INV-'+str(order.id),
-				item=item['title'],
-				image=item['image'],
-				qty=item['qty'],
-				price=item['price'],
-				total=float(item['qty'])*float(item['price'])
-				)
-			# End
-		# Process Payment
-		host = request.get_host()
-		paypal_dict = {
-		    'business': settings.PAYPAL_RECEIVER_EMAIL,
-		    'amount': total_amt,
-		    'item_name': 'OrderNo-'+str(order.id),
-		    'invoice': 'INV-'+str(order.id),
-		    'currency_code': 'USD',
-		    'notify_url': 'http://{}{}'.format(host,reverse('paypal-ipn')),
-		    'return_url': 'http://{}{}'.format(host,reverse('payment_done')),
-		    'cancel_return': 'http://{}{}'.format(host,reverse('payment_cancelled')),
-		}
-		form = PayPalPaymentsForm(initial=paypal_dict)
-		address=UserAddressBook.objects.filter(user=request.user,status=True).first()
-		return render(request, 'checkout.html',{'cart_data':request.session['cartdata'],'totalitems':len(request.session['cartdata']),'total_amt':total_amt,'form':form,'address':address})
-
-@csrf_exempt
-def payment_done(request):
-	returnData=request.POST
-	return render(request, 'payment-success.html',{'data':returnData})
-
-
-@csrf_exempt
-def payment_canceled(request):
-	return render(request, 'payment-fail.html')
-
 
 # Save Review
 def save_review(request,pid):
@@ -438,6 +363,15 @@ def handler404(request, exception, template_name='404.html'):
     response.status_code = 404
     return response
 
+def profile(request, username):
+	user = User.objects.get(username=username)
+	try:
+		prof = Profile.objects.get(user=user)
+	except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
+		prof = Profile(user=user)
+		prof.save()
+	finally:
+		return render(request,'profile.html',{'user':user, 'profile': prof})
 
 SORT_CHOICES = {
     0: "By default",
@@ -460,7 +394,7 @@ def custom_list(request,custom):
 	n_per=DEFAULT_LIST_PARAS['n_per']
 	page=DEFAULT_LIST_PARAS['page']
 	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
 	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
 	return render(request, 'list.html',
 	{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]},'p':p,'c':c})
@@ -470,7 +404,7 @@ def src_custom_list(request,custom):
 	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
 	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
 	count,max_page,page,data = tools.get_list(custom,sort,n_per,page)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
 	c=render_to_string('ajax/custom_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
 
@@ -486,12 +420,26 @@ def game_list(request):
 	publishers=[]
 	platforms=[]
 	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
 	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES,'p':p,'c':c})
 
 	#except (TypeError, ValidationError) as error:
 	#	raise Http404(error)
+
+def personal_list(request):
+	sort=DEFAULT_LIST_PARAS['sort']
+	n_per=DEFAULT_LIST_PARAS['n_per']
+	page=DEFAULT_LIST_PARAS['page']
+	startdate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['startdate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
+	enddate=datetime.datetime.strptime(DEFAULT_LIST_PARAS['enddate'],DEFAULT_LIST_PARAS['date_format_src']).strftime(DEFAULT_LIST_PARAS['date_format_dest']) 
+	genres=[]
+	publishers=[]
+	platforms=[]
+	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
+	c=render_to_string('ajax/game_list_cards.html',{'data':data})
+	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES,'p':p,'c':c})
 
 # Game List
 def src_game_list(request):
@@ -504,7 +452,7 @@ def src_game_list(request):
 	publishers=request.GET.getlist('publisher')
 	platforms=request.GET.getlist('platform')
 	count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms)
-	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page})
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
 	c=render_to_string('ajax/game_list_cards.html',{'data':data})
 	return JsonResponse({'p': p,'c': c})
 

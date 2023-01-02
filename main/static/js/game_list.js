@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    searching = 0;
     //list pages start
     pageSection = $("#page-section");
     cardSection = $("#card-section");
@@ -40,22 +41,23 @@ $(document).ready(function() {
     }
     //End select 2
 
+    searchText = $('#search-text');
+    sort = $('#sort');
+    n_per = $('#pro');
     $('#search-button').on("click", function() {
-        searchPage($('#search-text').val());
+        searching = 1;
+        goToPage(1);
     })
-
     $('#reset-button').on("click", function() {
         $('.select2-class').val(null).trigger('change');
         $('#datepicker').datepicker('clearDates');
         $('#search-text').val("");
     })
-
-    $('#apply-button').on("click",function() {goToPage(current);});
+    $('#apply-button').on("click",function() {
+        searching = 0;
+        goToPage(current);
+    });
 });	
-
-function viewGameItem(id) {
-    window.location.href = ('/view/game/'+id);
-}
 
 //list pages start
 const templatePage1 = `<div class="page-item"><button class="page-link btn" type="button" onclick=goToPage(this.textContent)>`;
@@ -67,55 +69,28 @@ function goToPage(page) {
         $('#loading-img').show()
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
-        var url_string = '/src/game-list?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page;
-        const startdate = $('#datepicker-start').datepicker('getFormattedDate');
-        if (startdate) url_string += '&startdate='+startdate;
-        const enddate = $('#datepicker-end').datepicker('getFormattedDate');
-        if (enddate) url_string += '&enddate='+enddate;
-        $('#select2-genre').select2('data').forEach(genre => {url_string += '&genre='+genre.id});
-        $('#select2-publisher').select2('data').forEach(publisher => {url_string += '&publisher='+publisher.id});
-        $('#select2-platform').select2('data').forEach(platform => {url_string += '&platform='+platform.id});
+        term = searchText.val().trim();
+        if (searching && term !== "") {
+            url='/game-search?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
+        }
+        else url='/src/game-list?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page
         $.ajax({
-			url: url_string,
-			dataType:'json',
-			// beforeSend:function(){
-			// 	$(".ajaxLoader").show();
-			// },
-			success:function(res){
-				console.log(res);
+            url: url,
+            dataType:'json',
+            // beforeSend:function(){
+            // 	$(".ajaxLoader").show();
+            // },
+            success:function(res){
+                console.log(res);
                 $('#loading-img').hide()
-				pageSection.html(res.p);
+                pageSection.html(res.p);
                 cardSection.html(res.c);
-			}
-		});
+            }
+        });
     }
     catch(err) {
         console.log(err);
         return;
     }
 }
-function searchPage(term) {
-    try {
-        cardSection.empty();
-        $('#loading-img').show()
-        $.ajax({
-			url: '/game-search?q='+term,
-			dataType:'json',
-			// beforeSend:function(){
-			// 	$(".ajaxLoader").show();
-			// },
-			success:function(res){
-				console.log(res);
-                $('#loading-img').hide()
-				pageSection.html(res.p);
-                cardSection.html(res.c);
-			}
-		});
-    }
-    catch(err) {
-        console.log(err);
-        return;
-    }
-}
-//list pages end
 

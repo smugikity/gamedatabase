@@ -1,4 +1,4 @@
-from django.urls import path,include
+from django.urls import path,include,re_path
 from . import views
 
 from django.conf import settings
@@ -20,10 +20,6 @@ urlpatterns=[
     path('delete-from-cart',views.delete_cart_item,name='delete-from-cart'),
     path('update-cart',views.update_cart_item,name='update-cart'),
     path('accounts/signup',views.signup,name='signup'),
-    path('checkout',views.checkout,name='checkout'),
-    path('paypal/', include('paypal.standard.ipn.urls')),
-    path('payment-done/', views.payment_done, name='payment_done'),
-    path('payment-cancelled/', views.payment_canceled, name='payment_cancelled'),
     path('save-review/<int:pid>',views.save_review, name='save-review'),
     # User Section Start
     path('my-dashboard',views.my_dashboard, name='my_dashboard'),
@@ -52,7 +48,10 @@ urlpatterns=[
     path('game-search',views.game_search_list,name='game-search'),
     path('view/<str:custom>/<int:id>',views.view_item,name='view'),
     path('view/game/<int:id>',views.game_detail,name='game-detail'),
+    re_path(r'profile/(?P<username>\w+)/$',views.profile,name='profile'),
+    path('p-list/<int:id>',views.personal_list,name='personal-list'),
     path('404',views.handler404,name='404'),
+
 ]
 
 if settings.DEBUG:

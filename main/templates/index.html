@@ -3,22 +3,15 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/index.css' %}"/>
-<script>
-	$(document).ready(function(){
-		$(".wish-icon i").click(function(){
-			$(this).toggleClass("fa-heart fa-heart-o");
-		});
-	});	
-</script>
 <!-- Home Slider -->
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
     {% for banner in banners %}
-    {% if forloop.counter == 1 %}
-    <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}" class="active"></li>
-    {% else %}
-    <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}"></li>
-    {% endif %}
+      {% if forloop.counter == 1 %}
+      <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}" class="active"></li>
+      {% else %}
+      <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"></li>
+      {% endif %}
     {% endfor %}
   </ol>
   <div class="carousel-inner">
@@ -49,27 +42,6 @@
     {% autoescape off %}
 					{{ c }}
     {% endautoescape %}
-    {% comment %} {% for game in data %}
-		<div class="col-md-3 mb-4">
-      <div class="thumb-wrapper">
-        <span class="wish-icon"><i class="fa fa-heart"></i></span>
-        <div class="img-box">
-          <img src="/media/{{game.image}}" class="img-responsive img-game" alt=""/>									
-        </div>
-        <div class="thumb-content">
-          <h4 class="text-danger"><strong>{{game.title}}</strong></h4>		
-          <h5 class="text-danger">{{game.avg_rating}}<small class="text-muted"> ({{game.n_ratings}})</small></h5>					
-          <ul class="list-inline mt-4">
-            {% for genre in game.genre_list.all|slice:"0:3" %}
-            <li class="list-inline-item">{{genre.title}}</li> 
-            {% endfor %}
-          </ul>
-          <a href="#" class="btn btn-primary">View game</a>
-        </div>						
-      </div>
-
-		</div>
-    {% endfor %} {% endcomment %}
 	</div>
 	<p class="my-4 text-center"><a href="{% url 'game-list' %}" class="btn btn-dark btn-sm">All Games <i class="fa fa-long-arrow-alt-right"></i></a></p>
 </main>
