@@ -46,9 +46,8 @@ urlpatterns=[
     path('search/<str:custom>',views.search,name='search'),
     path('src/custom-search/<str:custom>',views.custom_search_list,name='custom-search'),
     path('src/game-search',views.game_search_list,name='game-search'),
-    path('view/<str:custom>/<int:id>',views.view_item,name='view'),
+    path('view/<int:model_id>/<int:id>',views.view_item,name='view'),
     path('view/game/<int:id>',views.game_detail,name='game-detail'),
-    path('self/',views.self_profile,name='self'),
     re_path(r'profile/(?P<username>\w+)/$',views.profile,name='profile'),
     path('404',views.handler404,name='404'),
     #Personal list

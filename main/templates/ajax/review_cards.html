@@ -1,0 +1,124 @@
+{% load static %}
+<style>
+.review-card {
+    cursor: default;
+    background: #fff;
+    width:100%;
+    border-radius: 6px;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+    word-break: break-word;
+}
+.review-card:hover {
+    box-shadow: 2px 2px 15px #fd9a6ce5;
+}
+.review-card .text-muted {
+    font-size: 0.82rem;
+}
+.review-card .card-content {
+    padding-top: 5px;
+    width: 100%;
+    position: relative;
+}
+.tags-container {
+    position: relative;
+    width: 100%;
+}
+.tags-container span {
+    border: 2px solid black;
+    border-radius: 4px;
+    display: inline-block;
+    font-size: 12px;
+    padding: 3px 10px;
+    margin: 5px;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.review-game-meta {
+    border-left: 3px solid #F57C00;
+    padding-left: 3px;
+    font-size: 1.3rem;
+}
+.review-game-title {
+    font-family: Vollkorn, serif;
+    font-size: 1.6rem;
+}
+
+.star-rating {
+    overflow:auto;
+    text-shadow: 1px 0px 3px black;
+    margin: 0;
+    padding: 0;
+}
+
+.star-rating li {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 30px;
+  list-style-type: none;
+  color: #818387;
+}
+.star-rating:hover .star,
+.star-rating.vote-cast .star {
+  color: #E40046;
+} 
+.star-rating:not(:hover) > .star.selected ~ .star, /* show gold star when clicked */
+/*.star-rating > .star:hover, /* hover current star */
+.star-rating > .star:hover ~ .star { color: #818387;  } /* hover previous stars in list */
+
+{% comment %} 
+.star-rating:not(.vote-cast):hover .star:hover ~ .star,
+.star-rating.vote-cast .star.selected ~ .star {color: black;}
+.star-rating > .star.selected + .star:hover, /* hover current star when changing rating */
+.star-rating > .star.selected ~ .star:hover,
+.star-rating > .star:hover ~ .star.selected ~ .star, /* lighten current selection */
+.star-rating > .star.selected ~ .star:hover ~ .star { color: #FFED85;  }  {% endcomment %}
+</style>
+
+<div class="card review-card d-flex flex-lg-row flex-sm-column text-start p-lg-3 p-sm-3">
+    <div class="d-flex flex-lg-column flex-sm-row p-3 m-1">
+        <img class="rounded" src="https://unsplash.it/200"/>
+        <p class="px-3 py-2">
+            <h6 class="card-title review-game-title">
+                <i class="fa fa-beer fa-flip-horizontal" style="color: #F57C00;"></i> 100<sup>th</sup> Barrel Imperial IPA<br>
+            </h6>
+            <span class="review-game-meta">
+                <strong>Brewed By:</strong> Strange Brewing<br>
+            </span>
+            <span class="review-game-meta">
+                <strong>Style:</strong> Imperial IPA<br>
+            </span>
+            <span class="review-game-meta text-nowrap">
+                <strong>Rating:</strong> 
+                <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+            </span>
+        </p>
+    </div>
+    <div class="card-body ">
+        <div>
+            <ul class="star-rating d-inline-flex">
+                <li class="star">&nbsp;</li>
+                <li class="star"><i class="fa fa-star"></i></li>
+                <li class="star"><i class="fa fa-star"></i></li>
+                <li class="star"><i class="fa fa-star"></i></li>
+                <li class="star"><i class="fa fa-star"></i></li>
+                <li class="star"><i class="fa fa-star"></i></li>
+                <li class="star">&nbsp;</li>
+            </ul>
+        </div>
+
+        <p>The tornado brew prays, but the bud light stumbly goes deep sea fishing with some Octoberfest near the coors light. When you see a power drill drink, it means that another Miller for the tornado brew leaves. A lager trembles, because a King Henry inside a blood clot learns a hard lesson from a Labatts about a pool table. 
+            Indeed, the tornado brew inside a Budweiser Select buries the molten Stella Artois.<br><br>Most people believe that the pin ball machine beyond the Brewers Reserve finds lice on the vaporized Bacardi Silver, but they need to remember how ridiculously a discusting rattlesnake prays. 
+            Now and then, another Pilsner caricatures a Corona Extra. Indeed, the blood clot inside the Miller gives the last beer to a pool table. Another greasy Budweiser Select organizes the bottle of beer beyond the Pilsner. A flabby Luna Sea ESB thoroughly has a change of heart about a smelly stein.
+        </p>
+    </div>
+</div>
+<script type="text/javascript">
+$('.star-rating li').on('click', function() {
+    var selectedCssClass = 'selected';
+    var $this = $(this);
+    $this.siblings('.' + selectedCssClass).removeClass(selectedCssClass);
+    $this.addClass(selectedCssClass).parent().addClass('vote-cast');
+});
+</script>

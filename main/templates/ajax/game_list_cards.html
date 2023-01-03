@@ -1,8 +1,11 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/card.css' %}"/>
+
+{% include 'ajax/modal.html' %}
+
+<link rel="stylesheet" href="{% static 'css/item_card.css' %}"/>
 {% for game in data %}
     <div class="col-lg-4 col-md-6 pt-2">
-        <div class="card d-flex flex-column align-items-center">
+        <div class="card item-card d-flex flex-column align-items-center">
             <span class="wish-icon">
                 {% if game.is_favorited %}
                     <i class="fa fa-heart" value="{{ game.id }}"></i>
@@ -10,13 +13,13 @@
                     <i class="fa fa-heart-o" value="{{ game.id }}"></i>
                 {% endif %}
             </span>
-            <div class="card-img d-flex justify-content-center" onclick='viewGameItem({{ game.id }});'> <img class="rounded" src="/media/{{ game.image }}" alt="image"></div>
-            <div class="card-content" onclick='viewGameItem({{ game.id }});'>
-                <div class="text-danger"><strong>{{ game.title }}</strong></div>		
+            <div class="item-card-img d-flex justify-content-center" onclick='viewGameItem({{ game.id }});'> <img class="rounded" src="/media/{{ game.image }}" alt="image"></div>
+            <div class="card-content">
+                <div class="text-danger" onclick='viewGameItem({{ game.id }});'><strong>{{ game.title }}</strong></div>		
                 <div class="text-danger">{{ game.avg_rating }}<small class="text-muted"> ({{ game.n_ratings }})</small></div>		
                 <div class="tags-container">
                     {% for genre in game.genre_list|slice:"0:3" %}
-                        <span>{{ genre.title }}</span>
+                        <span onclick='viewCustomItem({{ genre.model_id }},{{ genre.id }});' style="cursor: pointer;">{{ genre.title }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -29,9 +32,9 @@
         </div>
     </div>
 {% endfor %}
- 
-<script type="text/javascript">
+
 {% if is_authenticated %}
+<script type="text/javascript">
 $('.wish-icon i').on("click", function() {
     id = $(this).attr('value')
     if ($(this).hasClass("fa-heart")) {
@@ -65,8 +68,5 @@ $('.wish-icon i').on("click", function() {
     }
     $(this).toggleClass('fa-heart fa-heart-o');
 })
-{% endif %}
-function viewGameItem(id) {
-    window.location.href = ('/view/game/'+id);
-}
 </script>
+{% endif %}

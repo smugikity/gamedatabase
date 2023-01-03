@@ -1,4 +1,4 @@
-.card {
+.item-card {
     cursor: pointer;
     transition: 0.3s all ease-in-out;
     padding: 10px;
@@ -10,25 +10,25 @@
     box-shadow: 0 2px 3px rgba(0,0,0,0.2);
     word-break: break-word;
 }
-.card:hover {
+.item-card:hover {
     box-shadow: 2px 2px 15px #fd9a6ce5;
     transform: scale(1.02);
 }
-.card .text-muted {
+.item-card .text-muted {
     font-size: 0.82rem;
 }
-.card .card-content {
+.item-card .card-content {
 /*	height: 150px;*/
     padding-top: 5px;
 	width: 100%;
 	position: relative;
 }
-.card .card-img {
+.item-card .card-img {
     height: 240px;
     width: 100%;
     position: relative;
 }
-.card-img img {
+.item-card-img img {
     max-width: 100%;
     max-height: 100%;
     display: inline-block;

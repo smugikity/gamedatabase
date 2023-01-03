@@ -337,7 +337,7 @@ def handler404(request, exception, template_name='404.html'):
     return response
 
 @login_required
-def self_profile(request):
+def profile_self(request):
 	if (request.user.is_authenticated):
 		return profile(request,request.user.username)
 	else: return Http404()
@@ -402,7 +402,6 @@ def src_game_list(request):
 	if list_id:
 		count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,model_list=PersonalList.objects.get(pk=int(list_id)).game,user=user)
 	else: count,max_page,page,data = tools.get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,user=user)
-	print(data)
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':0})
 	c=render_to_string('ajax/game_list_cards.html',{'data':data,'is_authenticated':request.user.is_authenticated})
 	return JsonResponse({'p': p,'c': c})
@@ -410,9 +409,9 @@ def src_game_list(request):
 	#except (TypeError, ValidationError) as error:
 	#	raise Http404(error)
 
-def view_item(request,custom,id):
+def view_item(request,model_id,id):
 	try:
-		data = tools.get_custom_item(custom,id)
+		data = tools.get_custom_item(model_id,id)
 		return JsonResponse(data)
 	except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
 		raise Http404(error)
@@ -505,7 +504,7 @@ def game_detail(request,id):
 	genres=game.genre.values_list("id","title")
 	developers_query=game.developer
 	developers=developers_query.values_list("id","title")
-	publishers=developers_query.values_list("publisher__id","publisher_title")
+	publishers=developers_query.values_list("publisher__id","publisher__title")
 	platforms=game.platform.values_list("id","title")
 	# related_game=Game.objects.filter(genre=game.genre).exclude(id=id)[:4]
 

@@ -3,21 +3,8 @@
 {% block content %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}"/>
 <script type="text/javascript">const custom = "{{ custom }}";</script>
 <script type="text/javascript" src="{% static 'js/list.js' %}"></script>
-{% verbatim modal %}
-<!-- Modal -->
-<div class="modal" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg modal-dialog-centered">
-	<div class="modal-content">
-		<div class="modal-body movie-card-container d-flex" id="modal-container" style="word-break: break-word;">
-
-		</div>
-	</div>
-</div>
-</div>
-{% endverbatim modal %}
 
 <main class="container my-4">
 
@@ -83,7 +70,7 @@
 		</div>
 		<div id="card-section" class="row">
 
-		</span>
+		</div>
 	</div>
 </div>
 </main>

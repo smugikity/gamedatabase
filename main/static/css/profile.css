@@ -241,7 +241,8 @@ button.createbtn i {
 }
 
 .tab {
-  padding: 20px;
+  padding-left: 16px;
+  padding-right: 16px;
   width: 100%;
   text-align: center;
 }
