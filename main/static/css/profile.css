@@ -118,7 +118,6 @@ main {
 .main-bd {
   width: 100%;
   display: flex;
-  padding-right: 15px;
 }
 
 .profile-side {

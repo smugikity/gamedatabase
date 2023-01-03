@@ -1,4 +1,3 @@
-{% load static %}
 <style>
 .review-card {
     cursor: default;
@@ -46,7 +45,6 @@
 }
 
 .star-rating {
-    overflow:auto;
     text-shadow: 1px 0px 3px black;
     margin: 0;
     padding: 0;
@@ -55,7 +53,6 @@
 .star-rating li {
   cursor: pointer;
   display: inline-block;
-  font-size: 30px;
   list-style-type: none;
   color: #818387;
 }
@@ -76,10 +73,10 @@
 .star-rating > .star.selected ~ .star:hover ~ .star { color: #FFED85;  }  {% endcomment %}
 </style>
 
-<div class="card review-card d-flex flex-lg-row flex-sm-column text-start p-lg-3 p-sm-3">
-    <div class="d-flex flex-lg-column flex-sm-row p-3 m-1">
+<div class="card review-card d-flex flex-lg-row flex-sm-column text-start p-lg-3 p-sm-2 mb-3">
+    <div class="d-flex justify-content-center flex-lg-column flex-sm-row flex-wrap p-3 m-1">
         <img class="rounded" src="https://unsplash.it/200"/>
-        <p class="px-3 py-2">
+        <div class="px-3 py-2">
             <h6 class="card-title review-game-title">
                 <i class="fa fa-beer fa-flip-horizontal" style="color: #F57C00;"></i> 100<sup>th</sup> Barrel Imperial IPA<br>
             </h6>
@@ -93,10 +90,17 @@
                 <strong>Rating:</strong> 
                 <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
             </span>
-        </p>
+        </div>
     </div>
-    <div class="card-body ">
-        <div>
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h5 class="fw-bold align-self-end">I love dick</h5>
+            <div class="fs-6 lh-1" style="height:40px;">
+                by <span class="fw-bold text-primary"><a class="text-decoration-none" href="/~WrenCubes">WrenCubes</a></span>
+                <a href="/~WrenCubes"><img class="img-fluid rounded h-100" alt="Profile photo for WrenCubes" src="//e.snmc.io/i/75/w/d9a0d7a9429880feb9ba0285ec01798b/9249512"></a> 
+            </div>
+        </div>   
+        <div class="fs-5 lh-sm mb-2">
             <ul class="star-rating d-inline-flex">
                 <li class="star">&nbsp;</li>
                 <li class="star"><i class="fa fa-star"></i></li>
@@ -107,11 +111,13 @@
                 <li class="star">&nbsp;</li>
             </ul>
         </div>
-
-        <p>The tornado brew prays, but the bud light stumbly goes deep sea fishing with some Octoberfest near the coors light. When you see a power drill drink, it means that another Miller for the tornado brew leaves. A lager trembles, because a King Henry inside a blood clot learns a hard lesson from a Labatts about a pool table. 
-            Indeed, the tornado brew inside a Budweiser Select buries the molten Stella Artois.<br><br>Most people believe that the pin ball machine beyond the Brewers Reserve finds lice on the vaporized Bacardi Silver, but they need to remember how ridiculously a discusting rattlesnake prays. 
-            Now and then, another Pilsner caricatures a Corona Extra. Indeed, the blood clot inside the Miller gives the last beer to a pool table. Another greasy Budweiser Select organizes the bottle of beer beyond the Pilsner. A flabby Luna Sea ESB thoroughly has a change of heart about a smelly stein.
-        </p>
+        <div class="text-break">
+            <p>
+                The tornado brew prays, but the bud light stumbly goes deep sea fishing with some Octoberfest near the coors light. When you see a power drill drink, it means that another Miller for the tornado brew leaves. A lager trembles, because a King Henry inside a blood clot learns a hard lesson from a Labatts about a pool table. 
+                Indeed, the tornado brew inside a Budweiser Select buries the molten Stella Artois.<br><br>Most people believe that the pin ball machine beyond the Brewers Reserve finds lice on the vaporized Bacardi Silver, but they need to remember how ridiculously a discusting rattlesnake prays. 
+                Now and then, another Pilsner caricatures a Corona Extra. Indeed, the blood clot inside the Miller gives the last beer to a pool table. Another greasy Budweiser Select organizes the bottle of beer beyond the Pilsner. A flabby Luna Sea ESB thoroughly has a change of heart about a smelly stein.
+            </p>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
