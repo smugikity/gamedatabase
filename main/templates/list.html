@@ -11,30 +11,30 @@
 <h3 class="my-4 border-bottom pb-1"><span class="text-muted">List of </span>{{ custom }}</h3>
 
 <div class="bg-white rounded d-flex flex-wrap mt-5" id="header"> 
-		<div class="d-flex align-items-center">
-			<button class="btn btn-hide text-uppercase" type="button" data-toggle="collapse" data-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn"> 
-				<span class="fa fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> 
-			</button>
+	<div class="d-flex align-items-center">
+		<button class="btn btn-hide text-uppercase" type="button" data-toggle="collapse" data-target="#filterbar" aria-expanded="false" aria-controls="filterbar" id="filter-btn"> 
+			<span class="fa fa-angle-left" id="filter-angle"></span> <span id="btn-txt">Hide filters</span> 
+		</button>
+	</div>
+	<div class="d-flex align-items-center"> 
+		<select name="sort" id="sort" onchange="goToPage(current);">
+			{% for key,value in sort_choice.items %}
+				{% if forloop.first %}
+					<option value="{{ key }}" selected>{{ value }}</option>
+				{% else %}
+					<option value="{{ key }}">{{ value }}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+	</div>
+	<div class="d-inline-flex align-items-center">
+		<div class="d-inline-flex" id="n_per">
+			{{ custom }}: <input style="width:100%;" type="number" name="n_per" id="pro" min="1" max="15" value="9" onchange="goToPage(current);"/>
 		</div>
-		<div class="d-flex align-items-center"> 
-			<select name="sort" id="sort" onchange="goToPage(current);">
-				{% for key,value in sort_choice.items %}
-					{% if forloop.first %}
-						<option value="{{ key }}" selected>{{ value }}</option>
-					{% else %}
-						<option value="{{ key }}">{{ value }}</option>
-					{% endif %}
-				{% endfor %}
-			</select>
-		</div>
-		<div class="d-inline-flex align-items-center">
-			<div class="d-inline-flex" id="n_per">
-				{{ custom }}: <input style="width:100%;" type="number" name="n_per" id="pro" min="1" max="15" value="9" onchange="goToPage(current);"/>
-			</div>
-		</div>
-		<div id="page-section" class="ms-auto mr-2">
+	</div>
+	<div id="page-section" class="ms-auto mr-2">
 
-		</div>	
+	</div>	
 </div>
 
 

@@ -19,8 +19,11 @@ from main import tools
 def home(request):
 	banners=Banner.objects.all().order_by('-id')
 	# data=Product.objects.filter(is_featured=True).order_by('-id')
-	data = tools.get_n_random_games(9)
-	c=render_to_string('ajax/game_list_cards.html',{'data':data})
+	
+	if (request.user.is_authenticated): user=request.user
+	else: user=None
+	data = tools.get_n_random_games(9,user=user)
+	c=render_to_string('ajax/game_list_cards.html',{'data':data,'is_authenticated':request.user.is_authenticated})
 	return render(request,'index.html',{'c':c,'banners':banners})
 
 # Category
@@ -343,14 +346,14 @@ def profile_self(request):
 	else: return Http404()
 
 def profile(request, username):
-	user = User.objects.get(username=username)
-	try:
-		prof = Profile.objects.get(user=user)
+	displaying_user = User.objects.get(username=username)
+	lists = PersonalList.objects.filter(user=displaying_user).values("id","title")
+	try: prof = Profile.objects.get(user=displaying_user)
 	except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
-		prof = Profile(user=user)
+		prof = Profile(user=displaying_user)
 		prof.save()
 	finally:
-		return render(request,'profile.html',{'user':user, 'profile': prof})
+		return render(request,'profile.html',{'displaying_user':displaying_user, 'profile': prof, 'lists': lists})
 
 SORT_CHOICES = {
     0: "By default",
@@ -367,6 +370,7 @@ DEFAULT_LIST_PARAS = {
 	'date_format_src': '%m/%d/%Y',
 	'date_format_dest': '%Y-%m-%d',
 	'wishlist_id': 0,
+	'rtn_game': 0,
 }
 #default sort=0, n_per=9, page=1
 def custom_list(request,custom):
@@ -436,7 +440,7 @@ def game_search_list(request):
 	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
 	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
 	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
-	q=request.GET.get('q')
+	q=request.GET.get('q',"")
 	if (request.user.is_authenticated): user=request.user
 	else: user=None
 	list_id=request.GET.get('list_id')
@@ -528,3 +532,19 @@ def game_detail(request,id):
 	avg_star=round(avg_reviews*2)
 
 	return render(request, 'game_detail.html',{'data':game,'genres':genres,'developers':developers,'publishers':publishers,'platforms':platforms,'reviewForm':reviewForm,'reviews':reviews,'comments':comments,'avg_reviews':avg_reviews,'avg_star':avg_star})
+
+def get_rating(request):
+	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
+	n_per=int(request.GET.get('n_per',DEFAULT_LIST_PARAS['n_per']))
+	page=int(request.GET.get('page',DEFAULT_LIST_PARAS['page']))
+	by_user=int(request.GET.get('by_user',0))
+	by_game=int(request.GET.get('by_game',0))
+	# rtn_game=int(request.GET.get('rtn_game'),DEFAULT_LIST_PARAS['rtn_game'])
+	if not User.objects.filter(pk=by_user).exists(): by_user=None
+	if not Game.objects.filter(pk=by_game).exists(): by_game=None 
+	# if (rtn_game is 1): rtn_game=True
+	# else: rtn_game=False
+	count,max_page,page,data = tools.get_rating(sort,n_per,page,by_user=by_user,by_game=by_game)	
+	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
+	c=render_to_string('ajax/review_cards.html',{'data':data,'is_authenticated':request.user.is_authenticated})
+	return JsonResponse({'p': p,'c': c})

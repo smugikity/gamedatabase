@@ -116,7 +116,6 @@ main {
 }
 
 .main-bd {
-  width: 100%;
   display: flex;
 }
 
@@ -236,10 +235,6 @@ button.createbtn i {
 }
 
 .tab {
-  display: none;
-}
-
-.tab {
   padding-left: 16px;
   padding-right: 16px;
   width: 100%;
@@ -257,6 +252,11 @@ button.createbtn i {
     width: 200px;
     left: 50px;
     top: 50px;
+  }
+
+  .tab {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 
@@ -311,6 +311,12 @@ button.createbtn i {
   .user-rating {
     justify-content: center;
   }
+
+  .tab {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
 }
 
 @media (max-width: 400px) {

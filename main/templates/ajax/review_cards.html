@@ -18,32 +18,33 @@
     width: 100%;
     position: relative;
 }
+
 .tags-container {
-    position: relative;
     width: 100%;
 }
 .tags-container span {
     border: 2px solid black;
     border-radius: 4px;
+    vertical-align: middle;
+    line-height: normal;
     display: inline-block;
     font-size: 12px;
     padding: 3px 10px;
     margin: 5px;
-    max-width: 100px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
+
 .review-game-meta {
     border-left: 3px solid #F57C00;
     padding-left: 3px;
-    font-size: 1.3rem;
 }
 .review-game-title {
     font-family: Vollkorn, serif;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
 }
-
+.review-game-img {
+    width: 120px;
+    height: 120px;
+}
 .star-rating {
     text-shadow: 1px 0px 3px black;
     margin: 0;
@@ -51,80 +52,126 @@
 }
 
 .star-rating li {
-  cursor: pointer;
-  display: inline-block;
-  list-style-type: none;
-  color: #818387;
+/*    cursor: pointer;*/
+    display: inline-block;
+    list-style-type: none;
+    color: #E40046;
 }
-.star-rating:hover .star,
+
+.star-rating > .star.selected ~ .star {
+    color: #818387;
+}
+
+
+{% comment %} .star-rating:hover .star,
 .star-rating.vote-cast .star {
   color: #E40046;
 } 
-.star-rating:not(:hover) > .star.selected ~ .star, /* show gold star when clicked */
-/*.star-rating > .star:hover, /* hover current star */
-.star-rating > .star:hover ~ .star { color: #818387;  } /* hover previous stars in list */
+.star-rating:not(:hover) > .star.selected ~ .star,
+.star-rating > .star:hover ~ .star {
+    color: #818387;  
+}{% endcomment %}
 
-{% comment %} 
-.star-rating:not(.vote-cast):hover .star:hover ~ .star,
-.star-rating.vote-cast .star.selected ~ .star {color: black;}
-.star-rating > .star.selected + .star:hover, /* hover current star when changing rating */
-.star-rating > .star.selected ~ .star:hover,
-.star-rating > .star:hover ~ .star.selected ~ .star, /* lighten current selection */
-.star-rating > .star.selected ~ .star:hover ~ .star { color: #FFED85;  }  {% endcomment %}
+
+.review-text {
+    font-size: 14px;
+    line-height: 1.5;
+}
+  
+.review-text p.collapse:not(.show) {
+    height: 42px !important;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+}
+
+.review-text p.collapsing {
+    min-height: 42px !important;
+}
+
+.review-text a.collapsed:after  {
+    content: '+ Read More';
+}
+  
+.review-text a:not(.collapsed):after {
+    content: '- Read Less';
+}
+
 </style>
 
-<div class="card review-card d-flex flex-lg-row flex-sm-column text-start p-lg-3 p-sm-2 mb-3">
-    <div class="d-flex justify-content-center flex-lg-column flex-sm-row flex-wrap p-3 m-1">
-        <img class="rounded" src="https://unsplash.it/200"/>
+{% include 'ajax/modal.html' %}
+
+{% for rating in data %}
+<div class="card review-card text-start mb-3 w-100">
+    <div class="card-header review-header d-flex justify-content-start flex-wrap p-3">
+        <div class="text-center d-block"><a href="/view/game/{{ rating.game_detail.id }}"><img class="review-game-img img-fluid img-thumbnail" src="/media/{{ rating.game_detail.image }}"/></a></div>
         <div class="px-3 py-2">
             <h6 class="card-title review-game-title">
-                <i class="fa fa-beer fa-flip-horizontal" style="color: #F57C00;"></i> 100<sup>th</sup> Barrel Imperial IPA<br>
+                <a class="text-decoration-none text-danger" href="/view/game/{{ rating.game_detail.id }}"><strong>{{ rating.game_detail.title }}</strong></a>
             </h6>
-            <span class="review-game-meta">
-                <strong>Brewed By:</strong> Strange Brewing<br>
-            </span>
-            <span class="review-game-meta">
-                <strong>Style:</strong> Imperial IPA<br>
-            </span>
-            <span class="review-game-meta text-nowrap">
-                <strong>Rating:</strong> 
-                <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-            </span>
+            <div class="review-game-meta">
+                <strong>Genre:</strong>
+                <span class="tags-container fst-normal">
+                    {% for genre in rating.game_detail.genre_list %}
+                        <span onclick='viewCustomItem({{ genre.model_id }},{{ genre.id }});' style="cursor: pointer;">{{ genre.title }}</span>
+                    {% endfor %}
+                </span>
+            </div>
+            <div class="review-game-meta text-nowrap">
+                <strong>Rating: </strong><span class="text-danger">{{ rating.game_detail.avg_rating }}<small class="text-muted"> ({{ rating.game_detail.n_ratings }})</small></span>
+            </div>
         </div>
     </div>
     <div class="card-body">
         <div class="d-flex justify-content-between">
-            <h5 class="fw-bold align-self-end">I love dick</h5>
+            <div>
+                <h5 class="fw-bold align-self-end">{{ rating.review_title }}</h5>
+                <div class="fs-5 lh-sm mb-2">
+                    <ul class="star-rating d-inline-flex">
+                        <li class="star" value="0">&nbsp;</li>
+                        {% for star in " "|ljust:5 %}
+                            {% if forloop.counter == rating.review_rating %}
+                                <li class="star selected"><i class="fa fa-star"></i></li>
+                            {% else %}
+                                <li class="star"><i class="fa fa-star"></i></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% comment %} <li class="star" value="1"><i class="fa fa-star"></i></li>
+                        <li class="star" value="2"><i class="fa fa-star"></i></li>
+                        <li class="star" value="3"><i class="fa fa-star"></i></li>
+                        <li class="star" value="4"><i class="fa fa-star"></i></li>
+                        <li class="star" value="5"><i class="fa fa-star"></i></li> {% endcomment %}
+                        <li class="star" value="5">&nbsp;</li>
+                    </ul>
+                </div>
+            </div>
             <div class="fs-6 lh-1" style="height:40px;">
-                by <span class="fw-bold text-primary"><a class="text-decoration-none" href="/~WrenCubes">WrenCubes</a></span>
-                <a href="/~WrenCubes"><img class="img-fluid rounded h-100" alt="Profile photo for WrenCubes" src="//e.snmc.io/i/75/w/d9a0d7a9429880feb9ba0285ec01798b/9249512"></a> 
+                by <span class="fw-bold text-primary"><a class="text-decoration-none" href="/profile/{{ rating.username }}">{{ rating.username }}</a></span>
+                <a href="/profile/{{ rating.username }}"><img class="img-fluid rounded h-100" alt="Profile photo for WrenCubes" src="/media/{{ rating.pfp }}"></a> 
             </div>
         </div>   
-        <div class="fs-5 lh-sm mb-2">
-            <ul class="star-rating d-inline-flex">
-                <li class="star">&nbsp;</li>
-                <li class="star"><i class="fa fa-star"></i></li>
-                <li class="star"><i class="fa fa-star"></i></li>
-                <li class="star"><i class="fa fa-star"></i></li>
-                <li class="star"><i class="fa fa-star"></i></li>
-                <li class="star"><i class="fa fa-star"></i></li>
-                <li class="star">&nbsp;</li>
-            </ul>
-        </div>
-        <div class="text-break">
-            <p>
-                The tornado brew prays, but the bud light stumbly goes deep sea fishing with some Octoberfest near the coors light. When you see a power drill drink, it means that another Miller for the tornado brew leaves. A lager trembles, because a King Henry inside a blood clot learns a hard lesson from a Labatts about a pool table. 
-                Indeed, the tornado brew inside a Budweiser Select buries the molten Stella Artois.<br><br>Most people believe that the pin ball machine beyond the Brewers Reserve finds lice on the vaporized Bacardi Silver, but they need to remember how ridiculously a discusting rattlesnake prays. 
-                Now and then, another Pilsner caricatures a Corona Extra. Indeed, the blood clot inside the Miller gives the last beer to a pool table. Another greasy Budweiser Select organizes the bottle of beer beyond the Pilsner. A flabby Luna Sea ESB thoroughly has a change of heart about a smelly stein.
+        
+        <div class="review-text">
+            {% if rating.review_text|length >= 250 %}
+            <p class="collapse" id="reviewCollapse">
+                {{ rating.review_text }}
             </p>
+            <a class="collapsed" data-toggle="collapse" href="#reviewCollapse" aria-expanded="false" aria-controls="reviewCollapse"></a>
+            {% else %}
+            <p>
+                {{ rating.review_text }}
+            </p>
+            {%endif%}
         </div>
     </div>
 </div>
-<script type="text/javascript">
+{% endfor %}
+{% comment %} <script type="text/javascript">
 $('.star-rating li').on('click', function() {
     var selectedCssClass = 'selected';
     var $this = $(this);
     $this.siblings('.' + selectedCssClass).removeClass(selectedCssClass);
     $this.addClass(selectedCssClass).parent().addClass('vote-cast');
 });
-</script>
+</script> {% endcomment %}

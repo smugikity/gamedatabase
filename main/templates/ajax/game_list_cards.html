@@ -13,9 +13,9 @@
                     <i class="fa fa-heart-o" value="{{ game.id }}"></i>
                 {% endif %}
             </span>
-            <div class="item-card-img d-flex justify-content-center" onclick='viewGameItem({{ game.id }});'> <img class="rounded" src="/media/{{ game.image }}" alt="image"></div>
+            <div class="item-card-img d-flex justify-content-center"><a href="/view/game/{{ game.id }}"><img class="rounded" src="/media/{{ game.image }}" alt="image"></a></div>
             <div class="card-content">
-                <div class="text-danger" onclick='viewGameItem({{ game.id }});'><strong>{{ game.title }}</strong></div>		
+                <div class="card-title"><a class="text-decoration-none text-danger" href="/view/game/{{ game.id }}"><strong>{{ game.title }}</strong></a></div>		
                 <div class="text-danger">{{ game.avg_rating }}<small class="text-muted"> ({{ game.n_ratings }})</small></div>		
                 <div class="tags-container">
                     {% for genre in game.genre_list|slice:"0:3" %}

@@ -4,22 +4,6 @@ $(document).ready(function() {
     pageSection = $("#page-section");
     cardSection = $("#card-section");
     //list pages end
-    try {
-        $.ajax({
-            url: '/src/game-list'+'?'+addon_url,
-            dataType:'json',
-            success:function(res) {
-                console.log(res);
-                $('#loading-img').hide()
-                pageSection.html(res.p);
-                cardSection.html(res.c);
-            }
-        });
-    }
-    catch(err) {
-        console.log(err);
-        return;
-    }
 
     $('#datepicker').datepicker();
     //Select2 
@@ -56,7 +40,7 @@ $(document).ready(function() {
         return item.title;
     }
     //End select 2
-
+    searching = 0;
     searchText = $('#search-text');
     sort = $('#sort');
     n_per = $('#pro');
@@ -73,6 +57,8 @@ $(document).ready(function() {
         searching = 0;
         goToPage(current);
     });
+
+    goToPage(1);
 });	
 
 //list pages start

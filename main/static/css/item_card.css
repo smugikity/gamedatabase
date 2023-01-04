@@ -1,5 +1,4 @@
 .item-card {
-    cursor: pointer;
     transition: 0.3s all ease-in-out;
     padding: 10px;
 	background: #fff;
@@ -23,7 +22,11 @@
 	width: 100%;
 	position: relative;
 }
+.item-card .card-content .card-title {
+    cursor: pointer;
+}
 .item-card .card-img {
+    cursor: pointer;
     height: 240px;
     width: 100%;
     position: relative;

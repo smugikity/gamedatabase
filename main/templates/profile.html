@@ -3,6 +3,7 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/profile.css' %}"/>
+<script type="text/javascript">const user_id = {{ displaying_user.id }}</script>
 <script type="text/javascript" src="{% static 'js/profile.js' %}"></script>
 <main class="container">
     <div class="profile-header">
@@ -10,7 +11,7 @@
             <img src="/media/{{ profile.image }}" width="200" alt="Profile Image">
         </div>  
         <div class="profile-nav-info">
-            <h3 class="user-name">{{ user.first_name }} {{ user.last_name }}</h3>
+            <h3 class="user-name">{{ displaying_user.first_name }} {{ displaying_user.last_name }}</h3>
             <div class="address">
             <p>{{ profile.country }}</p>
             </div>
@@ -23,11 +24,11 @@
         </div>
     </div>
     
-    <div class="main-bd">
+    <div class="main-bd w-100 mb-3">
         <div class="left-side">
             <div class="profile-side">
             <p class="mobile-no"><i class="fa fa-phone"></i> +23470xxxxx700</p>
-            <p class="user-mail"><i class="fa fa-envelope"></i> {{ user.email }}</p>
+            <p class="user-mail"><i class="fa fa-envelope"></i> {{ displaying_user.email }}</p>
             <div class="user-bio">
                 <h3>Bio</h3>
                 <p class="bio">
@@ -57,38 +58,34 @@
             </div>
     
         </div>
-        <div class="right-side">
+        <div class="right-side w-100">
     
             <div class="nav">
             <ul>
-                <li class="tab-button user-post active" onclick="tabs(0)">Posts</li>
-                <li class="tab-button user-review" onclick="tabs(1)">Reviews</li>
-                <li class="tab-button user-setting" onclick="tabs(2)"> Settings</li>
+                <li class="tab-button user-post active" onclick="tabs(0)">Reviews</li>
+                {% for list in lists %}
+                    <li class="tab-button" onclick="tabs({{ list.id }})">{{ list.title }}</li>
+                {% endfor %}
             </ul>
             </div>
-            <div class="profile-body">
-            <div class="profile-posts tab">
-
-                {% include 'ajax/review_cards.html' %}
-                {% comment %} <h1>Your Post</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa quia sunt itaque ut libero cupiditate ullam qui velit laborum placeat doloribus, non tempore nisi ratione error rem minima ducimus. Accusamus adipisci quasi at itaque repellat sed
-                magni eius magnam repellendus. Quidem inventore repudiandae sunt odit. Aliquid facilis fugiat earum ex officia eveniet, nisi, similique ad ullam repudiandae molestias aspernatur qui autem, nam? Cupiditate ut quasi iste, eos perspiciatis maiores
-                molestiae.</p> {% endcomment %}
-            </div>
-            <div class="profile-reviews tab">
-                <h1>User reviews</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam pariatur officia, aperiam quidem quasi, tenetur molestiae. Architecto mollitia laborum possimus iste esse. Perferendis tempora consectetur, quae qui nihil voluptas. Maiores debitis
-                repellendus excepturi quisquam temporibus quam nobis voluptatem, reiciendis distinctio deserunt vitae! Maxime provident, distinctio animi commodi nemo, eveniet fugit porro quos nesciunt quidem a, corporis nisi dolorum minus sit eaque error
-                sequi ullam. Quidem ut fugiat, praesentium velit aliquam!</p>
-            </div>
-            <div class="profile-settings tab">
-                <div class="account-setting">
-                <h1>Acount Setting</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit omnis eaque, expedita nostrum, facere libero provident laudantium. Quis, hic doloribus! Laboriosam nemo tempora praesentium. Culpa quo velit omnis, debitis maxime, sequi
-                    animi dolores commodi odio placeat, magnam, cupiditate facilis impedit veniam? Soluta aliquam excepturi illum natus adipisci ipsum quo, voluptatem, nemo, commodi, molestiae doloribus magni et. Cum, saepe enim quam voluptatum vel debitis
-                    nihil, recusandae, omnis officiis tenetur, ullam rerum.</p>
+            <div id="profile-body" class="profile-body">
+                <div id="tab-loading-img" class="text-center">
+                    <img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px;">
                 </div>
-            </div>
+                <div id="tab-reviews-section" class="tab d-block">
+
+                    {% comment %} <h1>Your Post</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa quia sunt itaque ut libero cupiditate ullam qui velit laborum placeat doloribus, non tempore nisi ratione error rem minima ducimus. Accusamus adipisci quasi at itaque repellat sed
+                    magni eius magnam repellendus. Quidem inventore repudiandae sunt odit. Aliquid facilis fugiat earum ex officia eveniet, nisi, similique ad ullam repudiandae molestias aspernatur qui autem, nam? Cupiditate ut quasi iste, eos perspiciatis maiores
+                    molestiae.</p> {% endcomment %}
+                </div>
+                <div id="tab-list-section" class="tab row">
+
+                    {% comment %} <h1>Your Post</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa quia sunt itaque ut libero cupiditate ullam qui velit laborum placeat doloribus, non tempore nisi ratione error rem minima ducimus. Accusamus adipisci quasi at itaque repellat sed
+                    magni eius magnam repellendus. Quidem inventore repudiandae sunt odit. Aliquid facilis fugiat earum ex officia eveniet, nisi, similique ad ullam repudiandae molestias aspernatur qui autem, nam? Cupiditate ut quasi iste, eos perspiciatis maiores
+                    molestiae.</p> {% endcomment %}
+                </div>
             </div>
         </div>
     </div>

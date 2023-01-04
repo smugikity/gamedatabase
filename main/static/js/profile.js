@@ -6,8 +6,9 @@ $(document).ready(function() {
       .removeClass("active");
   });
   tabBtn = $('.tab-button');
-  tab = $('.tab');
-
+  tab_reviews_section = $('#tab-reviews-section');
+  tab_list_section = $('#tab-list-section');
+  tab_loading_img = $('#tab-loading-img');
   if (document.querySelector(".alert-message").innerText > 9) {
     document.querySelector(".alert-message").style.fontSize = ".7rem";
   }
@@ -27,17 +28,50 @@ $(document).ready(function() {
 // }
 
 function tabs(panelIndex) {
-  tab.each(function() {
-    $(this).hide();
-  });
-  tab[panelIndex].style.display="block";
+  tab_reviews_section.empty();
+  tab_list_section.empty();
+  if (panelIndex==0) {
+    showReviews();
+  } else {
+    showList(panelIndex);
+  }
 }
 
-function addLength() {
-  bio.innerText = bio.oldText;
-  bio.innerHTML +=
-    "&nbsp;" + `<span onclick='bioText()' id='see-less-bio'>See Less</span>`;
-  document.getElementById("see-less-bio").addEventListener("click", () => {
-    document.getElementById("see-less-bio").style.display = "none";
-  });
+function showReviews() {
+  tab_loading_img.show();
+  try {
+    $.ajax({
+        url: '/rating?n_per=5&by_user='+user_id,
+        dataType:'json',
+        success:function(res) {
+            tab_loading_img.hide()
+            tab_reviews_section.html(res.c
+              +`<p class="my-4 text-center"><a href="{% url 'game-list' %}" class="btn btn-dark btn-sm"><i class="fa fa-thumbs-up"></i> All Reviews</a></p>`);
+        }
+    });
+  }
+  catch(err) {
+      console.log(err);
+      return;
+  }
 }
+
+function showList(id) {
+  tab_loading_img.show();
+  try {
+      $.ajax({
+          url: '/src/game-search?list_id='+id,
+          dataType:'json',
+          success:function(res) {
+              tab_loading_img.hide()
+              tab_list_section.html(res.c
+                +`<p class="my-4 text-center"><a href="/p-list/`+id+`" class="btn btn-dark btn-sm"><i class="fa fa-thumbs-up"></i> All items</a></p>`);
+          }
+      });
+  }
+  catch(err) {
+      console.log(err);
+      return;
+  }
+}
+

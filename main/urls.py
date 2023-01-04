@@ -57,6 +57,8 @@ urlpatterns=[
     path('p-list/wishlist',views.wishlist,name='personal-list'),
     path('p-list/wishlist/add',views.wishlist_add,name='personal-list-add'),
     path('p-list/wishlist/remove',views.wishlist_remove,name='personal-list-remove'),
+    #Rating
+    path('rating',views.get_rating,name='get-rating'),
 ]
 
 if settings.DEBUG:

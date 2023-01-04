@@ -1,15 +1,18 @@
 from main.models import Game, Rating, Developer, Publisher, Platform,Genre,PersonalList
-from django.db.models import Max,Min,Count,Avg,Q,OuterRef,F,Exists,Value,IntegerField
+from django.db.models import Max,Min,Count,Avg,Q,OuterRef,F,Exists,Value,IntegerField,Subquery
 from django.db.models.functions import Lower,JSONObject
 from django.contrib.postgres.expressions import ArraySubquery
 import numpy as np
 from math import ceil
 
-def get_n_random_games(n):
-	subquery1 = Genre.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(id=F("id"), title=F("title"))).values_list("data")
-	data = Game.objects.all().annotate(genre_list=ArraySubquery(subquery1)).annotate(n_ratings=Count('rating')).order_by('-id').values('id','title','image','avg_rating','n_ratings','genre_list')
-	random_games = np.random.choice(data, n, replace=True)
-	return random_games
+def get_n_random_games(n,user=None):
+	query_list = Game.objects.all().annotate(genre_list=ArraySubquery(subquery_game_genre)).annotate(n_ratings=Count('rating'))
+	if user: 
+		wishlist_id = PersonalList.objects.filter(user=user).first().id
+		s_query = PersonalList.objects.filter(pk=wishlist_id,game__id=OuterRef("pk"))
+		query_list = query_list.annotate(is_favorited=Exists(s_query)).values('id','title','image','avg_rating','n_ratings','genre_list','is_favorited')
+	else: query_list = query_list.values('id','title','image','avg_rating','n_ratings','genre_list')
+	return np.random.choice(query_list, n, replace=False)
 
 # Custom list of Models
 CUSTOM_MODEL_ID={
@@ -36,6 +39,8 @@ SORT=['id','title']
 subquery_game_genre = Genre.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(model_id=CUSTOM_MODEL_ID['genre'],id=F("id"), title=F("title"))).values_list("data")
 subquery_game_developer = Developer.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(model_id=CUSTOM_MODEL_ID['developer'],id=F("id"), title=F("title"))).values_list("data")
 subquery_game_platform = Platform.objects.filter(game__id=OuterRef("pk")).annotate(data=JSONObject(model_id=CUSTOM_MODEL_ID['platform'],id=F("id"), title=F("title"))).values_list("data")
+
+subquery_rating_game = Game.objects.filter(pk=OuterRef("game")).annotate(n_ratings=Count('rating')).annotate(genre_list=ArraySubquery(subquery_game_genre)).annotate(data=JSONObject(id=F("id"),title=F("title"),avg_rating=F("avg_rating"),n_ratings=F("n_ratings"),image=F("image"),genre_list=F("genre_list"))).values_list("data")[:1]
 
 def get_search(custom,term):
 	models = CUSTOM_LIST[custom]
@@ -90,6 +95,21 @@ def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,
 		return get_by_page(query_list,sort,n_per,page,'id','title','image','avg_rating','n_ratings','genre_list','is_favorited')
 	return get_by_page(query_list,sort,n_per,page,'id','title','image','avg_rating','n_ratings','genre_list')
 
+
+def get_rating(sort,n_per,page,by_user=None,by_game=None):
+	if by_game: 
+		query_list = Rating.objects.filter(game=by_game)
+		query_list = query_list.annotate(username=F('user__username'),pfp=F('user__profile__image'))
+		return get_by_page(query_list,sort,n_per,page,'review_rating','review_title','review_text','username','pfp')
+	elif by_user:
+		query_list = Rating.objects.filter(user=by_user)
+		query_list = query_list.annotate(game_detail=Subquery(subquery_rating_game))
+		query_list = query_list.annotate(username=F('user__username'),pfp=F('user__profile__image'))
+		return get_by_page(query_list,sort,n_per,page,'review_rating','review_title','review_text','username','pfp','game_detail')
+
+	else: return
+
+	
 def get_by_page(query_list,sort,n_per,page,*args):
 	count = query_list.count()
 	max_page = ceil(count/n_per)
