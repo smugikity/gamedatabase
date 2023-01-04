@@ -52,18 +52,6 @@
     margin: 10px 0;
     width: 130%;
 }
-.movie-info .tags-container {
-    position: relative;
-    width: 225%;
-}
-.movie-info .tags-container span {
-    border: 2px solid black;
-    border-radius: 4px;
-    display: inline-block;
-    font-size: 12px;
-    padding: 3px 10px;
-    margin: 5px;
-}
 
 @media (max-width: 768px) {
     .image-container {
@@ -91,7 +79,6 @@
         text-align: left;
         padding: 30px 20px;
     }
-    .movie-info .tags-container,
     .movie-info p {
         width: 100%;
     }
@@ -137,7 +124,7 @@
                     </div>
                     <h4>Rating: 7.4 / 10</h4>
                     <p>`+data.description+`</p>
-                    <div class="tags-container"><span>Animation</span><span>Adventure</span><span>Comedy</span></div>
+                    <div class="fw-bold text-primary"><a class="text-decoration-none" href="/game-list?`+data.custom+`=`+data.id+`">Go to games</a></div>
                 </div>`
                 modalContainer.empty();
                 modalContainer.append(tem);

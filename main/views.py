@@ -372,10 +372,14 @@ DEFAULT_LIST_PARAS = {
 	'wishlist_id': 0,
 	'rtn_game': 0,
 }
+
 #default sort=0, n_per=9, page=1
 def custom_list(request,custom):
+	index_question = request.get_full_path().find('?')
+	if (index_question == -1): init_paras_url = ""
+	else: init_paras_url = request.get_full_path()[index_question:]
 	return render(request, 'list.html',
-	{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]}})
+	{'custom':custom, 'sort_choice': {k: SORT_CHOICES[k] for k in list(SORT_CHOICES.keys())[:3]},'init_paras_url':init_paras_url})
 
 def src_custom_list(request,custom):
 	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
@@ -388,7 +392,10 @@ def src_custom_list(request,custom):
 
 # Game List
 def game_list(request):
-	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES})
+	index_question = request.get_full_path().find('?')
+	if (index_question == -1): init_paras_url = ""
+	else: init_paras_url = request.get_full_path()[index_question:]
+	return render(request, 'game_list.html',{'sort_choice': SORT_CHOICES,'init_paras_url':init_paras_url})
 
 # Game List
 def src_game_list(request):
@@ -455,7 +462,10 @@ def game_search_list(request):
 def personal_list(request,id):
 	# try:
 	list = get_list_object_if_wishlist(request,id)
-	return render(request, 'personal_list.html',{'sort_choice': SORT_CHOICES,'list_id':list.id,'list_title':list.title,'list_description':list.description,'owned_user':list.user.username})
+	index_question = request.get_full_path().find('?')
+	if (index_question == -1): init_paras_url = ""
+	else: init_paras_url = request.get_full_path()[index_question:]
+	return render(request, 'personal_list.html',{'sort_choice': SORT_CHOICES,'list_id':list.id,'init_paras_url':init_paras_url,'list_title':list.title,'list_description':list.description,'owned_user':list.user.username})
 	# except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
 	# 	raise Http404(error)
 	

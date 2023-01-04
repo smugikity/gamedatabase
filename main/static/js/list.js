@@ -16,9 +16,26 @@ $(document).ready(function() {
     //list pages start
     pageSection = $('#page-section');
     cardSection = $('#card-section');
+    loadinImg = $('#loading-img');
     //list pages end
     searching=0;    
-    goToPage(1);
+
+    try {
+        $.ajax({
+            url: '/src/list/'+custom+init_paras_url,
+            dataType:'json',
+            success:function(res){
+                loadinImg.hide()
+                pageSection.html(res.p);
+                cardSection.html(res.c);
+            }
+        });
+    }
+    catch(err) {
+        console.log(err);
+        return;
+    }
+
 });	
 
 
@@ -35,7 +52,7 @@ const templatePage2 = `</button></div>`;
 function goToPage(page) {
     try {
         cardSection.empty();
-        $('#loading-img').show()
+        loadinImg.show()
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
         term = searchText.val().trim();
@@ -51,7 +68,7 @@ function goToPage(page) {
             // },
             success:function(res){
                 console.log(res);
-                $('#loading-img').hide()
+                loadinImg.hide()
                 pageSection.html(res.p);
                 cardSection.html(res.c);
             }

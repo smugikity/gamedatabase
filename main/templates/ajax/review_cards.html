@@ -146,10 +146,12 @@
                     </ul>
                 </div>
             </div>
+            {% if rating.username %}
             <div class="fs-6 lh-1" style="height:40px;">
                 by <span class="fw-bold text-primary"><a class="text-decoration-none" href="/profile/{{ rating.username }}">{{ rating.username }}</a></span>
-                <a href="/profile/{{ rating.username }}"><img class="img-fluid rounded h-100" alt="Profile photo for WrenCubes" src="/media/{{ rating.pfp }}"></a> 
+                <a href="/profile/{{ rating.username }}"><img class="img-fluid rounded h-100" alt="Profile photo" src="/media/{{ rating.pfp }}"></a> 
             </div>
+            {% endif %}
         </div>   
         
         <div class="review-text">

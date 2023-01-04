@@ -15,6 +15,7 @@ def get_n_random_games(n,user=None):
 	return np.random.choice(query_list, n, replace=False)
 
 # Custom list of Models
+CUSTOM_NAME=['game','genre','developer','publisher','platform']
 CUSTOM_MODEL_ID={
     'genre': 1,
     'developer': 2,
@@ -104,8 +105,7 @@ def get_rating(sort,n_per,page,by_user=None,by_game=None):
 	elif by_user:
 		query_list = Rating.objects.filter(user=by_user)
 		query_list = query_list.annotate(game_detail=Subquery(subquery_rating_game))
-		query_list = query_list.annotate(username=F('user__username'),pfp=F('user__profile__image'))
-		return get_by_page(query_list,sort,n_per,page,'review_rating','review_title','review_text','username','pfp','game_detail')
+		return get_by_page(query_list,sort,n_per,page,'review_rating','review_title','review_text','game_detail')
 
 	else: return
 
@@ -132,5 +132,5 @@ def get_custom_item(custom,id):
 	models = CUSTOM_LIST[custom]
 	object = models.objects.get(pk=id).__dict__
 	data =  {k: v for k, v in object.items() if (k!='_state' and k!='status')}
-	data['custom'] = custom
+	data['custom'] = CUSTOM_NAME[custom]
 	return data

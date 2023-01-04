@@ -59,7 +59,23 @@ $(document).ready(function() {
     select2Publisher=$('#select2-publisher');
     select2Platform=$('#select2-platform');
     searching=0;
-    goToPage(1);
+    loadingImg = $('#loading-img');
+
+    try {
+        $.ajax({
+            url: '/src/game-list'+init_paras_url,
+            dataType:'json',
+            success:function(res){
+                loadingImg.hide()
+                pageSection.html(res.p);
+                cardSection.html(res.c);
+            }
+        });
+    }
+    catch(err) {
+        console.log(err);
+        return;
+    }
 });	
 
 //list pages start
@@ -69,7 +85,7 @@ const templatePage2 = `</button></div>`;
 function goToPage(page) {
     try {
         cardSection.empty();
-        $('#loading-img').show()
+        loadingImg.show()
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
 
@@ -90,13 +106,9 @@ function goToPage(page) {
         $.ajax({
             url: url_string,
             dataType:'json',
-            // beforeSend:function(){
-            // 	$(".ajaxLoader").show();
-            // },
             success:function(res){
-                
                 console.log(res);
-                $('#loading-img').hide()
+                loadingImg.hide()
                 pageSection.html(res.p);
                 cardSection.html(res.c);
             }
