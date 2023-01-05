@@ -93,7 +93,9 @@ function submitComment() {
 }
 
 function saveReview() {
-    $('#review-error').empty();
+    $('#review-alert-danger').hide();
+    $('#review-alert-success').hide();
+
     selectedStar = $('#self-star-rating .star.selected');
     if (!(selectedStar.length)) return;
     rating = selectedStar.attr("value");
@@ -110,11 +112,9 @@ function saveReview() {
             game_id: game_id,
         },
         success: function(res) {
-            $('#review-alert-danger').hide();
             $('#review-alert-success').html('Update successfully!').show();
         },
         error: function(xhr,errmsg,err) {
-            $('#review-alert-success').hide();
             $('#review-alert-danger').html(xhr.responseText).show();
             console.log(error); // provide a bit more info about the error to the console
         }
@@ -122,8 +122,11 @@ function saveReview() {
 }
 
 function deleteReview() {
-    $('#review-error').empty();
+    $('#review-alert-danger').hide();
+    $('#review-alert-success').hide();
+
     $('#self-star-rating').children('.' + selectedCssClass).removeClass(selectedCssClass);
+    $('#self-star-rating').children(":first").addClass(selectedCssClass);
     $('#review-input-title').val("");
     $('#review-input-content').val("");
     $.ajax({
@@ -134,11 +137,9 @@ function deleteReview() {
             game_id: game_id,
         },
         success: function(res) {
-            $('#review-alert-danger').hide();
             $('#review-alert-success').html('Update successfully!').show();
         },
         error: function(xhr,errmsg,err) {
-            $('#review-alert-success').hide();
             $('#review-alert-danger').html(xhr.responseText).show();
             console.log(err); // provide a bit more info about the error to the console
         }

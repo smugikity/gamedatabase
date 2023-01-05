@@ -119,7 +119,7 @@
 					<div class="card-header self-review-header d-flex p-3">
 						<ul id="self-star-rating" class="d-inline-flex align-items-center">
 							
-							<li class="star {% if usr_rating.review_rating == None  %}selected{% endif %}" value="0">&nbsp;</li>
+							<span class="star {% if usr_rating.review_rating == None  %}selected{% endif %}" value="0">&nbsp;</span>
 					
 							{% for star in " "|ljust:5 %}
 								{% if forloop.counter == usr_rating.review_rating %}
