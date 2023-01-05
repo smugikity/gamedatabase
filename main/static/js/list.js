@@ -56,7 +56,7 @@ function goToPage(page) {
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
         term = searchText.val().trim();
-        if (searching && term !== "") {
+        if (searching) {
             url='/src/custom-search/'+custom+'?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
         }
         else url='/src/list/'+custom+'?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page

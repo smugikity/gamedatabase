@@ -7,12 +7,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'resources/datepicker/datepicker.min.css' %}"/>
 <script type="text/javascript" src="{% static 'resources/datepicker/datepicker.min.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}" />
-<script type="text/javascript">const list_id = {{ list_id }};</script>
-<script type="text/javascript">
-	const init_paras_url = "{{ init_paras_url }}";
-</script>
-<script type="text/javascript" src="{% static 'js/personal_list.js' %}"></script>
-
 
 <main class="container my-4">
 
@@ -56,7 +50,7 @@
 				<div class="input-group-append"><button id="search-button" class="btn btn-primary" type="button"><i class="fa fa-search"></i></button></div>
 			</div>
 		</div>
-		<div class="box border-bottom">
+		<div class="box">
 			<div class="form-group text-center">
 				<div class="btn-group d-flex flex-wrap"> 
 					<button type="button" id="reset-button" class="btn btn-success form-check-label"> 
@@ -69,53 +63,6 @@
 			</div>
 			{% comment %} <div> <label class="tick">New <input type="checkbox" checked="checked"> <span class="check"></span> </label> </div>
 			<div> <label class="tick">Sale <input type="checkbox"> <span class="check"></span> </label> </div> {% endcomment %}
-		</div>
-		<div class="box border-bottom">
-			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">DATE 
-				<button class="btn" type="button" data-toggle="collapse" data-target="#rating-box" aria-expanded="false" aria-controls="price">
-					<span class="fa fa-plus"></span>
-				</button> 
-			</div>
-			<div id="rating-box" class="collapse">
-				<div class="input-daterange input-group" id="datepicker">
-					<input type="text" class="input-sm form-control" name="start" id="datepicker-start"/>
-					<span class="input-group-addon">to</span>
-					<input type="text" class="input-sm form-control" name="end" id="datepicker-end"/>
-				</div>
-			</div>
-		</div>
-		<div class="box border-bottom">
-			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">GENRE 
-				<button class="btn" type="button" data-toggle="collapse" data-target="#genre-box" aria-expanded="false" aria-controls="inner-box" id="out"> 
-					<span class="fa fa-plus"></span> 
-				</button> 
-			</div>
-			<div id="genre-box" class="collapse mt-2 mr-1">
-				<select id="select2-genre" class="select2-class select2-filter" name="genres[]" multiple="multiple" style="width: 100%" value="genre">
-				</select>
-			</div>
-		</div>
-		<div class="box border-bottom">
-			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">PUBLISHER 
-				<button class="btn" type="button" data-toggle="collapse" data-target="#publisher-box" aria-expanded="false" aria-controls="inner-box2">
-					<span class="fa fa-plus"></span>
-				</button>
-			</div>
-			<div id="publisher-box"  class="collapse mt-2 mr-1">
-				<select id="select2-publisher" class="select2-class select2-filter" name="publishers[]" multiple="multiple" style="width: 100%" value="publisher">
-				</select>
-			</div>
-		</div>
-		<div class="box">
-			<div class="box-label text-uppercase d-flex align-items-center justify-content-between">PLATFORM 
-				<button class="btn" type="button" data-toggle="collapse" data-target="#platform-box" aria-expanded="false" aria-controls="size">
-					<span class="fa fa-plus"></span>
-				</button> 
-			</div>
-			<div id="platform-box"  class="collapse mt-2 mr-1">
-				<select id="select2-platform" class="select2-class select2-filter" name="platforms[]" multiple="multiple" style="width: 100%" value="platform">
-				</select>
-			</div>
 		</div>
 	</div>
 	
@@ -130,4 +77,10 @@
 	</div>
 </div>
 </main>
+
+<script type="text/javascript">
+	const list_id = {{ list_id }};
+	const init_paras_url = "{{ init_paras_url }}";
+</script>
+<script type="text/javascript" src="{% static 'js/personal_list.js' %}"></script>
 {% endblock %}

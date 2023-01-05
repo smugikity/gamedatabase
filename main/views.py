@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import JsonResponse,HttpResponse,HttpResponseNotFound,Http404
+from django.http import JsonResponse,HttpResponse,HttpResponseNotFound,Http404,HttpResponseBadRequest
 from .models import Banner,Category,Brand,Product,ProductAttribute,CartOrder,CartOrderItems,ProductReview,Wishlist,UserAddressBook,Genre,Publisher,Developer,Platform,Game,PersonalList,Rating,Comment,Profile
 from django.db.models import Max,Min,Count,Avg
 from django.contrib.auth.models import User
@@ -343,7 +343,7 @@ def handler404(request, exception, template_name='404.html'):
 def profile_self(request):
 	if (request.user.is_authenticated):
 		return profile(request,request.user.username)
-	else: return Http404()
+	else: return HttpResponseNotFound()
 
 def profile(request, username):
 	displaying_user = User.objects.get(username=username)
@@ -425,7 +425,7 @@ def view_item(request,model_id,id):
 		data = tools.get_custom_item(model_id,id)
 		return JsonResponse(data)
 	except (ObjectDoesNotExist,MultipleObjectsReturned) as error:
-		raise Http404(error)
+		return HttpResponseNotFound(error)
 
 # Search
 def search(request,custom):
@@ -480,7 +480,7 @@ def personal_list_add(request,id):
 				return HttpResponse()
 		else: raise ValueError
 	except (ObjectDoesNotExist,MultipleObjectsReturned,ValueError) as error:
-		return Http404(error)
+		return HttpResponseNotFound(error)
 
 @login_required
 def personal_list_remove(request,id):
@@ -494,7 +494,7 @@ def personal_list_remove(request,id):
 			else: raise ObjectDoesNotExist
 		else: raise ValueError
 	except (ObjectDoesNotExist,MultipleObjectsReturned,ValueError) as error:
-		return Http404(error)
+		return HttpResponseNotFound(error)
 
 def get_list_object_if_wishlist(request,id):
 	if (id==DEFAULT_LIST_PARAS['wishlist_id']):
@@ -514,34 +514,13 @@ def wishlist_remove(request):
 
 # Game Detail
 def game_detail(request,id):
-	game=Game.objects.get(id=id)
-	genres=game.genre.values_list("id","title")
-	developers_query=game.developer
-	developers=developers_query.values_list("id","title")
-	publishers=developers_query.values_list("publisher__id","publisher__title")
-	platforms=game.platform.values_list("id","title")
-	# related_game=Game.objects.filter(genre=game.genre).exclude(id=id)[:4]
-
-	reviewForm=ReviewAdd()
-
-	# Check
-	# canAdd=True
-	# reviewCheck=ProductReview.objects.filter(user=request.user,product=product).count()
-	# if request.user.is_authenticated:
-	# 	if reviewCheck > 0:
-	# 		canAdd=False
-	# End
-
-	# Fetch reviews
-	reviews=Rating.objects.filter(game=game)
-	comments=Comment.objects.filter(game=game)
-	# End
-
-	# Fetch avg rating for reviews
-	avg_reviews=getattr(game, 'avg_rating')
-	avg_star=round(avg_reviews*2)
-
-	return render(request, 'game_detail.html',{'data':game,'genres':genres,'developers':developers,'publishers':publishers,'platforms':platforms,'reviewForm':reviewForm,'reviews':reviews,'comments':comments,'avg_reviews':avg_reviews,'avg_star':avg_star})
+	user=None
+	pfp=None
+	if (request.user.is_authenticated): 
+		user=request.user
+		pfp=Profile.objects.get(user=user).image
+	game,n_ratings,genre_list,dev_list,publisher,plat_list,comments,usr_rating,is_favorite = tools.get_game(id,user)
+	return render(request, 'game.html',{'game':game,'n_ratings':n_ratings,'genre_list':genre_list,'dev_list':dev_list,'publisher':publisher,'plat_list':plat_list,'comments':comments,'usr_rating':usr_rating,'is_favorite':is_favorite,'pfp':pfp})
 
 def get_rating(request):
 	sort=int(request.GET.get('sort',DEFAULT_LIST_PARAS['sort'])) 
@@ -551,10 +530,48 @@ def get_rating(request):
 	by_game=int(request.GET.get('by_game',0))
 	# rtn_game=int(request.GET.get('rtn_game'),DEFAULT_LIST_PARAS['rtn_game'])
 	if not User.objects.filter(pk=by_user).exists(): by_user=None
-	if not Game.objects.filter(pk=by_game).exists(): by_game=None 
+	if not Game.objects.filter(pk=by_game).exists(): by_game=None
 	# if (rtn_game is 1): rtn_game=True
 	# else: rtn_game=False
 	count,max_page,page,data = tools.get_rating(sort,n_per,page,by_user=by_user,by_game=by_game)	
 	p=render_to_string('ajax/list_pages.html',{'count':count,'max_page':max_page,'page':page,'searching':1})
 	c=render_to_string('ajax/review_cards.html',{'data':data,'is_authenticated':request.user.is_authenticated})
 	return JsonResponse({'p': p,'c': c})
+
+@login_required
+def comment_add(request):
+	try:
+		if request.method=='POST':
+			content = request.POST.get('content').strip()
+			if (content is "") or (not request.user.is_authenticated): raise ValueError
+			game_id = int(request.POST.get('game_id'))
+			Comment.objects.create(user=request.user,game=Game.objects.get(pk=game_id),content=content)
+			return HttpResponse('')
+		else: return HttpResponseBadRequest()
+	except (ObjectDoesNotExist,MultipleObjectsReturned,ValueError) as error:
+		return HttpResponseNotFound(error)
+
+@login_required
+def review_add(request):
+	try:
+		if request.method=='POST':
+			rating = int(request.POST.get('rating',0))
+			if (not rating) or (not request.user.is_authenticated): raise ValueError
+			game_id = int(request.POST.get('game_id',0))
+			Rating.objects.update_or_create(game_id=game_id,user=request.user,defaults={'review_rating':rating,'review_title':request.POST.get('title',"").strip(),'review_text':request.POST.get('content',"").strip()})
+			return HttpResponse('')
+		else: return HttpResponseBadRequest('Please pick the star.')
+	except (ObjectDoesNotExist,MultipleObjectsReturned,ValueError) as error:
+		return HttpResponseNotFound('Please pick the star.')
+
+@login_required
+def review_delete(request):
+	try:
+		if request.method=='POST':
+			if (not request.user.is_authenticated): raise ValueError
+			game_id = int(request.POST.get('game_id'))
+			Rating.objects.filter(game__id=game_id,user=request.user).delete()
+			return HttpResponse('')
+		else: return HttpResponseBadRequest()
+	except (ObjectDoesNotExist,MultipleObjectsReturned,ValueError) as error:
+		return HttpResponseNotFound(error)

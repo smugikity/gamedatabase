@@ -3,11 +3,6 @@
 {% block content %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}"/>
-<script type="text/javascript">
-	const custom = "{{ custom }}"; 
-	const init_paras_url = "{{ init_paras_url }}";
-</script>
-<script type="text/javascript" src="{% static 'js/list.js' %}"></script>
 
 <main class="container my-4">
 
@@ -77,4 +72,10 @@
 	</div>
 </div>
 </main>
+
+<script type="text/javascript">
+	const custom = "{{ custom }}"; 
+	const init_paras_url = "{{ init_paras_url }}";
+</script>
+<script type="text/javascript" src="{% static 'js/list.js' %}"></script>
 {% endblock %}

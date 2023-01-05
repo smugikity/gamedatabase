@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from .models import ProductReview,UserAddressBook
+from .models import UserAddressBook,Rating
 
 class SignupForm(UserCreationForm):
 	class Meta:
@@ -11,8 +11,8 @@ class SignupForm(UserCreationForm):
 # Review Add Form
 class ReviewAdd(forms.ModelForm):
 	class Meta:
-		model=ProductReview
-		fields=('review_text','review_rating')
+		model=Rating
+		fields=('review_rating','review_title','review_text')
 
 # AddressBook Add Form
 class AddressBookForm(forms.ModelForm):

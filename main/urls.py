@@ -57,6 +57,9 @@ urlpatterns=[
     path('p-list/wishlist',views.wishlist,name='personal-list'),
     path('p-list/wishlist/add',views.wishlist_add,name='personal-list-add'),
     path('p-list/wishlist/remove',views.wishlist_remove,name='personal-list-remove'),
+    path('comment/add',views.comment_add,name='comment-add'),
+    path('review/add',views.review_add,name='review-add'),
+    path('review/delete',views.review_delete,name='review-delete'),
     #Rating
     path('rating',views.get_rating,name='get-rating'),
 ]

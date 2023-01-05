@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% csrf_token %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/game.css' %}" />
+<main class="container my-4 pt-3">
+<div class="movie-card row justify-content-center">
+	<div class="poster-wrapper col-11 col-md-5 col-lg-4">
+		<div class="poster">
+			<img class="w-100 h-100" src="/media/{{ game.image }}" alt="poster" />
+			<div class="release-date">
+				<h2>{{ game.release_date|date:"d" }}</h2>
+				<div class="divider"></div>
+				<p>{{ game.release_date|date:"M" }} {{ game.release_date|date:"Y" }}</p>
+			</div>
+			<div id="wish-icon" class="btn-play">
+                {% if is_favorited %}
+                    <i class="fa fa-heart" value="{{ game.id }}"></i>
+                {% else %}
+                    <i class="fa fa-heart-o" value="{{ game.id }}"></i>
+                {% endif %}
+            </div>
+		</div>
+	</div>
+	<!-- end poster-wrapper -->
+	<div class="movie-info col-11 ps-md-3 col-md-6">
+		<div class="header-section">
+			<h2>{{ game.title }}</h2>
+			<div class="extra">
+				<div class="ratings mt-3">
+					<h4>Rating: <strong class="text-danger">{{ game.avg_rating }}</strong><small class="text-danger"> from {{ n_ratings }}</small></h4>
+				</div>
+			</div>
+		</div>
+		<div class="genre-section">
+			<h3>GENRE</h3>
+			<div class="section-body tags-container">
+				{% for genre in genre_list %}
+					<span onclick='viewCustomItem({{ genre.model_id }},{{ genre.id }});' style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" >{{ genre.title }}</span>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="developer-section">
+			<h3>DEVELOPER</h3>
+			<div class="section-body">
+				Developer:
+				<ul style="list-style-type: none;">
+					{% for dev in dev_list %}
+						<li class="font-monospace" onclick='viewCustomItem({{ dev.model_id }},{{ dev.id }});' style="cursor: pointer;">{{ dev.title }}</li>
+					{% endfor %}
+				</ul>
+				Publisher: <span class="font-monospace"  onclick='viewCustomItem({{ publisher.model_id }},{{ publisher.id }});' style="cursor: pointer;">{{ publisher.title }}</span>
+			</div>
+		</div>
+		<div class="platform-section">
+			<h3>PLATFORM</h3>
+			<div class="section-body plats">
+				{% for plat in plat_list %}
+					<img onclick='viewCustomItem({{ plat.model_id }},{{ plat.id }});' style="cursor: pointer;" src="/media/{{ plat.image }}"></img>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="synopsis-section">
+			<h3>DESCRIPTION</h3>
+			<div class="section-body">
+				<p>
+					{{ game.description }}
+				</p>
+			</div>
+		</div>
+		{% comment %} <div class="gallery-section">
+			<h3>VIDEO / PICTURE</h3>
+			<div class="gallery">
+				<div class="small"><img src="https://m.media-amazon.com/images/M/MV5BYzkyNGViZDItYzFkMy00OGM0LTg3NzktZGVkZjM2Mzk1OGEzXkEyXkFqcGdeQXVyNjUwNzk3NDc@._V1_.jpg" alt="media" /></div>
+				<div class="medium"><img src="https://m.media-amazon.com/images/M/MV5BNTkxOGIwYzUtNzc0ZS00MTBkLWFkODItYzEzNGRkN2E3MTAxXkEyXkFqcGdeQXVyNjUwNzk3NDc@._V1_.jpg" alt="media" /></div>
+				<div class="small"><img src="https://m.media-amazon.com/images/M/MV5BMzg2OTY3MjE3OF5BMl5BanBnXkFtZTgwNTkxMDU0MDI@._V1_SX1777_CR0,0,1777,745_AL_.jpg" alt="media" /></div>
+			</div>
+		</div> {% endcomment %}
+	</div>
+
+	<div class="col-11 col-md-5 col-lg-4">
+		<h3>COMMENT</h3>
+		<div class="card chat-box mb-3 w-100">
+			
+			<div class="card-header titleBox d-flex justify-content-between">
+				<label>What do you think?</label>
+				<a type="button">&times;</a>
+			</div>
+			<div class="card-body actionBox pt-0">
+				<ul id="comment-box"class="commentList mb-0">
+					{% for comment in comments.data %}
+						<li>
+							<div class="commenterImage">
+								<a href="/profile/{{ comment.username }}"><img src="/media/{{ comment.pfp }}"/></a>
+							</div>
+							<div class="commentText ms-1">
+								<a class="text-decoration-none text-reset" href="/profile/{{ comment.username }}"><b>{{ comment.username }}</b></a><br/>
+								<p class="">{{ comment.content }}</p> 
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+				<div class="input-group">
+					<input id="comment-input" class="form-control rounded" name="content" type="text" placeholder="Your comment" aria-label="Your comment" aria-describedby="comment"/>
+					<div class="input-group-append">
+						<button id="comment-submit" class="btn btn-outline-secondary" type="button">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="movie-info col-11 ps-md-3 col-md-6">
+		<div class="reviews-section">
+			<h3>REVIEWS</h3>
+			<div class="reviews-section">
+				<!--User review section-->
+				<div class="card self-review-card text-start mb-3 w-100">
+					<div class="card-header self-review-header d-flex p-3">
+						<ul id="self-star-rating" class="d-inline-flex align-items-center">
+							
+							<li class="star {% if usr_rating.review_rating == None  %}selected{% endif %}" value="0">&nbsp;</li>
+					
+							{% for star in " "|ljust:5 %}
+								{% if forloop.counter == usr_rating.review_rating %}
+									<li class="star selected" value="{{ forloop.counter }}"><i class="fa fa-star"></i></li>
+								{% else %}
+									<li class="star" value="{{ forloop.counter }}"><i class="fa fa-star"></i></li>
+								{% endif %}
+							{% endfor %}
+						</ul>
+						<div class="ms-auto">
+							<button id="review-delete" class="btn btn-dark btn-sm" type="button">Delete</button>
+							<button id="review-save" class="btn btn-outline-secondary btn btn-light btn-sm" type="button">Save</button>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="fs-6">
+							<input id="review-input-title" class="w-100 p-1" name="review-title" type="text" placeholder="Title (not required)" value="{{ usr_rating.review_title }}" aria-label="Your review title" aria-describedby="review title"/>
+							<textarea id="review-input-content" class="w-100 p-1 mt-2" style="min-heigt:200px;" name="review-content" placeholder="Content (not required)" aria-label="Your review content" aria-describedby="review content"/>{{ usr_rating.review_text }}</textarea>
+						</div>
+						<div id="review-alert-danger" class="alert alert-danger" style="display:none;">
+							
+						</div>
+						<div id="review-alert-success" class="alert alert-success" style="display:none;">
+							
+						</div>
+					</div>
+				</div>
+
+				<div id="tab-loading-img" class="text-center">
+					<img src="/media/loading.gif" alt="Loading" style="width: 200px; height: 200px;">
+				</div>
+				<div id="tab-reviews-section" class="tab d-block">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</main>
+
+<script type="text/javascript">
+	let is_authenticated = 0;
+	let user_id=0;
+{% if user.is_authenticated %}
+	is_authenticated = 1;
+	user_id = "{{ user.id }}";
+	const username = "{{ user.username }}";
+	const pfp = "/media/{{ pfp }}"
+{% endif %}
+	const game_id = {{ game.id }}
+</script>
+<script src="{% static 'js/game.js' %}"></script>
+{% endblock %}
+

@@ -41,10 +41,6 @@ $('.wish-icon i').on("click", function() {
         try {
             $.ajax({
                 url: '/p-list/wishlist/remove?game='+id,
-                success:function(res) {
-                    console.log(res);
-                    
-                }
             });
         }
         catch(err) {
@@ -55,10 +51,6 @@ $('.wish-icon i').on("click", function() {
         try {
             $.ajax({
                 url: '/p-list/wishlist/add?game='+id,
-                success:function(res) {
-                    console.log(res);
-                    
-                }
             });
         }
         catch(err) {

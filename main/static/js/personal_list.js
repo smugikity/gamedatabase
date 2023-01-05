@@ -46,6 +46,8 @@ $(document).ready(function() {
     sort = $('#sort');
     n_per = $('#pro');
     $('#search-button').on("click", function() {
+        $('.select2-class').val(null).trigger('change');
+        $('#datepicker').datepicker('clearDates');
         searching = 1;
         goToPage(1);
     })
@@ -55,13 +57,14 @@ $(document).ready(function() {
         $('#search-text').val("");
     })
     $('#apply-button').on("click",function() {
+        $('#search-text').val("");
         searching = 0;
         goToPage(current);
     });
 
     try {
         $.ajax({
-            url: '/src/game-search'+init_paras_url+'&'+addon_url,
+            url: '/src/game-list?'+addon_url+'&'+init_paras_url,
             dataType:'json',
             success:function(res){
                 loadingImg.hide()
@@ -87,7 +90,7 @@ function goToPage(page) {
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
         term = searchText.val().trim();
-        if (searching && term !== "") {
+        if (searching) {
             url='/src/game-search?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term+'&'+addon_url;
         }
         else url='/src/game-list?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&'+addon_url;

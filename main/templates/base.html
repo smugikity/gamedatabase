@@ -38,17 +38,17 @@
 					<a class="nav-link text-white" href="/">Home</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link text-white" href="/game-list/">Game</a>
+					<a class="nav-link text-white" href="{% url 'game-list' %}">Game</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<i class="fa fa-folder-open"></i> Browse
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="/list/genre">Genre</a>
-						<a class="dropdown-item" href="/list/publisher">Publisher</a>
-						<a class="dropdown-item"% href="/list/developer">Developer</a>
-						<a class="dropdown-item" href="/list/platform">Platform</a>
+						<a class="dropdown-item" href="{% url 'list' 'genre' %}">Genre</a>
+						<a class="dropdown-item" href="{% url 'list' 'publisher' %}">Publisher</a>
+						<a class="dropdown-item"% href="{% url 'list' 'developer' %}">Developer</a>
+						<a class="dropdown-item" href="{% url 'list' 'platform' %}">Platform</a>
 					</div>
 				</li>
 				{% comment %} <li class="nav-item">

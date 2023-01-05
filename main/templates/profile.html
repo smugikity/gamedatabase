@@ -3,8 +3,7 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/profile.css' %}"/>
-<script type="text/javascript">const user_id = {{ displaying_user.id }}</script>
-<script type="text/javascript" src="{% static 'js/profile.js' %}"></script>
+
 <main class="container">
     <div class="profile-header">
         <div class="profile-img">
@@ -90,4 +89,8 @@
         </div>
     </div>
 </main>
+
+<script type="text/javascript">const user_id = {{ displaying_user.id }}</script>
+<script type="text/javascript" src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
+

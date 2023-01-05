@@ -7,11 +7,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'resources/datepicker/datepicker.min.css' %}"/>
 <script type="text/javascript" src="{% static 'resources/datepicker/datepicker.min.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/list.css' %}" />
-<script type="text/javascript">
-	const init_paras_url = "{{ init_paras_url }}";
-</script>
-<script type="text/javascript" src="{% static 'js/game_list.js' %}"></script>
-
 
 <main class="container my-4">
 
@@ -128,4 +123,9 @@
 	</div>
 </div>
 </main>
+
+<script type="text/javascript">
+	const init_paras_url = "{{ init_paras_url }}";
+</script>
+<script type="text/javascript" src="{% static 'js/game_list.js' %}"></script>
 {% endblock %}

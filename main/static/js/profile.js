@@ -13,19 +13,7 @@ $(document).ready(function() {
     document.querySelector(".alert-message").style.fontSize = ".7rem";
   }
   tabs(0);
-  // bio = document.querySelector(".bio");
-  // bioMore = document.querySelector("#see-more-bio");
-  // bioLength = bio.innerText.length;
-  // bioText();
-  //        console.log(bio.innerText)
 });
-
-// function bioText() {
-//   bio.oldText = bio.innerText;
-
-//   bio.innerText = bio.innerText.substring(0, 100) + "...";
-//   bio.innerHTML += `<span onclick='addLength()' id='see-more-bio'>See More</span>`;
-// }
 
 function tabs(panelIndex) {
   tab_reviews_section.empty();

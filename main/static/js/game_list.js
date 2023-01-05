@@ -39,6 +39,8 @@ $(document).ready(function() {
     sort = $('#sort');
     n_per = $('#pro');
     $('#search-button').on("click", function() {
+        $('.select2-class').val(null).trigger('change');
+        $('#datepicker').datepicker('clearDates');
         searching = 1;
         goToPage(1);
     })
@@ -48,6 +50,7 @@ $(document).ready(function() {
         $('#search-text').val("");
     })
     $('#apply-button').on("click",function() {
+        $('#search-text').val("");
         searching = 0;
         goToPage(current);
     });
@@ -88,21 +91,20 @@ function goToPage(page) {
         loadingImg.show()
         page = parseInt(page);
         if (!isFinite(page) || page<1) {throw "exceed";}
-
-        var url_string = '/src/game-list?sort='+ $('#sort').find(":selected").val()+'&n_per='+$('#pro').val()+'&page='+page;
-        const startdate = $('#datepicker-start').datepicker('getFormattedDate');
-        if (startdate) url_string += '&startdate='+startdate;
-        const enddate = $('#datepicker-end').datepicker('getFormattedDate');
-        if (enddate) url_string += '&enddate='+enddate;
-        select2Genre.select2('data').forEach(genre => {url_string += '&genre='+genre.id});
-        select2Publisher.select2('data').forEach(publisher => {url_string += '&publisher='+publisher.id});
-        select2Platform.select2('data').forEach(platform => {url_string += '&platform='+platform.id});
-
+        var url_string = '';
         term = searchText.val().trim();
-        if (searching && term !== "") {
-            url_string+='&q='+term;
+        if (searching) {
+            url_string='/src/game-search?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page+'&q='+term;
+        } else {
+            url_string = '/src/game-list?sort='+ sort.find(":selected").val()+'&n_per='+n_per.val()+'&page='+page;
+            const startdate = $('#datepicker-start').datepicker('getFormattedDate');
+            if (startdate) url_string += '&startdate='+startdate;
+            const enddate = $('#datepicker-end').datepicker('getFormattedDate');
+            if (enddate) url_string += '&enddate='+enddate;
+            select2Genre.select2('data').forEach(genre => {url_string += '&genre='+genre.id});
+            select2Publisher.select2('data').forEach(publisher => {url_string += '&publisher='+publisher.id});
+            select2Platform.select2('data').forEach(platform => {url_string += '&platform='+platform.id});
         }
-        
         $.ajax({
             url: url_string,
             dataType:'json',

@@ -1,4 +1,4 @@
-from main.models import Game, Rating, Developer, Publisher, Platform,Genre,PersonalList
+from main.models import Game, Rating, Developer, Publisher, Platform,Genre,PersonalList,Comment
 from django.db.models import Max,Min,Count,Avg,Q,OuterRef,F,Exists,Value,IntegerField,Subquery
 from django.db.models.functions import Lower,JSONObject
 from django.contrib.postgres.expressions import ArraySubquery
@@ -99,7 +99,7 @@ def get_game_list(sort,n_per,page,startdate,enddate,genres,publishers,platforms,
 
 def get_rating(sort,n_per,page,by_user=None,by_game=None):
 	if by_game: 
-		query_list = Rating.objects.filter(game=by_game)
+		query_list = Rating.objects.filter(game=by_game).exclude(user=by_user)
 		query_list = query_list.annotate(username=F('user__username'),pfp=F('user__profile__image'))
 		return get_by_page(query_list,sort,n_per,page,'review_rating','review_title','review_text','username','pfp')
 	elif by_user:
@@ -109,7 +109,10 @@ def get_rating(sort,n_per,page,by_user=None,by_game=None):
 
 	else: return
 
-	
+def get_comments(page,id):
+	query_list = Comment.objects.filter(game=id).annotate(username=F('user__username')).annotate(pfp=F('user__profile__image'))
+	return get_by_page(query_list,0,10,page,'username','pfp','content') #sort by -id
+
 def get_by_page(query_list,sort,n_per,page,*args):
 	count = query_list.count()
 	max_page = ceil(count/n_per)
@@ -125,6 +128,8 @@ def get_by_page(query_list,sort,n_per,page,*args):
 		data = query_list.annotate(num=Count('rating'))[start:end]
 	elif (sort == 3):
 		data = query_list.order_by('-avg_rating')[start:end]
+	elif (sort == 4):
+		data = query_list.order_by('-id')[start:end]
 	else: return None
 	return count,max_page,page,data.values(*args)
 	 
@@ -134,3 +139,36 @@ def get_custom_item(custom,id):
 	data =  {k: v for k, v in object.items() if (k!='_state' and k!='status')}
 	data['custom'] = CUSTOM_NAME[custom]
 	return data
+
+def get_game(id,user=None):
+	game=Game.objects.get(pk=id)
+	n_ratings=Rating.objects.filter(game=id).count()
+	genre_list=Genre.objects.filter(game=id).annotate(model_id=Value(CUSTOM_MODEL_ID['genre'])).order_by('id').values('model_id','id','title')
+	dev_list=Developer.objects.filter(game=id).annotate(model_id=Value(CUSTOM_MODEL_ID['developer'])).order_by('id').values('model_id','id','title')
+	publisher_item=Publisher.objects.get(developer=dev_list[0]['id'])
+	publisher={'model_id':CUSTOM_MODEL_ID['publisher'],'id':publisher_item.id,'title':publisher_item.title}
+	plat_list=Platform.objects.filter(game=id).annotate(model_id=Value(CUSTOM_MODEL_ID['platform'])).order_by('id').values('model_id','id','image')
+	cm_count,_,cm_page,cm_list=get_comments(1,id)
+	comments={'count':cm_count,'page':cm_page,'data':cm_list}
+	usr_rating=None
+	is_favorited=False
+	if user: 
+		try:
+			usr_rating=Rating.objects.get(game=id,user=user)
+		except Rating.DoesNotExist:
+			usr_rating = None
+		wishlist_id = PersonalList.objects.filter(user=user).first().id
+		is_favorited=PersonalList.objects.filter(pk=wishlist_id,game__id=id).exists()
+	return game,n_ratings,genre_list,dev_list,publisher,plat_list,comments,usr_rating,is_favorited
+	
+	
+	# related_game=Game.objects.filter(genre=game.genre).exclude(id=id)[:4]
+
+
+	# Check
+	# canAdd=True
+	# reviewCheck=ProductReview.objects.filter(user=request.user,product=product).count()
+	# if request.user.is_authenticated:
+	# 	if reviewCheck > 0:
+	# 		canAdd=False
+	# End
