@@ -20,33 +20,33 @@ class Command(BaseCommand):
 
         if (Genre.objects.count()<30):
             for i in range(30):
-                b = Genre(title=r.get_random_word()+" "+r.get_random_word()+" "+r.get_random_word(), description=r.get_random_word())
-                save_image_from_url(b, 'https://picsum.photos/200',i+1)
+                b = Genre(title=generateRandomString(1,r), description=generateRandomString(20,r))
+                save_image_from_url(b, 'https://picsum.photos/200/250',i+1)
                 b.save()
         if (Publisher.objects.count()<30):
             for i in range(30):        
-                b = Publisher(title=r.get_random_word()+" "+r.get_random_word()+" "+r.get_random_word(), description=r.get_random_word())
-                save_image_from_url(b, 'https://picsum.photos/200',i+1)
+                b = Publisher(title=generateRandomString(2,r)+"games", description=generateRandomString(20,r))
+                save_image_from_url(b, 'https://picsum.photos/200/250',i+1)
                 b.save()
         if (Platform.objects.count()<30):
             for i in range(30):
-                b = Platform(title=r.get_random_word()+" "+r.get_random_word()+" "+r.get_random_word(), description=r.get_random_word())
-                save_image_from_url(b, 'https://picsum.photos/200',i+1)
+                b = Platform(title=generateRandomString(1,r), description=generateRandomString(20,r))
+                save_image_from_url(b, 'https://picsum.photos/200/250',i+1)
                 b.save()
         if (Developer.objects.count()<30):
             for i in range(30):       
-                b = Developer(title=r.get_random_word()+" "+r.get_random_word()+" "+r.get_random_word(), description=r.get_random_word(),publisher=Publisher.objects.get(pk=random.randrange(1,30)))
-                save_image_from_url(b, 'https://picsum.photos/200',i+1)
+                b = Developer(title=generateRandomString(2,r)+"studio", description=generateRandomString(20,r),publisher=Publisher.objects.get(pk=random.randrange(1,30)))
+                save_image_from_url(b, 'https://picsum.photos/200/250',i+1)
                 b.save()
         if (Game.objects.count()<30):
             for i in range(30):
                 b = Game(
-                    title=r.get_random_word()+" "+r.get_random_word()+" "+r.get_random_word(), 
-                    description=r.get_random_word(),
+                    title=generateRandomString(3,r), 
+                    description=generateRandomString(20,r),
                     release_date=datetime.datetime(year=random.randrange(1000,2000), month=random.randrange(1,12), day=random.randrange(1,28)),
-                    avg_rating=random.randrange(50)/10,
+                    avg_rating=0,
                 )
-                save_image_from_url(b, 'https://picsum.photos/200',i+1)
+                save_image_from_url(b, 'https://picsum.photos/200/250',i+1)
                 b.save()
                 b.genre.add(random.randrange(1,30),random.randrange(1,30),random.randrange(1,30))
                 b.developer.add(random.randrange(1,30),random.randrange(1,30),random.randrange(1,30))
@@ -60,3 +60,9 @@ def save_image_from_url(model, url, i):
     img_temp.flush()
 
     model.image.save(model.__class__.__name__+str(i)+".jpg", File(img_temp), save=True)    
+
+def generateRandomString(n,r):
+    des = ""
+    for i in range(n):
+        des += r.get_random_word()+" "
+    return des

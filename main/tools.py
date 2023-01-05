@@ -12,6 +12,7 @@ def get_n_random_games(n,user=None):
 		s_query = PersonalList.objects.filter(pk=wishlist_id,game__id=OuterRef("pk"))
 		query_list = query_list.annotate(is_favorited=Exists(s_query)).values('id','title','image','avg_rating','n_ratings','genre_list','is_favorited')
 	else: query_list = query_list.values('id','title','image','avg_rating','n_ratings','genre_list')
+	if not len(query_list): return
 	return np.random.choice(query_list, n, replace=False)
 
 # Custom list of Models
