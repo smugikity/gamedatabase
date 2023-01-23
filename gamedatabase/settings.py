@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'gamedatabase.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gamedatabase', 
-        'USER': '7upnamk',
-        'PASSWORD': 'lPx2FTp8rwft',
-        'HOST': 'ep-long-limit-235365.eu-central-1.aws.neon.tech', 
+        'NAME': 'b0i6fl29ho3odnqyfacj', 
+        'USER': 'uhi9ychfw1a61agxi9hx',
+        'PASSWORD': 'IdubZntsi3M4P0rtcMJ0udNniVfC8l',
+        'HOST': 'b0i6fl29ho3odnqyfacj-postgresql.services.clever-cloud.com', 
         'PORT': '5432',
     }   
 }
