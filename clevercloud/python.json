@@ -1,0 +1,14 @@
+{
+    "build": {
+        "cache_dependancies": true
+    },
+    "deploy": {
+    	"version": "3.9",
+        "module": "gamedatabase.wsgi:application",
+        "managetasks": [
+            "migrate",
+            "runserver"
+        ],
+        "port": 8080
+    }
+}
