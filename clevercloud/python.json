@@ -6,8 +6,7 @@
     	"version": "3.9",
         "module": "gamedatabase.wsgi:application",
         "managetasks": [
-            "migrate",
-            "runserver"
+            "migrate"
         ],
         "port": 8080
     }
